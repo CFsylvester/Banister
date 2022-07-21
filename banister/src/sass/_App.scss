@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans: 300, 600, 800');
+
+//Open Sans for Primary Text
+.primary-text {
+    font-family: "Open Sans", sans-serif;
+}
+//Arial for Secondary Text
+.secondary-text {
+    font-family: Arial, Helvetica, sans-serif;
+}
+//Extra Bold Outlier
+.extra-bold {
+    font-weight: 800 !important;
+}
+
+//Headers Are Bold
+h1 {
+    font-size: 2em;
+    font-weight: 600;
+}
+h2 { 
+    font-size: 1.5em;
+    font-weight: 600;
+ }
+h3 { 
+    font-size: 1.17em; 
+    font-weight: 600;
+}
+h4 { font-size: 1.12em; }
+h5 { font-size: .83em; }
+h6 { font-size: .75em; }
+
+//Scalable Text
+p {
+    font-size: 1em;
+    font-weight: 300;
+}
