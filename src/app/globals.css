@@ -1,0 +1,54 @@
+/* Tailwind WITHOUT Preflight: the design was authored against browser defaults (line-height: normal,
+   UA button padding, UA placeholder colour), so resetting them would shift pixels. Theme + utilities only —
+   see node_modules/tailwindcss/index.css for the full entry this replaces. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  --color-navy: #003f5e;
+  --color-navy-hover: #0a5a82;
+  --color-teal: #2bc1c6;
+  --color-teal-deep: #0f7f95;
+  --color-gold: #ffc91e;
+  --color-gold-line: #e8c65a;
+  --color-ink: #414547;
+  --color-slate: #6a7276;
+  --color-mist: #f4f6f8;
+  --color-fog: #edeff2;
+  --color-rule: #d8dde1;
+  --color-field: #9aa6ae;
+  --font-sans: var(--font-open-sans), system-ui, sans-serif;
+}
+
+/* Site gutter + content width used by every section of the design. */
+@utility px-gutter {
+  padding-left: clamp(20px, 4vw, 48px);
+  padding-right: clamp(20px, 4vw, 48px);
+}
+@utility site {
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@layer base {
+  body {
+    margin: 0;
+    background: #fff;
+    color: #414547;
+    font-family: var(--font-open-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: #003f5e; text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { color: #0a6a8a; }
+  input, textarea, select, button { font-family: inherit; }
+  *, ::before, ::after { box-sizing: border-box; }
+}
+
+@keyframes bnFly { 0% { transform: translateX(0); opacity: 1 } 100% { transform: translateX(26px); opacity: 0 } }
+@keyframes bnSpin { to { transform: rotate(360deg) } }
+@keyframes bnPop { 0% { transform: scale(0) rotate(-30deg); opacity: 0 } 70% { transform: scale(1.25) rotate(0); opacity: 1 } 100% { transform: scale(1); opacity: 1 } }
+@keyframes bnFade { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
+@keyframes bnIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes bnFlash { 0% { background: #2bc1c6 } 100% { background: #003f5e } }
