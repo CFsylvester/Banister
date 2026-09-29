@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#fff;color:#414547;font-family:'Open Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#003f5e;text-decoration:underline;text-underline-offset:3px}a:hover{color:#0a6a8a}
+input,textarea,select,button{font-family:inherit}
+*{box-sizing:border-box}
+@keyframes bnFly{0%{transform:translateX(0);opacity:1}100%{transform:translateX(26px);opacity:0}}
+@keyframes bnSpin{to{transform:rotate(360deg)}}
+@keyframes bnPop{0%{transform:scale(0) rotate(-30deg);opacity:0}70%{transform:scale(1.25) rotate(0);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes bnFade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes bnIn{from{opacity:0}to{opacity:1}}
+@keyframes bnFlash{0%{background:#2bc1c6}100%{background:#003f5e}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+
+<header style="background:{{ headBg }}">
+  <div style="max-width:1240px;margin:0 auto;padding:26px clamp(20px,4vw,48px) 34px;display:flex;align-items:center;justify-content:space-between;gap:16px 40px;flex-wrap:wrap">
+    <img onClick="{{ goHome }}" src="assets/banister-logo-white.png" alt="Banister International" style="height:52px;width:auto;cursor:pointer;display:block">
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+    <nav style="display:flex;gap:clamp(18px,2.6vw,36px);flex-wrap:wrap">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+        <span onClick="{{ n.go }}" style="cursor:pointer;color:#fff;font-size:14px;font-weight:600;padding-top:8px;border-top:2px solid {{ n.line }}" style-hover="border-top-color:#ffc91e">{{ n.label }}</span>
+      </sc-for>
+    </nav>
+    </sc-if>
+    <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ toggleMenu }}" aria-label="Menu" aria-expanded="{{ menuExpanded }}" style="width:48px;height:48px;background:transparent;border:1px solid rgba(255,255,255,.5);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0">
+        <span style="display:block;width:22px;height:2px;background:#fff;transition:transform .3s;transform:{{ bar1 }}"></span>
+        <span style="display:block;width:22px;height:2px;background:#fff;transition:opacity .2s;opacity:{{ bar2 }}"></span>
+        <span style="display:block;width:22px;height:2px;background:#fff;transition:transform .3s;transform:{{ bar3 }}"></span>
+      </button>
+    </sc-if>
+  </div>
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;grid-template-rows:{{ menuRows }};transition:grid-template-rows .4s cubic-bezier(.2,.8,.2,1)">
+      <nav style="overflow:hidden;min-height:0;display:flex;flex-direction:column;padding:0 clamp(20px,4vw,48px)">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+          <span onClick="{{ n.go }}" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:56px;color:#fff;font-size:18px;font-weight:600;border-top:1px solid rgba(255,255,255,.18)">{{ n.label }}<span style="color:{{ n.line }};font-size:16px">●</span></span>
+        </sc-for>
+        <span onClick="{{ goContact }}" style="cursor:pointer;margin:16px 0 24px;display:flex;justify-content:center;gap:18px;align-items:center;background:#ffc91e;color:#003f5e;padding:16px 24px;font-size:13px;font-weight:800;letter-spacing:.06em">SPEAK WITH A PARTNER <span>→</span></span>
+      </nav>
+    </div>
+  </sc-if>
+</header>
+
+<main style="flex:1">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <section data-screen-label="Home" style="background:linear-gradient(180deg,#003f5e 0%,#003f5e 62%,#0b5f7a 86%,#1f9fb0 100%)">
+  <div style="max-width:1240px;margin:0 auto;padding:8px clamp(20px,4vw,48px) 0">
+    <div style="position:relative;overflow:hidden;min-height:clamp(360px,44vw,560px);display:flex;align-items:flex-end;border-bottom:4px solid #2bc1c6" onMouseEnter="{{ heroPause }}" onMouseLeave="{{ heroResume }}">
+      <sc-for list="{{ heroSlides }}" as="hs" hint-placeholder-count="1"><img src="{{ hs.src }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;opacity:{{ hs.op }};transform:{{ hs.tf }};transition:opacity 1.2s ease, transform 7s linear"></sc-for>
+      
+      <div style="position:relative;width:100%;display:flex;flex-direction:column;gap:clamp(20px,2.4vw,32px);padding-bottom:clamp(18px,2vw,28px)"><div style="margin-right:clamp(24px,5vw,56px);position:relative;padding:clamp(18px,2.4vw,30px) clamp(20px,2.6vw,32px)"><div style="position:absolute;inset:0;background:#00324d;mix-blend-mode:multiply"></div><div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px 32px;flex-wrap:wrap"><h1 style="margin:0;font-size:clamp(44px,6.4vw,92px);font-weight:700;line-height:1.05;letter-spacing:-.01em;color:#fff">We <span style="color:#2bc1c6">Build</span> Companies</h1><span onClick="{{ goContact }}" style="cursor:pointer;flex:none;display:flex;gap:18px;align-items:center;background:#ffc91e;color:#003f5e;padding:16px 24px;font-size:13px;font-weight:800;letter-spacing:.06em" style-hover="background:#fff">SPEAK WITH A PARTNER <span>→</span></span></div></div></div>
+    </div>
+  </div>
+  </section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(48px,6vw,80px) clamp(20px,4vw,48px) 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px 64px">
+    <p style="margin:0;font-size:clamp(20px,1.9vw,25px);line-height:1.5;color:#003f5e;text-wrap:pretty">Founded in 1999, Banister International is a human capital advisory firm delivering high-impact talent solutions to transformational organizations.</p>
+    <p style="margin:0;font-size:16px;line-height:1.75;text-wrap:pretty">We specialize in executive search, next-generation leadership, search and advisory projects, and interim leadership. Every engagement uses a branded search approach that tells the client’s story, led by one dedicated Client Engagement Partner from start to finish.</p>
+  </section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(56px,7vw,96px) clamp(20px,4vw,48px) 0">
+    <h2 style="margin:0 0 28px;font-size:clamp(26px,2.4vw,32px);font-weight:700;color:#003f5e">Our track record</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(calc((100% - 20px)/2),max(calc((100% - 60px)/4),calc((760px - 100%)*999))),1fr));gap:20px" ref="{{ statsRef }}">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="position:relative;background:#f4f6f8;padding:36px 28px 32px;display:flex;flex-direction:column;gap:14px;opacity:{{ s.op }};transform:{{ s.tf }};transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1)">
+          <span style="position:absolute;left:0;top:0;height:4px;width:{{ s.bar }};background:#ffc91e"></span>
+          <span style="display:grid;font-size:clamp(42px,4.2vw,60px);font-weight:800;line-height:1;color:#003f5e;letter-spacing:-.02em;font-variant-numeric:tabular-nums">
+            <span style="grid-area:1/1;visibility:hidden" aria-hidden="true">{{ s.v }}</span>
+            <span style="grid-area:1/1">{{ s.cur }}<span style="color:#2bc1c6">{{ s.suffix }}</span></span>
+          </span>
+          <span style="width:40px;height:2px;background:#2bc1c6"></span>
+          <span style="font-size:15px;line-height:1.45;color:#414547;text-wrap:pretty">{{ s.l }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="margin-top:clamp(72px,8vw,112px);background:#003f5e">
+    <div style="max-width:1240px;margin:0 auto;padding:clamp(56px,7vw,88px) clamp(20px,4vw,48px)">
+      <h2 style="margin:0 0 32px;font-size:clamp(26px,2.4vw,32px);font-weight:700;color:#2bc1c6">What our clients are saying</h2>
+      <div style="display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px 20px;max-width:980px">
+        <span style="font-size:110px;line-height:.8;font-weight:800;color:#2bc1c6;font-family:Georgia,serif">“</span>
+        <div style="display:grid">
+          <sc-for list="{{ quotes }}" as="qq" hint-placeholder-count="1">
+            <div style="grid-area:1/1;display:flex;flex-direction:column;gap:20px;visibility:{{ qq.vis }};opacity:{{ qq.op }};transition:opacity .6s ease">
+              <p style="margin:0;font-size:clamp(20px,2vw,26px);line-height:1.5;font-weight:600;color:#fff"><sc-for list="{{ qq.words }}" as="w" hint-placeholder-count="1"><span style="display:inline-block;white-space:pre;opacity:{{ w.op }};transform:{{ w.tf }};filter:{{ w.blur }};transition:{{ w.tr }}">{{ w.t }}</span></sc-for></p>
+              <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px"><span style="flex:1;min-width:0;font-size:15px;color:#2bc1c6;font-style:italic;opacity:{{ qq.whoOp }};transition:{{ qq.whoTr }}">— {{ qq.who }}</span><span style="align-self:flex-end;font-size:110px;line-height:.5;height:44px;font-weight:800;color:#2bc1c6;font-family:Georgia,serif">”</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;align-items:center;margin-top:40px">
+        <div style="display:flex;gap:12px">
+          <sc-for list="{{ quoteDots }}" as="d" hint-placeholder-count="3">
+            <span onClick="{{ d.go }}" style="cursor:pointer;position:relative;width:56px;height:19px;display:block"><span style="position:absolute;left:0;right:0;top:8px;height:3px;background:rgba(255,255,255,.28)"></span><span style="position:absolute;left:0;top:8px;height:3px;width:{{ d.w }};background:#ffc91e;transition:{{ d.tr }}"></span></span>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(72px,8vw,112px) clamp(20px,4vw,48px) clamp(72px,8vw,112px)">
+    <h2 style="margin:0 0 32px;font-size:clamp(26px,2.4vw,32px);font-weight:700;color:#003f5e">Our latest insights</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(calc((100% - 64px)/3),calc((640px - 100%)*999))),1fr));gap:40px 32px">
+      <sc-for list="{{ homeInsights }}" as="a" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <img src="{{ a.img }}" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block">
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ a.tags }}" as="tg" hint-placeholder-count="2"><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;line-height:1;background:{{ tg.bg }};color:{{ tg.fg }};border:1px solid {{ tg.bd }}">{{ tg.t }}</span></sc-for>
+          </div>
+          <span style="font-size:19px;font-weight:700;line-height:1.35;color:#003f5e;text-wrap:pretty">{{ a.title }}</span>
+          <span style="font-size:15px;line-height:1.6;flex:1">{{ a.dek }}</span>
+          <span onClick="{{ a.go }}" style="cursor:pointer;align-self:flex-start;display:flex;gap:18px;align-items:center;border:1px solid #003f5e;color:#003f5e;padding:10px 16px;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#003f5e;color:#fff">LEARN MORE <span>→</span></span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isServices }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Services" style="display:flex;flex-wrap:wrap;align-items:stretch">
+    <img src="assets/services-review.jpg" alt="" style="flex:1 1 420px;min-width:0;width:100%;aspect-ratio:6/5;max-height:620px;object-fit:cover;display:block">
+    <div style="flex:1.35 1 380px;display:flex;flex-direction:column;justify-content:center;gap:18px;background:#f4f6f8;padding:clamp(40px,6vw,88px) clamp(20px,5vw,80px) clamp(40px,6vw,88px) clamp(20px,4.4vw,64px)"><div style="display:flex;flex-direction:column;gap:18px;max-width:620px"><span style="width:56px;height:4px;background:#2bc1c6"></span>
+      <h1 style="margin:0;font-size:clamp(36px,4vw,52px);font-weight:700;line-height:1.1;color:#003f5e;letter-spacing:-.01em">Services</h1>
+      <p style="margin:0;font-size:18px;line-height:1.65;color:#003f5e;text-wrap:pretty">Four ways to engage Banister — from a single C-suite appointment to a full hiring program. Each is led by one partner, and each tells your organization’s story to the people you want to reach.</p>
+    <div style="display:flex;gap:16px 28px;align-items:center;flex-wrap:wrap;margin-top:14px">
+        <span onClick="{{ goContact }}" style="cursor:pointer;display:flex;gap:18px;align-items:center;background:#003f5e;color:#fff;padding:14px 22px;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#0a5a82">SPEAK WITH A PARTNER <span>→</span></span>
+      </div>
+    </div>
+  </div></section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(56px,7vw,88px) clamp(20px,4vw,48px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(calc((100% - 20px)/2),max(calc((100% - 60px)/4),calc((760px - 100%)*999))),1fr));gap:20px">
+      <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+        <div style="display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:0;border:1px solid #d3d9de;background:{{ s.bg }}">
+          <div style="background:{{ s.hbg }};color:{{ s.hfg }};padding:22px 22px 20px;display:flex;align-items:center">
+            <h2 style="margin:0;font-size:21px;font-weight:700;line-height:1.25">{{ s.title }}</h2>
+          </div>
+          <div style="padding:22px;display:flex;flex-direction:column;gap:14px">
+            <sc-for list="{{ s.paras }}" as="para" hint-placeholder-count="2">
+              <p style="margin:0;font-size:14.5px;line-height:1.7;color:{{ s.fg }}">{{ para }}</p>
+            </sc-for>
+            <sc-if value="{{ s.dark }}" hint-placeholder-val="{{ false }}">
+              <a href="#" style="margin-top:4px;align-self:flex-start;display:flex;gap:8px;align-items:center;color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-decoration:none"><span style="text-decoration:underline;text-decoration-color:#ffc91e;text-decoration-thickness:2px;text-underline-offset:6px">ABOUT DUFFY GROUP</span><span>→</span></a>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="background:#edeff2">
+    <div style="max-width:1240px;margin:0 auto;padding:clamp(56px,7vw,96px) clamp(20px,4vw,48px)">
+      <h2 style="margin:0 0 20px;font-size:clamp(28px,2.8vw,38px);font-weight:700;color:#003f5e">Flawless search methodology</h2>
+      <p style="margin:0 0 56px;font-size:17px;line-height:1.7;max-width:760px;text-wrap:pretty">A proprietary search process that shortens the time to complete a search while significantly raising the quality and diversity of the candidates delivered. It brings <strong style="color:#003f5e">four key drivers</strong> together to deliver talent that increases our clients’ enterprise value.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(calc((100% - 28px)/2),max(calc((100% - 84px)/4),calc((760px - 100%)*999))),1fr));gap:40px 28px">
+        <sc-for list="{{ drivers }}" as="d" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px">
+            <img src="{{ d.img }}" alt="" style="width:100%;max-width:220px;height:auto;display:block">
+            <span style="font-size:21px;font-weight:700;color:#003f5e">{{ d.title }}</span>
+            <span style="font-size:15px;line-height:1.6;max-width:240px">{{ d.body }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isIndustries }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Industries" style="display:flex;flex-wrap:wrap;align-items:stretch">
+    <img src="assets/industries-laptop.jpg" alt="" style="flex:1 1 420px;min-width:0;width:100%;aspect-ratio:6/5;max-height:620px;object-fit:cover;display:block">
+    <div style="flex:1.35 1 380px;display:flex;flex-direction:column;justify-content:center;gap:18px;background:#f4f6f8;padding:clamp(40px,6vw,88px) clamp(20px,5vw,80px) clamp(40px,6vw,88px) clamp(20px,4.4vw,64px)"><div style="display:flex;flex-direction:column;gap:18px;max-width:620px"><span style="width:56px;height:4px;background:#2bc1c6"></span>
+      <h1 style="margin:0;font-size:clamp(36px,4vw,52px);font-weight:700;line-height:1.1;color:#003f5e;letter-spacing:-.01em">Industries</h1>
+      <p style="margin:0;font-size:18px;line-height:1.65;color:#003f5e;text-wrap:pretty">Banister has delivered exceptional talent across fourteen industries. Our partners have spent their careers inside these sectors — they know the people, and the people know them.</p>
+    <div style="display:flex;gap:16px 28px;align-items:center;flex-wrap:wrap;margin-top:14px">
+        <span onClick="{{ goContact }}" style="cursor:pointer;display:flex;gap:18px;align-items:center;background:#003f5e;color:#fff;padding:14px 22px;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#0a5a82">SPEAK WITH A PARTNER <span>→</span></span>
+      </div>
+    </div>
+  </div></section>
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(56px,7vw,88px) clamp(20px,4vw,48px)">
+    <h2 style="margin:0 0 28px;font-size:clamp(26px,2.4vw,32px);font-weight:700;color:#003f5e">Industries served</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:16px">
+      <sc-for list="{{ industries }}" as="i" hint-placeholder-count="14">
+        <div style="border:1px solid #d8dde1;padding:28px 18px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;min-height:170px" style-hover="border-color:#003f5e;background:#f7f9fa">
+          <img src="{{ i.icon }}" alt="" style="height:52px;width:auto;max-width:90px;object-fit:contain">
+          <span style="font-size:14px;font-weight:600;line-height:1.4;color:#003f5e">{{ i.name }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  <section style="background:#003f5e">
+    <div style="max-width:1240px;margin:0 auto;padding:clamp(56px,7vw,88px) clamp(20px,4vw,48px)">
+      <h2 style="margin:0 0 32px;font-size:clamp(26px,2.4vw,32px);font-weight:700;color:#2bc1c6">What our clients are saying</h2>
+      <div style="display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px 20px;max-width:980px">
+        <span style="font-size:110px;line-height:.8;font-weight:800;color:#2bc1c6;font-family:Georgia,serif">“</span>
+        <div style="display:grid">
+          <sc-for list="{{ quotes }}" as="qq" hint-placeholder-count="1">
+            <div style="grid-area:1/1;display:flex;flex-direction:column;gap:20px;visibility:{{ qq.vis }};opacity:{{ qq.op }};transition:opacity .3s">
+              <p style="margin:0;font-size:clamp(20px,2vw,26px);line-height:1.5;font-weight:600;color:#fff"><sc-for list="{{ qq.words }}" as="w" hint-placeholder-count="1"><span style="display:inline-block;white-space:pre;opacity:{{ w.op }};transform:{{ w.tf }};filter:{{ w.blur }};transition:{{ w.tr }}">{{ w.t }}</span></sc-for></p>
+              <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px"><span style="flex:1;min-width:0;font-size:15px;color:#2bc1c6;font-style:italic;opacity:{{ qq.whoOp }};transition:{{ qq.whoTr }}">— {{ qq.who }}</span><span style="align-self:flex-end;font-size:110px;line-height:.5;height:44px;font-weight:800;color:#2bc1c6;font-family:Georgia,serif">”</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    <div style="display:flex;justify-content:center;align-items:center;margin-top:40px">
+        <div style="display:flex;gap:12px">
+          <sc-for list="{{ quoteDots }}" as="d" hint-placeholder-count="3">
+            <span onClick="{{ d.go }}" style="cursor:pointer;position:relative;width:56px;height:19px;display:block"><span style="position:absolute;left:0;right:0;top:8px;height:3px;background:rgba(255,255,255,.28)"></span><span style="position:absolute;left:0;top:8px;height:3px;width:{{ d.w }};background:#ffc91e;transition:{{ d.tr }}"></span></span>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="About" style="display:flex;flex-wrap:wrap;align-items:stretch">
+    <img src="assets/about-atrium.jpg" alt="" style="flex:1 1 420px;min-width:0;width:100%;aspect-ratio:6/5;max-height:620px;object-fit:cover;display:block">
+    <div style="flex:1.35 1 380px;display:flex;flex-direction:column;justify-content:center;gap:18px;background:#f4f6f8;padding:clamp(40px,6vw,88px) clamp(20px,5vw,80px) clamp(40px,6vw,88px) clamp(20px,4.4vw,64px)"><div style="display:flex;flex-direction:column;gap:18px;max-width:620px"><span style="width:56px;height:4px;background:#2bc1c6"></span>
+      <h1 style="margin:0;font-size:clamp(36px,4vw,52px);font-weight:700;line-height:1.1;color:#003f5e;letter-spacing:-.01em">About</h1>
+      <p style="margin:0;font-size:18px;line-height:1.65;color:#003f5e;text-wrap:pretty">Founded in 1999, Banister International is a human capital advisory firm providing exceptional talent solutions to transformational, high-performing organizations.</p>
+      <p style="margin:0;font-size:16px;line-height:1.75;text-wrap:pretty">The firm is built on four values: quality, execution, speed and insight. Our hands-on managing director–partner model, technology-enabled tools and trusted global network allow selective client partnerships, full process transparency and unmatched efficiency.</p>
+    <div style="display:flex;gap:16px 28px;align-items:center;flex-wrap:wrap;margin-top:14px">
+        <span onClick="{{ goContact }}" style="cursor:pointer;display:flex;gap:18px;align-items:center;background:#003f5e;color:#fff;padding:14px 22px;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#0a5a82">SPEAK WITH A PARTNER <span>→</span></span>
+      </div>
+    </div>
+  </div></section>
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(56px,7vw,88px) clamp(20px,4vw,48px)">
+    <h2 style="margin:0 0 8px;font-size:clamp(26px,2.4vw,32px);font-weight:700;color:#003f5e">Leadership</h2>
+    <sc-for list="{{ people }}" as="p" hint-placeholder-count="4">
+      <div style="display:grid;grid-template-columns:minmax(120px,220px) minmax(0,1fr);gap:24px clamp(24px,4vw,56px);padding:40px 0;border-bottom:1px solid #d8dde1">
+        <div style="overflow:hidden;align-self:start;background:#edeff2"><img src="{{ p.img }}" alt="{{ p.name }}" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 20%;display:block;transform:{{ p.imgTf }};transition:transform .8s cubic-bezier(.2,.8,.2,1)"></div>
+        <div style="display:flex;flex-direction:column;gap:14px;max-width:760px">
+          <div style="font-size:21px;line-height:1.3"><strong style="color:#003f5e">{{ p.name }}</strong><span style="color:#0f7f95">, {{ p.role }}</span></div>
+          <p style="margin:0;font-size:15.5px;line-height:1.75">{{ p.lead }}</p>
+          <div style="display:grid;grid-template-rows:{{ p.rows }};transition:grid-template-rows .5s cubic-bezier(.2,.8,.2,1)" aria-hidden="{{ p.hidden }}">
+            <div style="overflow:hidden;min-height:0">
+              <div style="display:flex;flex-direction:column;gap:14px;opacity:{{ p.restOp }};transform:{{ p.restTf }};transition:opacity .4s ease {{ p.restDelay }}, transform .5s cubic-bezier(.2,.8,.2,1) {{ p.restDelay }}">
+                <sc-for list="{{ p.rest }}" as="para" hint-placeholder-count="2">
+                  <p style="margin:0;font-size:15.5px;line-height:1.75">{{ para }}</p>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <span onClick="{{ p.toggle }}" aria-expanded="{{ p.expanded }}" style="cursor:pointer;align-self:flex-start;display:flex;gap:8px;align-items:center;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:#003f5e" style-hover="color:#0a5a82"><span style="text-decoration:underline;text-decoration-color:#003f5e;text-decoration-thickness:1px;text-underline-offset:6px">{{ p.cta }}</span><span style="display:inline-block;font-size:14px;line-height:1;transform:{{ p.chev }};transition:transform .4s cubic-bezier(.2,.8,.2,1)">↓</span></span>
+        </div>
+      </div>
+    </sc-for>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isInsights }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Insights" style="max-width:1240px;margin:0 auto;padding:clamp(48px,6vw,72px) clamp(20px,4vw,48px) 0">
+    <h1 style="margin:0 0 32px;font-size:clamp(32px,3.4vw,44px);font-weight:700;color:#003f5e">Latest insights</h1>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(calc((100% - 64px)/3),calc((640px - 100%)*999))),1fr));gap:40px 32px">
+      <sc-for list="{{ insights }}" as="a" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <img src="{{ a.img }}" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block">
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ a.tags }}" as="tg" hint-placeholder-count="2"><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;line-height:1;background:{{ tg.bg }};color:{{ tg.fg }};border:1px solid {{ tg.bd }}">{{ tg.t }}</span></sc-for>
+          </div>
+          <span style="font-size:19px;font-weight:700;line-height:1.35;color:#003f5e;text-wrap:pretty">{{ a.title }}</span>
+          <span style="font-size:15px;line-height:1.6;flex:1">{{ a.dek }}</span>
+          <span onClick="{{ a.go }}" style="cursor:pointer;align-self:flex-start;display:flex;gap:18px;align-items:center;border:1px solid #003f5e;color:#003f5e;padding:10px 16px;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#003f5e;color:#fff">LEARN MORE <span>→</span></span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(64px,7vw,96px) clamp(20px,4vw,48px)">
+    <h2 style="margin:0 0 32px;padding-top:40px;border-top:1px solid #d8dde1;font-size:clamp(28px,2.8vw,38px);font-weight:700;color:#003f5e">Newsroom</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(calc((100% - 64px)/3),calc((640px - 100%)*999))),1fr));gap:40px 32px">
+      <sc-for list="{{ news }}" as="a" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <img src="{{ a.img }}" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border:1px solid #edeff2">
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ a.tags }}" as="tg" hint-placeholder-count="2"><span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;line-height:1;background:{{ tg.bg }};color:{{ tg.fg }};border:1px solid {{ tg.bd }}">{{ tg.t }}</span></sc-for>
+          </div>
+          <span style="font-size:18px;font-weight:700;line-height:1.4;color:#003f5e;text-wrap:pretty">{{ a.title }}</span>
+          <span style="font-size:14px;color:#6a7276;flex:1">{{ a.date }}</span>
+          <span style="cursor:pointer;align-self:flex-start;display:flex;gap:18px;align-items:center;border:1px solid #003f5e;color:#003f5e;padding:10px 16px;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#003f5e;color:#fff">LEARN MORE <span>→</span></span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isArticle }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="White paper" style="position:relative;overflow:hidden;background:#0d1c24">
+    <img src="assets/article-hero.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left center">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.88) 38%)"></div>
+    <div style="position:relative;max-width:1240px;margin:0 auto;padding:clamp(64px,8vw,112px) clamp(20px,4vw,48px);display:flex;justify-content:flex-end">
+      <div style="max-width:560px;display:flex;flex-direction:column;gap:16px">
+        <span style="font-size:13px;font-weight:600;color:#2bc1c6;letter-spacing:.04em">White Paper  |  September 2026</span>
+        <h1 style="margin:0;font-size:clamp(34px,4vw,54px);font-weight:700;line-height:1.1;color:#fff;letter-spacing:-.01em;text-wrap:pretty">The state of talent acquisition in professional services</h1>
+      </div>
+    </div>
+  </section>
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(48px,6vw,72px) clamp(20px,4vw,48px) clamp(64px,7vw,96px);display:flex;flex-wrap:wrap;gap:48px 72px;align-items:flex-start">
+    <article style="flex:1 1 520px;max-width:720px;display:flex;flex-direction:column;gap:22px">
+      <p style="margin:0;font-size:22px;font-weight:700;line-height:1.45;color:#003f5e">[Dek — one sentence summarizing the paper’s central finding.]</p>
+      <span style="font-size:14px;color:#6a7276">By [Author Name] and [Author Name]</span>
+      <p style="margin:0;font-size:17px;line-height:1.8">[Body copy — awaiting the final manuscript.]</p>
+      <p style="margin:0;font-size:17px;line-height:1.8">[Body copy continues.]</p>
+      <blockquote style="margin:12px 0;background:#ffc91e;padding:clamp(24px,3vw,36px);font-size:clamp(20px,2vw,24px);line-height:1.45;color:#003f5e;font-weight:600">[Pull quote — the single most quotable line from the paper.]</blockquote>
+      <p style="margin:0;font-size:17px;line-height:1.8">[Body copy continues.]</p>
+      <span style="cursor:pointer;align-self:flex-start;display:flex;gap:18px;align-items:center;border:1px solid #003f5e;color:#003f5e;padding:12px 18px;font-size:12.5px;font-weight:700;letter-spacing:.06em;margin-top:8px" style-hover="background:#003f5e;color:#fff">DOWNLOAD THE FULL WHITE PAPER <span>→</span></span>
+      <p style="margin:12px 0 0;padding-top:20px;border-top:1px solid #d8dde1;font-size:14.5px;line-height:1.65;color:#0f7f95">[Author bios — one sentence each.]</p>
+    </article>
+    <aside style="flex:0 1 300px;display:flex;flex-direction:column;gap:2px">
+      <div style="background:#edeff2;padding:24px">
+        <div style="font-size:16px;font-weight:700;color:#003f5e;margin-bottom:12px">Related reading</div>
+        <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
+          <div style="padding:12px 0;border-top:1px solid #d3d8dc;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:12.5px;color:#6a7276">{{ r.date }}</span>
+            <span style="font-size:14.5px;line-height:1.45;color:#003f5e;font-weight:600">{{ r.title }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#d8dde3;padding:24px">
+        <div style="font-size:16px;font-weight:700;color:#003f5e;margin-bottom:8px">Also of interest</div>
+        <span style="font-size:14.5px;line-height:1.5">Explore our latest <a href="#">case studies</a> in manufacturing.</span>
+      </div>
+    </aside>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Contact" style="max-width:920px;margin:0 auto;padding:clamp(48px,6vw,72px) clamp(20px,4vw,48px) clamp(64px,7vw,96px)">
+    <h1 style="margin:0 0 12px;font-size:clamp(32px,3.4vw,44px);font-weight:700;color:#003f5e">Contact</h1>
+    <p style="margin:0 0 36px;font-size:17px;line-height:1.65;max-width:600px;min-height:calc(1.65em * 2)">{{ contactIntro }}</p>
+    <div style="display:flex;gap:4px">
+      <span onClick="{{ setCandidate }}" style="cursor:pointer;padding:14px 22px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#003f5e;background:{{ canBg }};border-top:3px solid {{ canLine }}">FOR CANDIDATES</span>
+      <span onClick="{{ setEmployer }}" style="cursor:pointer;padding:14px 22px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#003f5e;background:{{ empBg }};border-top:3px solid {{ empLine }}">FOR EMPLOYERS</span>
+    </div>
+    <div style="background:#edeff2;padding:clamp(24px,4vw,44px);display:grid">
+        <div style="grid-area:1/1;align-self:center;justify-self:center;width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:24px 0;visibility:{{ sentVis }};opacity:{{ sentOp }};transform:{{ sentTf }};transition:opacity .5s ease .15s, transform .6s cubic-bezier(.2,.8,.2,1) .15s">
+          {{ sentBadge }}
+          <h2 style="margin:6px 0 0;font-size:clamp(28px,3vw,36px);font-weight:700;line-height:1.15;color:#003f5e;letter-spacing:-.01em">{{ thanksTitle }}</h2>
+          
+          <p style="margin:0;font-size:17px;line-height:1.65;color:#414547;text-wrap:pretty">{{ thanksBody }}</p>
+          <div style="display:flex;gap:14px 28px;flex-wrap:wrap;justify-content:center;margin-top:10px">
+            <span onClick="{{ goHome }}" style="cursor:pointer;display:flex;gap:18px;align-items:center;background:#003f5e;color:#fff;padding:14px 22px;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#0a5a82">BACK TO HOME <span>→</span></span>
+          </div>
+        </div>
+        <form onSubmit="{{ submit }}" style="grid-area:1/1;visibility:{{ formVis }};opacity:{{ formOp }};transform:{{ formTf }};transition:opacity .35s ease, transform .4s ease, visibility 0s linear {{ formVisDelay }};display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px 28px">
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e">First name<input name="first" required style="box-sizing:border-box;height:48px;border:1px solid #9aa6ae;background:#fff;padding:12px;font-size:16px;outline-color:#2bc1c6"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e">Last name<input required style="box-sizing:border-box;height:48px;border:1px solid #9aa6ae;background:#fff;padding:12px;font-size:16px;outline-color:#2bc1c6"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e">Email address<input name="email" type="email" required style="box-sizing:border-box;height:48px;border:1px solid #9aa6ae;background:#fff;padding:12px;font-size:16px;outline-color:#2bc1c6"></label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e">Phone<input type="tel" required style="box-sizing:border-box;height:48px;border:1px solid #9aa6ae;background:#fff;padding:12px;font-size:16px;outline-color:#2bc1c6"></label>
+          <sc-if value="{{ isCandidate }}" hint-placeholder-val="{{ true }}">
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e;cursor:pointer"><span>Upload résumé <span style="font-weight:400;font-size:13px;color:#6a7276">(PDF or Word, max 50 MB)</span></span><span style="box-sizing:border-box;height:48px;display:flex;align-items:stretch;border:1px solid #9aa6ae;background:#fff"><span style="flex:none;display:flex;align-items:center;padding:0 18px;background:#003f5e;color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.06em" style-hover="background:#0a5a82">CHOOSE FILE</span><span style="flex:1;min-width:0;display:flex;align-items:center;padding:0 14px;font-size:14px;font-weight:400;color:{{ fileColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ fileName }}</span></span><input type="file" accept=".pdf,.doc,.docx" onChange="{{ pickFile }}" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></label>
+          </sc-if>
+          <sc-if value="{{ isEmployer }}" hint-placeholder-val="{{ false }}">
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e"><span>Company</span><input style="box-sizing:border-box;height:48px;border:1px solid #9aa6ae;background:#fff;padding:12px;font-size:16px;outline-color:#2bc1c6"></label>
+          </sc-if>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e">Preferred method of contact<select style="box-sizing:border-box;height:48px;border:1px solid #9aa6ae;background:#fff;padding:12px;font-size:16px;outline-color:#2bc1c6"><option>Email</option><option>Phone</option></select></label>
+          <label style="grid-column:1/-1;display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600;color:#003f5e">{{ messageLabel }}<textarea required rows="5" style="border:1px solid #9aa6ae;background:#fff;padding:12px;font-size:16px;resize:vertical;outline-color:#2bc1c6"></textarea></label>
+          <label style="grid-column:1/-1;display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.6"><input type="checkbox" required style="margin-top:3px;width:18px;height:18px;accent-color:#003f5e;flex:none"><span>With your submission, you grant us permission to store your personal information and use it in consideration of your inquiry. You agree to receive communications from us by phone and email.</span></label>
+          <button type="submit" disabled="{{ sending }}" style="grid-column:1/-1;justify-self:start;position:relative;overflow:hidden;min-width:150px;display:flex;gap:14px;align-items:center;justify-content:center;background:#003f5e;border:0;color:#fff;padding:14px 22px;font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer" style-hover="background:#0a5a82">{{ submitInner }}</button>
+        </form>
+    </div>
+  </section>
+</sc-if>
+
+</main>
+
+<section style="background:#ffc91e">
+  <form noValidate="{{ true }}" onSubmit="{{ subscribe }}" style="max-width:1240px;margin:0 auto;padding:28px clamp(20px,4vw,48px) 14px;display:flex;align-items:center;justify-content:space-between;gap:16px 40px;flex-wrap:wrap">
+    <span style="font-size:18px;font-weight:700;color:#003f5e;padding-bottom:22px">Sign up for quarterly articles and perspectives</span>
+    <div style="flex:1 1 320px;max-width:480px;display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;border-bottom:2px solid {{ subLine }}">
+        <input type="email" value="{{ subEmail }}" onChange="{{ subChange }}" aria-invalid="{{ subInvalid }}" aria-describedby="sub-msg" placeholder="EMAIL ADDRESS" style="flex:1;min-width:0;background:transparent;border:0;color:#003f5e;font-size:15px;font-weight:600;letter-spacing:.04em;padding:10px 0;outline:none">
+        <button type="submit" aria-label="Subscribe" style="position:relative;overflow:hidden;background:#003f5e;color:#fff;border:0;width:44px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">{{ subIcon }}</button>
+      </div>
+      <span id="sub-msg" role="status" style="min-height:16px;font-size:13px;line-height:16px;font-weight:600;color:{{ subMsgColor }}">{{ subMsgEl }}</span>
+    </div>
+  </form>
+</section>
+
+<footer style="background:linear-gradient(180deg,#003f5e 0%,#00415f 22%,#0d6781 60%,#2bc1c6 100%);color:#fff">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(36px,4.4vw,56px) clamp(20px,4vw,48px) 28px;display:flex;flex-direction:column;gap:clamp(28px,3.6vw,44px)">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <img onClick="{{ goHome }}" src="assets/banister-logo-white.png" alt="Banister International" style="height:clamp(44px,5.6vw,68px);width:auto;max-width:65%;object-fit:contain;display:block;cursor:pointer">
+      <div style="display:flex;gap:10px;flex:none">
+        <img src="assets/icon-linkedin.png" alt="LinkedIn" style="width:44px;height:44px;display:block;cursor:pointer" style-hover="opacity:.85">
+        <img onClick="{{ goContact }}" src="assets/icon-email.png" alt="Email" style="width:44px;height:44px;display:block;cursor:pointer" style-hover="opacity:.85">
+        <img onClick="{{ goContact }}" src="assets/icon-phone.png" alt="Phone" style="width:44px;height:44px;display:block;cursor:pointer" style-hover="opacity:.85">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:28px 32px">
+      <sc-for list="{{ siteMap }}" as="col" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span onClick="{{ col.go }}" style="cursor:pointer;font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;margin-bottom:4px">{{ col.title }}</span>
+          <sc-for list="{{ col.links }}" as="l" hint-placeholder-count="3">
+            <span onClick="{{ l.go }}" style="cursor:pointer;font-size:14px;line-height:1.4;color:#d6e6ee" style-hover="color:#fff;text-decoration:underline">{{ l.t }}</span>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px 32px;flex-wrap:wrap;padding-top:20px;border-top:1px solid rgba(255,255,255,.28)">
+      <span style="font-size:13px;font-weight:600;letter-spacing:.1em">AMERICAS • EUROPE • MIDDLE EAST • ASIA PACIFIC</span>
+      <div style="font-size:13.5px;display:flex;gap:6px 10px;flex-wrap:wrap"><span>Copyright © 2026 Banister International</span><span>|</span><span style="cursor:pointer" style-hover="text-decoration:underline">Privacy Policy</span><span>|</span><span style="cursor:pointer" style-hover="text-decoration:underline">Terms and Conditions</span></div>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startPage&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;services&quot;,&quot;industries&quot;,&quot;about&quot;,&quot;insights&quot;,&quot;article&quot;,&quot;contact&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;linkPages&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;quoteAnimation&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;words&quot;,&quot;slide&quot;,&quot;fade&quot;],&quot;default&quot;:&quot;words&quot;,&quot;tsType&quot;:&quot;'words' | 'slide' | 'fade'&quot;}}">
+class Component extends DCLogic {
+  state = { page: this.props.startPage ?? 'home', open: {}, aud: 'candidate', sent: false, subbed: false, q: 0, h: 0 };
+  files = { home: 'Home.dc.html', services: 'Services.dc.html', industries: 'Industries.dc.html', about: 'About.dc.html', insights: 'Insights.dc.html', article: 'White Paper.dc.html', contact: 'Contact.dc.html' };
+  statsRef = React.createRef();
+  statP(i) { const t0 = this.state.statStart; if (!t0) return 0; return Math.max(0, Math.min(1, ((this.state.statNow || t0) - t0 - i * 150) / 1600)); }
+  componentDidMount() { this.onResize(); window.addEventListener('resize', this.onResize); this.watchStats(); this.startHero(); this.startQuotes(); }
+  startQuotes() { clearTimeout(this.quoteT); clearTimeout(this.showT);
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.setState({ qShown: false }); this.showT = setTimeout(() => this.setState({ qShown: true }), 40);
+    if (reduce) return;
+    this.quoteT = setTimeout(() => { if (document.visibilityState === 'hidden') return this.startQuotes();
+      this.setState({ qShown: false }); this.showT = setTimeout(() => { this.setState(s => ({ q: (s.q + 1) % 3 })); this.startQuotes(); }, 320); }, 7000); }
+  startHero() { clearTimeout(this.heroT); clearTimeout(this.heroShowT);
+    this.setState({ hShown: false }); this.heroShowT = setTimeout(() => this.setState({ hShown: true }), 40);
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this.heroT = setTimeout(() => { this.setState(s => ({ h: (s.h + 1) % 3 })); this.startHero(); }, 6000); }
+  componentDidUpdate() { this.watchStats(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); this.io && this.io.disconnect(); cancelAnimationFrame(this.raf); clearTimeout(this.heroT); clearTimeout(this.heroShowT); clearTimeout(this.quoteT); clearTimeout(this.showT); }
+  watchStats() {
+    const el = this.statsRef.current; if (!el || this.state.statStart || this.ioEl === el) return;
+    this.io && this.io.disconnect(); this.ioEl = el;
+    const run = () => { const t0 = performance.now(); this.setState({ statStart: t0, statNow: t0 });
+      const tick = () => { const now = performance.now(); this.setState({ statNow: now }); if (now - t0 < 1600 + 3 * 150 + 50) this.raf = requestAnimationFrame(tick); };
+      this.raf = requestAnimationFrame(tick); };
+    if (!('IntersectionObserver' in window)) return run();
+    this.io = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { this.io.disconnect(); run(); } }, { threshold: 0.35 });
+    this.io.observe(el);
+  }
+  tags(list) { return list.map((t, i) => i === 0 ? { t, bg: '#ffc91e', fg: '#003f5e', bd: '#ffc91e' } : { t, bg: 'transparent', fg: '#003f5e', bd: '#e8c65a' }); }
+  onResize = () => { const vw = window.innerWidth; if ((vw < 820) !== (this.state.vw < 820) || this.state.vw == null) this.setState({ vw, menu: vw < 820 ? this.state.menu : false }); };
+  go = (page) => () => { this.setState({ menu: false });
+    if (this.props.linkPages) { if (page !== this.state.page) window.location.href = encodeURI(this.files[page]); return; }
+    this.setState({ page, sent: false }); window.scrollTo(0, 0);
+  };
+  renderVals() {
+    const { page, open, aud, sent, subbed, q, h } = this.state;
+    const heroes = ['assets/hero-tablet.jpg', 'assets/insight-greeting.jpg', 'assets/insight-tablet.jpg'];
+    const navItems = [['services','Services'],['industries','Industries'],['about','About'],['insights','Insights'],['contact','Contact']];
+    const quotes = this._quotes = [
+      { text: '[Approved client testimonial — a specific outcome in the client’s own words, two or three sentences at most.]', who: '[Client name], [Title], [Company]' },
+      { text: '[Second approved testimonial.]', who: '[Client name], [Title], [Company]' },
+      { text: '[Third approved testimonial.]', who: '[Client name], [Title], [Company]' },
+    ];
+    const services = [
+      { title: 'Executive search', paras: ['Banister has a long-standing reputation for identifying and attracting exceptional senior talent, from Senior Director to C-suite and board level.', 'Our network of proven leaders is built through relationships that span their careers. We use that market knowledge to connect clients with leaders who fit their strategy, culture and long-term vision.'] },
+      { title: 'Next generation leadership search', paras: ['A relationship-driven approach to finding the talent companies need for their next stage of growth.', 'We work closely with organizations in transformation to identify next-generation leaders at every level, aligning talent with strategy to build the capabilities that change requires.'] },
+      { title: 'Search & advisory services', paras: ['Dedicated recruitment teams for high-volume hiring across sales, operations, customer service and other critical functions.', 'Our structured project methodology lets organizations scale hiring quickly while keeping a consistent focus on candidate quality.'] },
+      { title: 'Informed search', dark: true, paras: ['Through a strategic alliance with Duffy Group, we offer tailored talent acquisition on a flexible, hourly pricing model.', 'The five-step Duffy Recruitment Research™ Advantage covers strategy, name generation, position promotion, candidate evaluation, and reporting.'] },
+    ].map(s => ({ ...s, bg: s.dark ? '#003f5e' : '#fff', fg: s.dark ? '#fff' : '#414547', hbg: s.dark ? '#fff' : '#003f5e', hfg: s.dark ? '#003f5e' : '#fff' }));
+    const drivers = [
+      { n: 1, img: 'assets/hex-quality.png', title: 'Quality', body: 'Every presented candidate has the stretch to do the role and the ability to be promoted to the next.' },
+      { n: 2, img: 'assets/hex-execution.png', title: 'Execution', body: 'Technology-enabled tools overlaid with a hands-on, partner-managed search.' },
+      { n: 3, img: 'assets/hex-speed.png', title: 'Speed', body: 'A search process that delivers initial candidates within 10 days of search origination.' },
+      { n: 4, img: 'assets/hex-insights.png', title: 'Insights', body: 'Every search is led by a partner with at least 20 years of search experience.' },
+    ];
+    const ind = [['aerospace','Aerospace, defense and automotive'],['building-products','Building products and HVAC'],['construction','Construction, real estate and building services'],['consumer','Consumer goods and retail'],['education','Education, training and coaching'],['financial','Financial services'],['food','Food, beverage and restaurant brands'],['hospitality','Hospitality and real estate'],['insurance','Insurance and managed care'],['consulting','Management consulting, accounting and professional services'],['manufacturing','Manufacturing, packaging, industrial and transportation'],['private-equity','Private equity and investment firms'],['sport','Sport, entertainment and associations'],['technology','Technology, media and telecommunications']];
+    const peopleData = [
+      { id: 'patrick-sylvester', name: 'Patrick Sylvester', role: 'CEO and Founder', paras: [
+        'Patrick founded Banister International in August 1999 and built it into an internationally respected search and consulting firm with operations across the United States, Europe and Asia. He serves as a strategic talent advisor to organizations navigating significant growth and transformation.',
+        'He entered executive search in 1993 with Management Recruiters International, where he was the top-producing manager-owner for more than 15 consecutive years. He has since led more than 100 transformational projects and thousands of executive searches across multiple industries.',
+        'Before his search career, Patrick served as a United States Naval Officer. He holds a BS in Economics, with concentrations in Finance and Entrepreneurial Management, from the Wharton School.'] },
+      { id: 'tammie-do', name: 'Tammie Do', role: 'Senior Managing Partner', paras: [
+        'Tammie brings more than 25 years of executive search experience and has been a driving force at Banister for over 15 years. She is recognized for strategic insight, long-standing executive relationships and consistently high-impact outcomes.',
+        'At Management Recruiters International she became the firm’s #1-ranked female recruiter globally. She later founded Talent Resource Solutions, building it into a high-performing search platform known for speed, quality and execution.',
+        'A recognized thought leader and sought-after speaker, Tammie is known for navigating complex hiring challenges and delivering strong retention outcomes.'] },
+      { id: 'brian-haugh', name: 'Brian Haugh', role: 'Senior Managing Director', paras: [
+        'Brian leads retained search engagements for legal leadership roles — Assistant General Counsel, General Counsel and Chief of Staff — as well as accounting and finance leadership.',
+        'In 2006 he founded Veridian National Search, which specializes in Big Four candidates and remains active today. He is also a Senior Partner at Shapiro Legal Search, with clients ranging from Big Law, Am Law 200, boutique and regional firms to Fortune 1000 in-house teams.',
+        'Brian spent his first ten years on Marine Corps bases from Anaheim to Quantico, and earned his accounting degree at the University of Illinois Urbana-Champaign.'] },
+      { id: 'james-mcmahon', name: 'James McMahon', role: 'Senior Managing Director', paras: [
+        'James leads retained search engagements for legal leadership roles and places attorneys at every level — from lateral partner moves that require discretion to associate searches that demand speed and precision.',
+        'He is a Partner at Shapiro Legal Search, a member of the Sanford Rose Associates network, and has been a trusted voice in recruitment for almost 20 years, working with firms from global Big Law to specialized boutiques.',
+        'A University of Illinois alumnus, James was born and raised in Chicago.'] },
+    ];
+    const people = peopleData.map(p => ({ ...p, img: `assets/${p.id}.jpg`, lead: p.paras[0], rest: p.paras.slice(1), open: !!open[p.id],
+      cta: open[p.id] ? 'SHOW LESS' : 'READ FULL BIO', rows: open[p.id] ? '1fr' : '0fr', hidden: open[p.id] ? 'false' : 'true', expanded: open[p.id] ? 'true' : 'false',
+      restOp: open[p.id] ? 1 : 0, restTf: open[p.id] ? 'none' : 'translateY(-8px)', restDelay: open[p.id] ? '.12s' : '0s', chev: open[p.id] ? 'rotate(180deg)' : 'none', imgTf: 'none', toggle: () => this.setState(s => ({ open: { ...s.open, [p.id]: !s.open[p.id] } })) }));
+    const isCan = aud === 'candidate';
+    return {
+      headBg: page === 'home' ? '#003f5e' : 'linear-gradient(180deg,#003f5e 0%,#003f5e 55%,#0b5f7a 85%,#1f9fb0 100%)',
+      nav: navItems.map(([k, label]) => ({ label, go: this.go(k), line: (page === k || (k === 'insights' && page === 'article')) ? '#ffc91e' : 'transparent' })),
+      goHome: this.go('home'), goContact: this.go('contact'),
+      isMobile: (this.state.vw ?? 1200) < 820, isDesktop: (this.state.vw ?? 1200) >= 820,
+      toggleMenu: () => this.setState(s => ({ menu: !s.menu })), menuExpanded: this.state.menu ? 'true' : 'false', menuRows: this.state.menu ? '1fr' : '0fr',
+      bar1: this.state.menu ? 'translateY(7px) rotate(45deg)' : 'none', bar2: this.state.menu ? 0 : 1, bar3: this.state.menu ? 'translateY(-7px) rotate(-45deg)' : 'none',
+      siteMap: [
+        { title: 'Services', go: this.go('services'), links: ['Executive search', 'Next generation leadership', 'Search & advisory', 'Informed search'].map(t => ({ t, go: this.go('services') })) },
+        { title: 'Firm', go: this.go('about'), links: [{ t: 'About', go: this.go('about') }, { t: 'Leadership', go: this.go('about') }, { t: 'Industries', go: this.go('industries') }] },
+        { title: 'Insights', go: this.go('insights'), links: [{ t: 'Latest insights', go: this.go('insights') }, { t: 'Newsroom', go: this.go('insights') }, { t: 'White paper', go: this.go('article') }] },
+        { title: 'Contact', go: this.go('contact'), links: [{ t: 'For employers', go: () => { this.setState({ aud: 'employer' }); this.go('contact')(); } }, { t: 'For candidates', go: () => { this.setState({ aud: 'candidate' }); this.go('contact')(); } }] },
+      ],
+      scrollNext: (e) => { const sec = e.currentTarget.closest('section'); if (sec) window.scrollTo({ top: sec.getBoundingClientRect().bottom + window.scrollY, behavior: 'smooth' }); },
+      isHome: page === 'home', isServices: page === 'services', isIndustries: page === 'industries', isAbout: page === 'about', isInsights: page === 'insights', isArticle: page === 'article', isContact: page === 'contact',
+      statsRef: this.statsRef, stats: [[3500, '+', 'successful placements'], [40, '+', 'countries served'], [30, '+', 'years in executive search'], [95, '%', 'of business from repeat clients']].map(([n, suf, l], i) => {
+        const p = this.statP(i); const e = 1 - Math.pow(1 - p, 3);
+        return { v: n.toLocaleString('en-US') + suf, cur: Math.round(n * e).toLocaleString('en-US'), suffix: suf, l,
+          bar: (e * 100) + '%', op: this.state.statStart ? 1 : 0, tf: this.state.statStart ? 'none' : 'translateY(16px)' }; }),
+      quote: quotes[q], quotes: quotes.map((x, i) => { const on = i === q && !!this.state.qShown; const mode = this.props.quoteAnimation ?? 'words';
+        const parts = x.text.split(/(?<=\s)/);
+        const words = parts.map((t, k) => { const d = mode === 'words' ? k * 0.045 : 0;
+          return { t, op: on ? 1 : 0, tf: on || mode === 'fade' ? 'none' : (mode === 'words' ? 'translateY(.35em)' : 'translateY(22px)'), blur: on || mode !== 'words' ? 'none' : 'blur(4px)',
+            tr: on ? `opacity .55s ease ${d}s, transform .7s cubic-bezier(.2,.8,.2,1) ${d}s, filter .55s ease ${d}s` : 'opacity .3s ease, transform 0s linear .3s, filter 0s linear .3s' }; });
+        const wd = mode === 'words' ? parts.length * 0.045 + 0.2 : 0.35;
+        return { ...x, words, vis: i === q ? 'visible' : 'hidden', op: 1, whoOp: on ? 1 : 0, whoTr: on ? `opacity .6s ease ${wd}s` : 'opacity .3s ease' }; }), quoteDots: quotes.map((_, i) => ({ w: i === q && this.state.qShown ? '100%' : '0%', tr: i === q && this.state.qShown ? 'width 7s linear' : 'none', go: () => { this.setState({ q: i }); this.startQuotes(); } })),
+      prevQuote: () => this.setState({ q: (q + quotes.length - 1) % quotes.length }), nextQuote: () => this.setState({ q: (q + 1) % quotes.length }),
+      heroSlides: heroes.map((src, i) => ({ src, op: i === h ? 1 : 0, tf: i === h && this.state.hShown ? 'scale(1.06)' : 'scale(1)' })),
+      heroDots: heroes.map((_, i) => ({ w: i === h && this.state.hShown ? '100%' : '0%', tr: i === h && this.state.hShown ? 'width 6s linear' : 'none', go: () => { this.setState({ h: i }); this.startHero(); } })),
+      heroPause: () => {}, heroResume: () => {},
+      homeInsights: [
+        { img: 'assets/operations.jpg', tags: this.tags(["White paper","Professional services","Talent acquisition"]), title: 'The state of talent acquisition in professional services', dek: 'Perspectives from executive search partners and talent acquisition leaders.', go: this.go('article') },
+        { img: 'assets/insight-whiteboard.jpg', tags: this.tags(["Article","HR leadership","Workforce planning"]), title: 'Why is HR the “cobbler’s children” in the world of talent acquisition?', dek: 'HR built a whole sub-function around succession planning, workforce planning and people movement — then rarely applied it to itself.', go: this.go('article') },
+        { img: 'assets/insight-hardhats.jpg', tags: this.tags(["Article","[Topic]"]), title: '[Third article title]', dek: '[One-sentence summary.]', go: this.go('article') },
+      ],
+      insights: [
+        { img: 'assets/insight-greeting.jpg', tags: this.tags(["White paper","Professional services","Talent acquisition"]), title: 'The state of talent acquisition in professional services', dek: 'Perspectives from executive search partners and talent acquisition leaders.', go: this.go('article') },
+        { img: 'assets/handshake-city.jpg', tags: this.tags(["Article","HR leadership","Workforce planning"]), title: 'Why is HR the “cobbler’s children” in the world of talent acquisition?', dek: 'HR built a whole sub-function around succession planning, workforce planning and people movement — then rarely applied it to itself.', go: this.go('article') },
+        { img: 'assets/insight-tablet.jpg', tags: this.tags(["Article","[Topic]"]), title: '[Third article title]', dek: '[One-sentence summary.]', go: this.go('article') },
+      ],
+      news: [
+        { img: 'assets/duffy-alliance.jpg', tags: this.tags(["News","Partnerships"]), title: 'Banister International expands service offerings through strategic alliance with Duffy Group', date: 'August 31, 2026' },
+        { img: 'assets/hero-handshake.jpg', tags: this.tags(["News","Legal search","Partnerships"]), title: 'Banister International launches strategic partnership with Shapiro Legal Search to introduce legal executive search', date: 'May 4, 2026' },
+        { img: 'assets/team-meeting.jpg', tags: this.tags(["News","Executive search"]), title: 'Banister International completes transformational general manager search project', date: 'April 2, 2026' },
+      ],
+      related: [{ date: 'July 2026', title: '[Research paper title]' }, { date: 'June 2026', title: '[Infographic title]' }, { date: 'May 2026', title: '[Article title]' }],
+      services, drivers, industries: ind.map(([k, name]) => ({ name, icon: `assets/icon-${k}.png` })), people,
+      isCandidate: isCan, isEmployer: !isCan,
+      canBg: isCan ? '#edeff2' : '#fff', empBg: isCan ? '#fff' : '#edeff2', canLine: isCan ? '#003f5e' : 'transparent', empLine: isCan ? 'transparent' : '#003f5e',
+      setCandidate: () => this.setState({ aud: 'candidate' }), setEmployer: () => this.setState({ aud: 'employer' }),
+      contactIntro: isCan ? 'Share your background and the kind of role you’re looking for. Every conversation is confidential.' : 'Tell us about the role or the change ahead, and a partner will respond personally.',
+      messageLabel: isCan ? 'Your comments or questions' : 'What are you hiring for?',
+      fileName: this.state.file || 'No file chosen', fileColor: this.state.file ? '#003f5e' : '#6a7276', pickFile: (e) => this.setState({ file: e.target.files[0]?.name || null }),
+      sent, notSent: !sent, sending: !!this.state.sending,
+      sentVis: sent ? 'visible' : 'hidden', sentOp: sent ? 1 : 0, sentTf: sent ? 'none' : 'translateY(12px)',
+      formVis: sent ? 'hidden' : 'visible', formOp: sent ? 0 : 1, formTf: sent ? 'translateY(-8px)' : 'none', formVisDelay: sent ? '.35s' : '0s',
+      sentBadge: sent ? React.createElement('span', { key: 'b', style: { width: 72, height: 72, borderRadius: '50%', background: '#003f5e', color: '#ffc91e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32, fontWeight: 800, animation: 'bnPop .55s cubic-bezier(.2,.9,.3,1.3) .3s both' } }, '✓') : null,
+      thanksTitle: this.state.sentName ? `Thank you, ${this.state.sentName}.` : 'Thank you.',
+      thanksBody: this.state.sentEmail ? `Your message is with our team. A partner will reply to ${this.state.sentEmail} within two business days.` : 'Your message is with our team. A partner will reply within two business days.',
+      goInsightsPage: this.go('insights'),
+      submitInner: this.state.sending
+        ? [React.createElement('span', { key: 't', style: { animation: 'bnIn .2s both' } }, 'SENDING'), React.createElement('span', { key: 's', style: { width: 14, height: 14, borderRadius: '50%', border: '2px solid rgba(255,255,255,.35)', borderTopColor: '#fff', animation: 'bnSpin .6s linear infinite, bnIn .2s both' } })]
+        : [React.createElement('span', { key: 't' }, 'SUBMIT'), React.createElement('span', { key: 'a' }, '→')],
+      submit: (e) => { e.preventDefault(); if (this.state.sending) return; const fd = new FormData(e.currentTarget);
+        this.setState({ sending: true, sentName: String(fd.get('first') || '').trim(), sentEmail: String(fd.get('email') || '').trim() });
+        clearTimeout(this.sendT); this.sendT = setTimeout(() => { this.setState({ sending: false, sent: true }); }, 1200); },
+      subEmail: this.state.subEmail || '', subChange: (e) => this.setState({ subEmail: e.target.value, subErr: this.state.subErr && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.target.value.trim()) ? this.state.subErr : null, subbed: false, subPhase: 'idle' }),
+      subInvalid: this.state.subErr ? 'true' : 'false', subLine: this.state.subErr ? '#b3261e' : '#003f5e',
+      subMsg: this.state.subErr || (subbed ? 'Thanks — you’re on the list.' : ''), subMsgColor: this.state.subErr ? '#8a1c15' : '#003f5e',
+      subIcon: (() => { const ph = this.state.subPhase || (subbed ? 'sent' : 'idle'); const h = React.createElement;
+        if (ph === 'sending') return h('span', { key: 'sp', style: { display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+          h('span', { style: { position: 'absolute', animation: 'bnFly .28s ease-in forwards' } }, '→'),
+          h('span', { style: { width: 16, height: 16, borderRadius: '50%', border: '2px solid rgba(255,255,255,.35)', borderTopColor: '#fff', animation: 'bnSpin .6s linear infinite, bnIn .2s .2s both' } }));
+        if (ph === 'sent') return h('span', { key: 'ok', style: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'bnFlash .6s ease-out' } }, h('span', { style: { display: 'inline-block', color: '#ffc91e', fontWeight: 800, animation: 'bnPop .45s cubic-bezier(.2,.9,.3,1.3) both' } }, '✓'));
+        return h('span', { key: 'ar' }, '→'); })(),
+      subMsgEl: (() => { const m = this.state.subErr || (subbed ? 'Thanks — you’re on the list.' : ''); return m ? React.createElement('span', { key: m, style: { display: 'inline-block', animation: 'bnFade .35s ease-out both' } }, m) : null; })(),
+      subscribe: (e) => { e.preventDefault(); const v = (this.state.subEmail || '').trim();
+        if (!v) return this.setState({ subErr: 'Please enter your email address.', subbed: false });
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return this.setState({ subErr: 'Please enter a valid email address, e.g. name@company.com.', subbed: false });
+        if (this.state.subPhase === 'sending') return;
+        this.setState({ subErr: null, subbed: false, subPhase: 'sending' });
+        clearTimeout(this._subT); this._subT = setTimeout(() => this.setState({ subPhase: 'sent', subbed: true }), 900); },
+    };
+  }
+}
+</script>
+</body>
+</html>
