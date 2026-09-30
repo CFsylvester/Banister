@@ -23,6 +23,10 @@ nothing new is added.
     2, naming the missing variables.
   - **Open (OWNER):** T039/T040 for the homepage. Add keys to `.envrc`, then run sandbox → migrate →
     seed → a live build → the gates.
+- **Model revised by the owner (2026-09-30):** page + hero + button (see the data-model.md banner). Homepage
+  sections below the hero are back on code copy until `page.blocks` types are designed. Done offline:
+  migrations 0001–0004, types, the read path (slug lookup, cycle-safe normalization), the hero title renderer
+  (bold → teal, inline/block buttons), seed/fixture, and 10 unit tests.
 - **Home "Learn more" links:** they go to `/insights/<slug>/` when that article page exists (today only
   the white paper), otherwise to `/insights/`, with a build warning. This avoids links to article pages
   that don't exist yet.
