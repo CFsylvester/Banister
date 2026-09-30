@@ -16,7 +16,7 @@ const page = (hero: Partial<HeroFields>): CmsEntry<PageFields> => ({
   fields: { hero: { id: "hero-home", contentType: "hero", fields: {
     headline: doc(para(text("We "), text("Build", true), text(" Companies")), embed(btn("b1"))),
     isAnimated: true,
-    media: { id: "slides", contentType: "heroSlides", fields: { images: [img("a"), img("b"), img("c")] } },
+    mediaType: "Slides", slides: [img("a"), img("b"), img("c")],
     ...hero } } },
 });
 
@@ -26,13 +26,17 @@ test("slides map to local image paths in editor order", () => {
 });
 
 test("a single image hero", () => {
-  const p = mapHero(page({ media: { id: "one", contentType: "heroImage", fields: { image: img("x") } } }));
+  const p = mapHero(page({ mediaType: "Image", image: img("x") }));
   assert.deepEqual(p.media, { kind: "image", images: ["/cms/x.png"] });
 });
 
 test("fewer than 3 slides fails the build, naming the entry", () => {
-  const media = { id: "slides", contentType: "heroSlides", fields: { images: [img("a"), img("b")] } };
-  assert.throws(() => mapHero(page({ media })), /heroSlides\/slides\.images needs at least 3 images/);
+  assert.throws(() => mapHero(page({ slides: [img("a"), img("b")] })), /hero\/hero-home\.slides needs at least 3 images/);
+});
+
+test("the chosen media type's field is required (Contentful can't enforce this conditionally)", () => {
+  assert.throws(() => mapHero(page({ mediaType: "Image", image: undefined })), /hero\/hero-home\.image is required/);
+  assert.throws(() => mapHero(page({ mediaType: "Slides", slides: [] })), /hero\/hero-home\.slides is required/);
 });
 
 test("isAnimated is passed through (behavior decided later)", () => {

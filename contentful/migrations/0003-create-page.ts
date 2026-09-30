@@ -1,6 +1,5 @@
-// 0005-create-page — a page = one hero + blocks in drag-and-drop order. Needs hero (0004).
-// Kit page-composition pattern (ordered references to a block library); the block types themselves come in
-// later migrations, which will add a linkContentType validation to `blocks`.
+// 0003-create-page — a page = one hero + blocks in drag-and-drop order. Needs hero (0002).
+// Block types come in later migrations, which will add a linkContentType validation to `blocks`.
 import type { MigrationFunction } from "contentful-migration";
 
 const run: MigrationFunction = (migration) => {
@@ -8,7 +7,7 @@ const run: MigrationFunction = (migration) => {
     .description("A page: one hero, then blocks in drag-and-drop order.");
 
   page.createField("internalName").name("Internal name").type("Symbol").required(true)
-    .validations([{ size: { min: 2, max: 100 } }]);
+    .validations([{ size: { min: 3, max: 100 } }]);
   page.changeFieldControl("internalName", "builtin", "singleLine", { helpText: "For editors only — e.g. “Home”." });
 
   page.createField("hero").name("Hero").type("Link").linkType("Entry").required(true)

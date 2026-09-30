@@ -1,5 +1,5 @@
 {
-  "_comment": "Seed for migration 0001-page-hero = offline fixture (CONTENT_SOURCE=fixture) = initial content for a new space (pnpm cms:seed). One page → hero (headline with an embedded button; slides media). Copy is character-for-character from the pre-CMS homepage. Deterministic IDs make seeding idempotent.",
+  "_comment": "Seed for migrations 0001 button · 0002 hero · 0003 page = offline fixture (CONTENT_SOURCE=fixture) = initial content for a new space (pnpm cms:seed). Copy is character-for-character from the pre-CMS homepage. Deterministic IDs make seeding idempotent.",
   "assets": [
     {
       "id": "hero-tablet",
@@ -28,36 +28,6 @@
         "internalName": "Button — Speak with a partner (/contact)",
         "label": "SPEAK WITH A PARTNER",
         "url": "/contact"
-      }
-    },
-    {
-      "id": "hero-slides-home",
-      "contentType": "heroSlides",
-      "fields": {
-        "internalName": "Home — hero slides",
-        "images": [
-          {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "hero-tablet"
-            }
-          },
-          {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "hero-insight-greeting"
-            }
-          },
-          {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "hero-insight-tablet"
-            }
-          }
-        ]
       }
     },
     {
@@ -125,13 +95,30 @@
           ]
         },
         "isAnimated": true,
-        "media": {
-          "sys": {
-            "type": "Link",
-            "linkType": "Entry",
-            "id": "hero-slides-home"
+        "mediaType": "Slides",
+        "slides": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-tablet"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-insight-greeting"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-insight-tablet"
+            }
           }
-        }
+        ]
       }
     },
     {

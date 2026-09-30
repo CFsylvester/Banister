@@ -143,118 +143,28 @@
           "omitted": false
         },
         {
-          "id": "media",
-          "name": "Media",
-          "type": "Link",
-          "localized": false,
-          "required": true,
-          "validations": [
-            {
-              "linkContentType": [
-                "heroSlides",
-                "heroImage"
-              ],
-              "message": "Choose Slides or Image"
-            }
-          ],
-          "disabled": false,
-          "omitted": false,
-          "linkType": "Entry"
-        }
-      ]
-    },
-    {
-      "sys": {
-        "id": "heroImage",
-        "type": "ContentType"
-      },
-      "name": "Hero: Image",
-      "displayField": "internalName",
-      "description": "A single hero image.",
-      "fields": [
-        {
-          "id": "internalName",
-          "name": "Internal name",
+          "id": "mediaType",
+          "name": "Media type",
           "type": "Symbol",
           "localized": false,
           "required": true,
           "validations": [
             {
-              "size": {
-                "min": 3,
-                "max": 100
-              }
-            }
-          ],
-          "disabled": false,
-          "omitted": false
-        },
-        {
-          "id": "image",
-          "name": "Image",
-          "type": "Link",
-          "localized": false,
-          "required": true,
-          "validations": [
-            {
-              "linkMimetypeGroup": [
-                "image"
+              "in": [
+                "Slides",
+                "Image"
               ]
-            },
-            {
-              "assetImageDimensions": {
-                "width": {
-                  "min": 1200
-                },
-                "height": {}
-              },
-              "message": "The image must be at least 1200 px wide"
-            },
-            {
-              "assetFileSize": {
-                "max": 10485760
-              },
-              "message": "The image must be 10 MB or smaller"
-            }
-          ],
-          "disabled": false,
-          "omitted": false,
-          "linkType": "Asset"
-        }
-      ]
-    },
-    {
-      "sys": {
-        "id": "heroSlides",
-        "type": "ContentType"
-      },
-      "name": "Hero: Slides",
-      "displayField": "internalName",
-      "description": "A slideshow for the hero — at least 3 images.",
-      "fields": [
-        {
-          "id": "internalName",
-          "name": "Internal name",
-          "type": "Symbol",
-          "localized": false,
-          "required": true,
-          "validations": [
-            {
-              "size": {
-                "min": 3,
-                "max": 100
-              }
             }
           ],
           "disabled": false,
           "omitted": false
         },
         {
-          "id": "images",
-          "name": "Images",
+          "id": "slides",
+          "name": "Slides",
           "type": "Array",
           "localized": false,
-          "required": true,
+          "required": false,
           "validations": [
             {
               "size": {
@@ -291,6 +201,38 @@
               }
             ]
           }
+        },
+        {
+          "id": "image",
+          "name": "Image",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkMimetypeGroup": [
+                "image"
+              ]
+            },
+            {
+              "assetImageDimensions": {
+                "width": {
+                  "min": 1200
+                },
+                "height": {}
+              },
+              "message": "Images must be at least 1200 px wide"
+            },
+            {
+              "assetFileSize": {
+                "max": 10485760
+              },
+              "message": "Images must be 10 MB or smaller"
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
         }
       ]
     },
@@ -312,7 +254,7 @@
           "validations": [
             {
               "size": {
-                "min": 2,
+                "min": 3,
                 "max": 100
               }
             }

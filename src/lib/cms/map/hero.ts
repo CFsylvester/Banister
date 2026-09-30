@@ -1,7 +1,7 @@
 // page → hero props. Pure (no I/O, no SDK types) — unit-tested in hero.test.ts.
 import { ContentError, required } from "../errors.ts";
 import { localAssetPath } from "../asset-path.ts";
-import type { ButtonFields, CmsEntry, HeroFields, HeroImageFields, HeroSlidesFields, PageFields, RichTextDocument, RichTextNode } from "../types.ts";
+import type { ButtonFields, CmsEntry, HeroFields, PageFields, RichTextDocument, RichTextNode } from "../types.ts";
 
 export type ButtonProps = { label: string; href: string; external: boolean };
 export type HeroProps = {
@@ -39,15 +39,16 @@ export function mapHero(page: CmsEntry<PageFields>): HeroProps {
   const headline = required(hero, "headline");
   checkEmbeds(headline.content, hero);
 
-  const media = required(hero, "media");
+  // Contentful can't require a field conditionally — the media-type rule is enforced here (migration 0002).
+  const mediaType = required(hero, "mediaType");
   let out: HeroProps["media"];
-  if (media.contentType === "heroSlides") {
-    const images = required(media as CmsEntry<HeroSlidesFields>, "images");
-    if (images.length < 3) throw new ContentError(media.contentType, media.id, "images", "needs at least 3 images");
-    out = { kind: "slides", images: images.map(localAssetPath) };
-  } else if (media.contentType === "heroImage") {
-    out = { kind: "image", images: [localAssetPath(required(media as CmsEntry<HeroImageFields>, "image"))] };
-  } else throw new ContentError(hero.contentType, hero.id, "media", `must be Slides or Image, got ${media.contentType}`);
+  if (mediaType === "Slides") {
+    const slides = required(hero, "slides");
+    if (slides.length < 3) throw new ContentError(hero.contentType, hero.id, "slides", "needs at least 3 images");
+    out = { kind: "slides", images: slides.map(localAssetPath) };
+  } else if (mediaType === "Image") {
+    out = { kind: "image", images: [localAssetPath(required(hero, "image"))] };
+  } else throw new ContentError(hero.contentType, hero.id, "mediaType", `must be Slides or Image, got ${String(mediaType)}`);
 
   return { headline, isAnimated: hero.fields.isAnimated ?? true, media: out };
 }
