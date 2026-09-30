@@ -1,0 +1,71 @@
+{
+  "_comment": "Homepage seed = offline fixture (CONTENT_SOURCE=fixture) = initial content for a new space (pnpm cms:seed). Copy is character-for-character from the pre-CMS site; bracketed strings are the design's own placeholders. Deterministic IDs make seeding idempotent.",
+  "assets": [
+    { "id": "hero-tablet", "file": "design/assets/hero-tablet.jpg", "title": "Hero — tablet", "description": "" },
+    { "id": "hero-insight-greeting", "file": "design/assets/insight-greeting.jpg", "title": "Hero — greeting", "description": "" },
+    { "id": "hero-insight-tablet", "file": "design/assets/insight-tablet.jpg", "title": "Hero — tablet 2", "description": "" },
+    { "id": "card-operations", "file": "design/assets/operations.jpg", "title": "Card — operations", "description": "" },
+    { "id": "card-insight-whiteboard", "file": "design/assets/insight-whiteboard.jpg", "title": "Card — whiteboard", "description": "" },
+    { "id": "card-insight-hardhats", "file": "design/assets/insight-hardhats.jpg", "title": "Card — hard hats", "description": "" },
+    { "id": "cover-handshake-city", "file": "design/assets/handshake-city.jpg", "title": "Cover — handshake city", "description": "" }
+  ],
+  "entries": [
+    { "id": "statistic-placements", "contentType": "statistic", "fields": { "label": "successful placements", "value": 3500, "suffix": "+" } },
+    { "id": "statistic-countries", "contentType": "statistic", "fields": { "label": "countries served", "value": 40, "suffix": "+" } },
+    { "id": "statistic-years", "contentType": "statistic", "fields": { "label": "years in executive search", "value": 30, "suffix": "+" } },
+    { "id": "statistic-repeat-clients", "contentType": "statistic", "fields": { "label": "of business from repeat clients", "value": 95, "suffix": "%" } },
+
+    { "id": "testimonial-1", "contentType": "testimonial", "fields": { "internalName": "Testimonial 1 (placeholder)", "quote": "[Approved client testimonial — a specific outcome in the client’s own words, two or three sentences at most.]", "attribution": "[Client name], [Title], [Company]" } },
+    { "id": "testimonial-2", "contentType": "testimonial", "fields": { "internalName": "Testimonial 2 (placeholder)", "quote": "[Second approved testimonial.]", "attribution": "[Client name], [Title], [Company]" } },
+    { "id": "testimonial-3", "contentType": "testimonial", "fields": { "internalName": "Testimonial 3 (placeholder)", "quote": "[Third approved testimonial.]", "attribution": "[Client name], [Title], [Company]" } },
+
+    { "id": "article-state-of-talent-acquisition", "contentType": "insightArticle", "fields": {
+      "title": "The state of talent acquisition in professional services", "slug": "state-of-talent-acquisition",
+      "publishedDate": "2026-09-01", "tags": ["White paper", "Professional services", "Talent acquisition"],
+      "summary": "Perspectives from executive search partners and talent acquisition leaders.",
+      "coverImage": { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-insight-greeting" } },
+      "homeCardImage": { "sys": { "type": "Link", "linkType": "Asset", "id": "card-operations" } } } },
+    { "id": "article-hr-cobblers-children", "contentType": "insightArticle", "fields": {
+      "title": "Why is HR the “cobbler’s children” in the world of talent acquisition?", "slug": "hr-cobblers-children",
+      "publishedDate": "2026-08-15", "tags": ["Article", "HR leadership", "Workforce planning"],
+      "summary": "HR built a whole sub-function around succession planning, workforce planning and people movement — then rarely applied it to itself.",
+      "coverImage": { "sys": { "type": "Link", "linkType": "Asset", "id": "cover-handshake-city" } },
+      "homeCardImage": { "sys": { "type": "Link", "linkType": "Asset", "id": "card-insight-whiteboard" } } } },
+    { "id": "article-third", "contentType": "insightArticle", "fields": {
+      "title": "[Third article title]", "slug": "third-article",
+      "publishedDate": "2026-08-01", "tags": ["Article", "[Topic]"],
+      "summary": "[One-sentence summary.]",
+      "coverImage": { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-insight-tablet" } },
+      "homeCardImage": { "sys": { "type": "Link", "linkType": "Asset", "id": "card-insight-hardhats" } } } },
+
+    { "id": "homePage", "contentType": "homePage", "fields": {
+      "internalName": "Home page",
+      "heroHeadline": { "nodeType": "document", "data": {}, "content": [ { "nodeType": "paragraph", "data": {}, "content": [
+        { "nodeType": "text", "value": "We ", "marks": [], "data": {} },
+        { "nodeType": "text", "value": "Build", "marks": [ { "type": "bold" } ], "data": {} },
+        { "nodeType": "text", "value": " Companies", "marks": [], "data": {} } ] } ] },
+      "heroCtaLabel": "SPEAK WITH A PARTNER", "heroCtaHref": "/contact",
+      "heroSlides": [
+        { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-tablet" } },
+        { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-insight-greeting" } },
+        { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-insight-tablet" } } ],
+      "introLead": "Founded in 1999, Banister International is a human capital advisory firm delivering high-impact talent solutions to transformational organizations.",
+      "introBody": "We specialize in executive search, next-generation leadership, search and advisory projects, and interim leadership. Every engagement uses a branded search approach that tells the client’s story, led by one dedicated Client Engagement Partner from start to finish.",
+      "statsHeading": "Our track record",
+      "stats": [
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "statistic-placements" } },
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "statistic-countries" } },
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "statistic-years" } },
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "statistic-repeat-clients" } } ],
+      "testimonialsHeading": "What our clients are saying",
+      "testimonials": [
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "testimonial-1" } },
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "testimonial-2" } },
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "testimonial-3" } } ],
+      "insightsHeading": "Our latest insights",
+      "featuredInsights": [
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "article-state-of-talent-acquisition" } },
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "article-hr-cobblers-children" } },
+        { "sys": { "type": "Link", "linkType": "Entry", "id": "article-third" } } ] } }
+  ]
+}

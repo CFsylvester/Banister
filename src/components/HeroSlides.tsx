@@ -2,12 +2,12 @@
 /* eslint-disable @next/next/no-img-element -- see ui.tsx */
 import { useEffect, useState } from "react";
 import { asset } from "@/lib/asset";
-import { heroes } from "@/lib/content";
 
 const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 /** Cross-fading Ken Burns hero: each slide eases to scale(1.06) over 7s, advances every 6s. */
-export default function HeroSlides() {
+/** `slides` are image paths from the CMS (src/lib/cms/map/home.ts). */
+export default function HeroSlides({ slides: heroes }: { slides: string[] }) {
   const [h, setH] = useState(0);
   const [shown, setShown] = useState(false);
   // `cycle` restarts the timers exactly as the design's startHero() does after each advance.
@@ -19,7 +19,7 @@ export default function HeroSlides() {
     if (reduceMotion()) return () => clearTimeout(show);
     const next = setTimeout(() => { setH((x) => (x + 1) % heroes.length); setShown(false); setCycle((c) => c + 1); }, 6000);
     return () => { clearTimeout(show); clearTimeout(next); };
-  }, [cycle]);
+  }, [cycle, heroes.length]);
 
   return heroes.map((src, i) => (
     <img key={src} src={asset(src)} alt=""
