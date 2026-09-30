@@ -8,9 +8,9 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createClient } from "contentful";
-import type { TypeHomePageSkeleton, TypeInsightArticleSkeleton } from "@/types/contentful";
+import type { TypePageSkeleton } from "@/types/contentful";
 import { sniffImageType } from "./asset-path.ts";
-import type { CmsAsset, CmsEntry, HomePageFields, InsightArticleFields } from "./types.ts";
+import type { CmsAsset, CmsEntry, PageFields } from "./types.ts";
 
 type Source = "fixture" | "contentful";
 function source(): Source {
@@ -27,7 +27,7 @@ function normalize(v: unknown, resolveLink: (sys: Sys) => unknown): unknown {
   if (Array.isArray(v)) return v.map((x) => normalize(x, resolveLink)).filter((x) => x !== undefined);
   if (!v || typeof v !== "object") return v;
   const n = v as Node;
-  if (n.nodeType === "document") return v; // rich text: rendered as-is
+  if (typeof n.nodeType === "string") return normalizeRichText(n as RichNode, resolveLink); // rich text
   if (n.sys?.type === "Link") return normalize(resolveLink(n.sys), resolveLink);
   if (n.sys?.type === "Asset") {
     const f = n.fields as { title?: string; description?: string; file?: { contentType?: string } };
@@ -39,6 +39,13 @@ function normalize(v: unknown, resolveLink: (sys: Sys) => unknown): unknown {
     return { id: n.sys.id!, contentType: n.sys.contentType!.sys.id, fields } satisfies CmsEntry<unknown>;
   }
   return v;
+}
+
+// Rich text: keep the tree, but resolve + normalize embedded entries in data.target (buttons in headlines).
+type RichNode = { nodeType: string; data?: { target?: unknown }; content?: RichNode[] };
+function normalizeRichText(n: RichNode, resolveLink: (sys: Sys) => unknown): RichNode {
+  const data = n.data?.target ? { ...n.data, target: normalize(n.data.target, resolveLink) } : n.data;
+  return { ...n, data: data ?? {}, ...(n.content ? { content: n.content.map((c) => normalizeRichText(c, resolveLink)) } : {}) };
 }
 
 // ---------- fixture ----------
@@ -81,19 +88,15 @@ function client() {
 const noLinks = () => { throw new Error("unexpected unresolved link from the delivery API"); };
 
 // ---------- public API ----------
-export async function getHomePage(): Promise<CmsEntry<HomePageFields>> {
+/** The site's single page for now (owner: "start with a singular page"). Fails loudly if there are 0 or >1. */
+export async function getPage(): Promise<CmsEntry<PageFields>> {
   if (source() === "fixture") {
-    const [home] = fixtureEntries("homePage");
-    if (!home) throw new Error("fixture: no homePage entry");
-    return normalize(home, fixtureLink) as CmsEntry<HomePageFields>;
+    const pages = fixtureEntries("page");
+    if (pages.length !== 1) throw new Error(`fixture: expected exactly 1 page entry, found ${pages.length}`);
+    return normalize(pages[0], fixtureLink) as CmsEntry<PageFields>;
   }
-  const res = await client().getEntries<TypeHomePageSkeleton>({ content_type: "homePage", include: 2, limit: 1 });
-  if (!res.items[0]) throw new Error("Contentful: no published homePage entry");
-  return normalize(res.items[0], noLinks) as CmsEntry<HomePageFields>;
-}
-
-export async function getInsightArticles(): Promise<CmsEntry<InsightArticleFields>[]> {
-  if (source() === "fixture") return fixtureEntries("insightArticle").map((e) => normalize(e, fixtureLink) as CmsEntry<InsightArticleFields>);
-  const res = await client().getEntries<TypeInsightArticleSkeleton>({ content_type: "insightArticle", include: 1, limit: 100 });
-  return res.items.map((e) => normalize(e, noLinks) as CmsEntry<InsightArticleFields>);
+  // include: page → hero → media/buttons → assets
+  const res = await client().getEntries<TypePageSkeleton>({ content_type: "page", include: 4, limit: 2 });
+  if (res.items.length !== 1) throw new Error(`Contentful: expected exactly 1 published page, found ${res.items.length}`);
+  return normalize(res.items[0], noLinks) as CmsEntry<PageFields>;
 }

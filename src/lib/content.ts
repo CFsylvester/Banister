@@ -15,8 +15,15 @@ export const nav = [
   { href: "/contact", label: "Contact" },
 ];
 
-// Homepage hero slides + stats now live in Contentful (contentful/seed/home.json). The rest of this file
-// still feeds the not-yet-migrated pages.
+// The homepage hero lives in Contentful (contentful/seed/home.json). Everything else here still feeds
+// sections that are not in the CMS yet (homepage blocks, other pages).
+
+export const stats: [number, string, string][] = [
+  [3500, "+", "successful placements"],
+  [40, "+", "countries served"],
+  [30, "+", "years in executive search"],
+  [95, "%", "of business from repeat clients"],
+];
 
 export const quotes = [
   { text: "[Approved client testimonial — a specific outcome in the client’s own words, two or three sentences at most.]", who: "[Client name], [Title], [Company]" },

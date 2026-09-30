@@ -41,6 +41,6 @@ for (const k of ["editContentType", "deleteContentType", "transformEntries", "de
 const files = readdirSync(dir).filter((f) => /^\d{4}-.*\.cjs$/.test(f)).sort();
 for (const f of files) require(resolve(dir, f))(migration, {});
 const contentTypes = [...types.values()].sort((a, b) => a.sys.id.localeCompare(b.sys.id));
-for (const ct of contentTypes) if (!ct.fields.some((f) => f.id === ct.displayField)) throw new Error(`${ct.sys.id}: displayField ${ct.displayField} is not a field`);
+for (const ct of contentTypes) if (ct.displayField && !ct.fields.some((f) => f.id === ct.displayField)) throw new Error(`${ct.sys.id}: displayField ${ct.displayField} is not a field`);
 writeFileSync("contentful/content-model.json", JSON.stringify({ contentTypes }, null, 2) + "\n");
 console.log(`content-model.json: ${contentTypes.length} types from ${files.length} migration(s): ${contentTypes.map((c) => c.sys.id).join(", ")}`);

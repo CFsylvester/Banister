@@ -35,8 +35,8 @@ for (const a of seed.assets) {
   await asset.publish();
 }
 
-// Entries in dependency order: things referenced by others first (homePage last).
-const order = ["statistic", "testimonial", "insightArticle", "homePage"];
+// Entries in dependency order: referenced entries first (page last).
+const order = ["button", "heroSlides", "heroImage", "hero", "page"];
 const entries = [...seed.entries].sort((x, y) => order.indexOf(x.contentType) - order.indexOf(y.contentType));
 for (const e of entries) {
   const fields = localize(e.fields);
