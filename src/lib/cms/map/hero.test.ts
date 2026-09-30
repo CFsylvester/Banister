@@ -32,7 +32,7 @@ test("slides win over image; image is used when slides is empty", () => {
 });
 
 test("fewer than 3 slides, or no media at all, fails the build naming the hero", () => {
-  assert.throws(() => mapHero(page({ slides: [img("a"), img("b")] })), /hero\/hero-home\.slides needs at least 3 images/);
+  assert.throws(() => mapHero(page({ slides: [img("a"), img("b")] })), /hero\/hero-home\.slides needs at least 3 published images/);
   assert.throws(() => mapHero(page({ slides: [], image: undefined })), /hero\/hero-home\.slides\/image needs slides/);
 });
 
@@ -50,6 +50,15 @@ test("Internal buttons take the URL from the referenced page's slug; home is the
   assert.deepEqual(mapButton(btn("i")), { label: "GO", href: "/contact", external: false });
   assert.equal(mapButton(btn("h", { internalPage: pg("home") })).href, "/");
   assert.equal(pageHref(pg("about-us")), "/about-us");
+});
+
+test("an Internal button to a page the site doesn't build fails instead of shipping a 404", () => {
+  assert.throws(() => mapButton(btn("c", { internalPage: pg("careers") })), /button\/c\.internalPage links to page "careers"/);
+});
+
+test("a slide asset without an image file fails naming the hero and field", () => {
+  const noFile = { id: "empty", title: "", description: "", contentType: "" };
+  assert.throws(() => mapHero(page({ slides: [img("a"), img("b"), noFile] })), /hero\/hero-home\.slides links asset empty, which has no image file/);
 });
 
 test("External buttons need an https URL; each page type requires its own field", () => {

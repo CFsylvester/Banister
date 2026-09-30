@@ -322,7 +322,14 @@
           "type": "Array",
           "localized": false,
           "required": false,
-          "validations": [],
+          "validations": [
+            {
+              "size": {
+                "max": 0
+              },
+              "message": "No block types exist yet"
+            }
+          ],
           "disabled": false,
           "omitted": false,
           "items": {

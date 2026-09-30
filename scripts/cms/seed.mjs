@@ -14,7 +14,9 @@ const loc = await defaultLocale(env);
 const seed = JSON.parse(readFileSync("contentful/seed/home.json", "utf8"));
 const count = { created: 0, updated: 0, unchanged: 0 };
 const localize = (fields) => Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, { [loc]: v }]));
-const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+// Key-order-insensitive (the API returns fields in content-type order, the seed may differ).
+const canon = (v) => Array.isArray(v) ? v.map(canon) : v && typeof v === "object" ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])])) : v;
+const same = (a, b) => JSON.stringify(canon(a)) === JSON.stringify(canon(b));
 
 for (const a of seed.assets) {
   const bytes = readFileSync(resolve(a.file));
@@ -23,8 +25,8 @@ for (const a of seed.assets) {
   let asset = await getOrNull(() => env.getAsset(a.id));
   if (asset) {
     const meta = { title: { [loc]: a.title }, description: { [loc]: a.description } };
-    if (same(asset.fields.title, meta.title) && same(asset.fields.description ?? { [loc]: "" }, meta.description)) { count.unchanged++; continue; }
-    Object.assign(asset.fields, meta); asset = await asset.update(); count.updated++;
+    if (same(asset.fields.title, meta.title) && same(asset.fields.description ?? { [loc]: "" }, meta.description)) count.unchanged++;
+    else { Object.assign(asset.fields, meta); asset = await asset.update(); count.updated++; }
   } else {
     const upload = await env.createUpload({ file: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) });
     asset = await env.createAssetWithId(a.id, { fields: { title: { [loc]: a.title }, description: { [loc]: a.description },
@@ -32,7 +34,8 @@ for (const a of seed.assets) {
     asset = await asset.processForAllLocales();
     count.created++;
   }
-  await asset.publish();
+  // Also re-publishes an asset left unpublished by an earlier failed run or an editor (idempotent).
+  if (!asset.isPublished() || asset.isUpdated()) await asset.publish();
 }
 
 // Two passes, because references can loop (page → hero → button → page): first create/update every entry so

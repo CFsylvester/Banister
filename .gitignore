@@ -58,3 +58,6 @@ visual-diff-out/
 /public/cms/
 # direnv (secrets) — already matched by .env*, listed explicitly for clarity
 .envrc
+
+# build caches
+/.cache/

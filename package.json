@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "pnpm cms:prepare && next dev",
     "build": "pnpm cms:prepare && next build",
     "lint": "eslint",
     "match:pages": "node scripts/match-design.mjs --base http://localhost:3217/Banister --threshold 0.1",
@@ -15,7 +15,7 @@
     "cms:model": "node scripts/cms/model-from-migrations.mjs",
     "cms:types": "cf-content-types-generator contentful/content-model.json -o src/types/contentful --response",
     "cms:assets": "node scripts/cms/sync-assets.mjs",
-    "cms:prepare": "pnpm cms:types && pnpm cms:assets",
+    "cms:prepare": "pnpm cms:model && pnpm cms:types && pnpm cms:assets",
     "cms:sandbox": "node scripts/cms/sandbox.mjs",
     "cms:migrate": "node scripts/cms/migrate.mjs",
     "cms:seed": "node scripts/cms/seed.mjs",
@@ -28,7 +28,7 @@
     "next": "16.3.7",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "server-only": "^0.0.1"
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

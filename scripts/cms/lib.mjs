@@ -14,11 +14,20 @@ export function targetEnv() {
   return env;
 }
 
+/** Also refuse an environment that an alias (e.g. `master`) points to — the live environment under another id. */
+export async function guardAliases(space, envId) {
+  if (has("approve")) return;
+  const aliases = await getOrNull(() => space.getEnvironmentAliases()).catch(() => null); // not on every plan
+  const hit = aliases?.items?.find((a) => a.environment?.sys?.id === envId);
+  if (hit) die(`"${envId}" is the target of alias "${hit.sys.id}" (live content) — refusing without --approve`);
+}
+
 export async function environment(envId) {
   const missing = ["CONTENTFUL_SPACE_ID", "CONTENTFUL_MANAGEMENT_TOKEN"].filter((k) => !process.env[k]);
   if (missing.length) die(`missing ${missing.join(", ")} — add them to .envrc and run \`direnv allow\``);
   const client = createClient({ accessToken: process.env.CONTENTFUL_MANAGEMENT_TOKEN });
   const space = await client.getSpace(process.env.CONTENTFUL_SPACE_ID);
+  if (envId) await guardAliases(space, envId);
   return { space, env: envId ? await space.getEnvironment(envId) : null };
 }
 

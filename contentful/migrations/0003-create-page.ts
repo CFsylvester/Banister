@@ -22,7 +22,8 @@ const run: MigrationFunction = (migration) => {
   page.changeFieldControl("hero", "builtin", "entryLinkEditor", { helpText: "The hero at the top of this page." });
 
   page.createField("blocks").name("Blocks").type("Array").required(false)
-    .items({ type: "Link", linkType: "Entry" });
+    .items({ type: "Link", linkType: "Entry" })
+    .validations([{ size: { max: 0 }, message: "No block types exist yet" }]); // the first block migration lifts this
   page.changeFieldControl("blocks", "builtin", "entryLinksEditor", { helpText: "Sections below the hero. Drag to reorder." });
 };
 export default run;

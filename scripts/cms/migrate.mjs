@@ -4,6 +4,8 @@
 // the .ts files are imported natively (Node 22 type stripping)
 // (node_modules/contentful-migration/README.md). Applied migrations are recorded in a `cmsMigrationLog`
 // entry so reruns skip them. Prints each migration's header comment as the plain-language summary.
+// Not transactional: if a migration half-applies (or the log update fails), the rerun stops on "already exists".
+// Recovery: sandboxes are disposable — start a fresh sandbox (`pnpm cms:sandbox <new-id>`) and migrate that.
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createRequire } from "node:module";
@@ -44,5 +46,4 @@ for (const f of pending) {
   log = await log.update();
   console.log(`cms: applied ${f}`);
 }
-await log.publish().catch(() => {});
 console.log(`\ncms: ${pending.length} migration(s) applied to "${envId}". Next: pnpm cms:seed --env ${envId}`);

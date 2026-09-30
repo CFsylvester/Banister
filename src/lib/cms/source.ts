@@ -67,8 +67,8 @@ export async function getPage(slug: string): Promise<CmsEntry<PageFields>> {
     if (!hit) throw new Error(`fixture: no page with slug "${slug}"`);
     return normalize(hit, fixtureLink) as CmsEntry<PageFields>;
   }
-  // include: page → hero → title buttons → their internal page (+ assets)
-  const res = await client().getEntries<TypePageSkeleton>({ content_type: "page", "fields.slug": slug, include: 4, limit: 1 });
+  // include: page(0) → hero(1) → title buttons(2) → their internal page(3); assets resolve at each level
+  const res = await client().getEntries<TypePageSkeleton>({ content_type: "page", "fields.slug": slug, include: 3, limit: 1 });
   if (!res.items[0]) throw new Error(`Contentful: no published page with slug "${slug}"`);
   return normalize(res.items[0], noLinks) as CmsEntry<PageFields>;
 }
