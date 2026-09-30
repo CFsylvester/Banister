@@ -1,6 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- see ui.tsx */
 import { useEffect, useState } from "react";
+import { asset } from "@/lib/asset";
 import { heroes } from "@/lib/content";
 
 const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -21,7 +22,7 @@ export default function HeroSlides() {
   }, [cycle]);
 
   return heroes.map((src, i) => (
-    <img key={src} src={src} alt=""
+    <img key={src} src={asset(src)} alt=""
       className="absolute inset-0 h-full w-full object-cover object-[50%_30%]"
       style={{ opacity: i === h ? 1 : 0, transform: i === h && shown ? "scale(1.06)" : "scale(1)", transition: "opacity 1.2s ease, transform 7s linear" }} />
   ));

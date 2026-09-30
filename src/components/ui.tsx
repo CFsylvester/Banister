@@ -2,9 +2,12 @@
    real assets are placeholders; move hero/LCP images to next/image once final exports land. */
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { asset } from "@/lib/asset";
 import type { Tag } from "@/lib/content";
 
-export const Img = (props: ComponentProps<"img">) => <img alt="" {...props} />;
+export const Img = ({ src, ...props }: ComponentProps<"img">) => (
+  <img alt="" {...props} src={typeof src === "string" ? asset(src) : src} />
+);
 
 const ctaBase = "flex cursor-pointer items-center gap-[18px] font-bold tracking-[.06em] no-underline";
 

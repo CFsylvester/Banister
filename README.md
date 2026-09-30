@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Banister International — website
 
-## Getting Started
+Next.js 16 (App Router) + Tailwind v4 + TypeScript, built from `design/banister-v2.dc.html` and deployed to
+GitHub Pages at **https://cfsylvester.github.io/Banister/**.
 
-First, run the development server:
+Requires Node ≥ 22.13 (pnpm 11): `nvm use 22`.
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev            # http://localhost:3000 (no base path)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy (GitHub Pages)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The site is a **static export** (`output: "export"` in `next.config.ts`) served under the `/Banister` sub-path.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Every push to `main` runs `.github/workflows/pages.yml`, which builds with `PAGES_BASE_PATH` from
+  `actions/configure-pages` and publishes `out/`.
+- Repo setting required: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+- Links via `next/link` get the base path automatically; images must go through `asset()` (`src/lib/asset.ts`) —
+  the shared `<Img>` component already does.
+- No server at runtime: no route handlers, server actions, or request-time `searchParams` (the contact page reads
+  `?aud=` client-side). Forms currently simulate submission — wire them to a hosted form/API endpoint.
 
-## Learn More
+Preview the exact Pages build locally:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm build:pages && pnpm preview   # http://localhost:3217/Banister/
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Verify against the design (pixel-diff)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+With `pnpm preview` running:
 
-## Deploy on Vercel
+```bash
+pnpm match:pages          # 7 pages × 5 widths, full-page
+pnpm match:interactions   # 10 interactive states
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Both must report MATCH (threshold 0.1%). Diffs land in `visual-diff-out/`. The design target renders through
+`design/support.js`, a stand-in for the export's missing runtime; `public/assets/` holds placeholders until the
+real image exports are dropped in (same file names).

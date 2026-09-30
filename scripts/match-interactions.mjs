@@ -5,7 +5,7 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
 const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i !== -1 ? process.argv[i + 1] : d; };
-const base = arg("base", "http://localhost:3217");
+const base = arg("base", "http://localhost:3217/Banister");
 const threshold = arg("threshold", "1.0");
 const only = arg("only")?.split(",");
 const D = "desktop:1280x800", M = "mobile:375x812";
