@@ -37,6 +37,10 @@ jobs:
         run: pnpm build
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # Homepage content: the committed seed (contentful/seed/) until the live space is wired in.
+          # To build from Contentful instead: set CONTENT_SOURCE to contentful and add CONTENTFUL_SPACE_ID +
+          # CONTENTFUL_DELIVERY_TOKEN as repository secrets (read-only token; never the management token).
+          CONTENT_SOURCE: fixture
       - uses: actions/upload-pages-artifact@v5
         with:
           path: ./out
