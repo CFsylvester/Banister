@@ -33,6 +33,7 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v6
       - run: pnpm install --frozen-lockfile
+      - run: pnpm test  # mapping + seed/model consistency tests (fixture-only, no secrets)
       - name: Build static export
         run: pnpm build
         env:

@@ -17,7 +17,9 @@ export function targetEnv() {
 /** Also refuse an environment that an alias (e.g. `master`) points to — the live environment under another id. */
 export async function guardAliases(space, envId) {
   if (has("approve")) return;
-  const aliases = await getOrNull(() => space.getEnvironmentAliases()).catch(() => null); // not on every plan
+  let aliases;
+  try { aliases = await getOrNull(() => space.getEnvironmentAliases()); } // null = no alias feature (404)
+  catch (e) { die(`couldn't check environment aliases (${e?.name ?? "error"}). Re-run with --approve only if you're sure "${envId}" isn't live.`); }
   const hit = aliases?.items?.find((a) => a.environment?.sys?.id === envId);
   if (hit) die(`"${envId}" is the target of alias "${hit.sys.id}" (live content) — refusing without --approve`);
 }

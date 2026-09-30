@@ -2,8 +2,8 @@
 // model-from-migrations.mjs — replay contentful/migrations/NNNN-*.ts against a recording stub of the migration DSL
 // and write contentful/content-model.json in contentful-export shape ({ contentTypes: [...] }), the input
 // cf-content-types-generator accepts (node_modules/cf-content-types-generator/README.md, "Generate From A Local Export").
-// The migrations stay the single source of truth; after a live bring-up, `pnpm cms:export-model` overwrites
-// this file with the real export. Supports only the DSL calls our migrations use — anything else throws.
+// The migrations are the single source of truth: this file is always derived from them (cms:prepare regenerates it
+// every build; never hand-edit it or replace it with a live export). `--out <path>` writes elsewhere (used by the test). Supports only the DSL calls our migrations use — anything else throws.
 import { readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -56,5 +56,7 @@ const files = readdirSync(dir).filter((f) => /^\d{4}-.*\.ts$/.test(f)).sort();
 for (const f of files) (await import(pathToFileURL(resolve(dir, f)).href)).default(migration, {});
 const contentTypes = [...types.values()].sort((a, b) => a.sys.id.localeCompare(b.sys.id));
 for (const ct of contentTypes) if (ct.displayField && !ct.fields.some((f) => f.id === ct.displayField)) throw new Error(`${ct.sys.id}: displayField ${ct.displayField} is not a field`);
-writeFileSync("contentful/content-model.json", JSON.stringify({ contentTypes }, null, 2) + "\n");
+const outIdx = process.argv.indexOf("--out");
+const outPath = outIdx !== -1 ? process.argv[outIdx + 1] : "contentful/content-model.json";
+writeFileSync(outPath, JSON.stringify({ contentTypes }, null, 2) + "\n");
 console.log(`content-model.json: ${contentTypes.length} types from ${files.length} migration(s): ${contentTypes.map((c) => c.sys.id).join(", ")}`);

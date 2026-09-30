@@ -1,6 +1,6 @@
 // page → hero props. Pure (no I/O, no SDK types) — unit-tested in hero.test.ts.
 import { ContentError, required } from "../errors.ts";
-import { localAssetPath } from "../asset-path.ts";
+import { extFor, localAssetPath } from "../asset-path.ts";
 import type { ButtonFields, CmsAsset, CmsEntry, HeroFields, PageFields, RichTextDocument, RichTextNode } from "../types.ts";
 import { SITE_ROUTES } from "../routes.ts";
 
@@ -60,12 +60,17 @@ export function mapHero(page: CmsEntry<PageFields>): HeroProps {
   const hero = required(page, "hero");
   const title = required(hero, "title");
   checkEmbeds(title.content, hero);
+  // Buttons alone don't make a heading: the title needs at least one line with real text.
+  const hasText = title.content.some((p) => p.nodeType === "paragraph" && (p.content ?? []).some((c) => c.nodeType === "text" && !!c.value?.trim()));
+  if (!hasText) throw new ContentError(hero.contentType, hero.id, "title", "has no text — add a line of text (buttons alone don't make a heading)");
 
   // Slides win: if slides has images use them (≥ 3), otherwise the single image is required (migration 0002).
   const slides = hero.fields.slides ?? [];
   // An asset with no file (or a non-image) would otherwise fail deep in the path rule without naming the hero.
   const path = (field: string) => (a: CmsAsset) => {
-    if (!a.contentType.startsWith("image/")) throw new ContentError(hero.contentType, hero.id, field, `links asset ${a.id}, which has no image file`);
+    const supported = (() => { try { extFor(a.contentType); return true; } catch { return false; } })();
+    if (!supported) throw new ContentError(hero.contentType, hero.id, field,
+      `links asset ${a.id}${a.contentType ? ` (${a.contentType})` : ""}, which isn't a supported image (png, jpeg, webp, gif, svg, avif)`);
     return localAssetPath(a);
   };
   let out: HeroProps["media"];

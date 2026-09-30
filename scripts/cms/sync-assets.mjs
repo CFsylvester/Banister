@@ -6,7 +6,7 @@
 // files no longer referenced are pruned. Revision stamps live in .cache/cms/, not in the shipped folder.
 //   CONTENT_SOURCE=fixture    → copy the files listed in contentful/seed/home.json
 //   CONTENT_SOURCE=contentful → fetch via the Content Delivery API (read token only)
-import { mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { extFor, sniffImageType } from "../../src/lib/cms/asset-path.ts";
 
@@ -49,5 +49,6 @@ if (src === "fixture") {
 } else { console.error(`sync-assets: CONTENT_SOURCE must be fixture|contentful, got ${src}`); process.exit(2); }
 
 let pruned = 0;
-for (const f of readdirSync(out)) if (!keep.has(f)) { unlinkSync(`${out}/${f}`); pruned++; }
+for (const f of readdirSync(out)) if (!keep.has(f) && statSync(`${out}/${f}`).isFile()) { unlinkSync(`${out}/${f}`); pruned++; }
+for (const f of readdirSync(stamps)) if (!keep.has(f.replace(/\.v\d+$/, ""))) unlinkSync(`${stamps}/${f}`);
 console.log(`sync-assets (${src}): ${keep.size} image(s) in public/cms/ (${written} written, ${pruned} stale removed)`);

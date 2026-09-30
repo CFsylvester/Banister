@@ -52,8 +52,6 @@ export function HeroTitle({ doc }: { doc: RichTextDocument }) {
     else if (n.nodeType === BLOCKS.EMBEDDED_ENTRY) { flush(); out.push(<CmsButton key={`b${out.length}`} entry={n.data.target as CmsEntry<ButtonFields>} />); }
   }
   flush();
-  // Today's validations only allow paragraphs + embedded buttons; anything else is ignored. A title made only of
-  // buttons would render no heading, which is almost certainly an editing mistake — surface it at build.
-  if (!out.some((n) => (n as { type?: unknown })?.type === "h1")) throw new Error("hero title has no text — add a line of text (buttons alone don't make a heading)");
+  // Only paragraphs + embedded buttons are allowed by the model; "title has text" is enforced in mapHero.
   return <>{out}</>;
 }

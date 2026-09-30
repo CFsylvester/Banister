@@ -18,8 +18,7 @@
     "cms:prepare": "pnpm cms:model && pnpm cms:types && pnpm cms:assets",
     "cms:sandbox": "node scripts/cms/sandbox.mjs",
     "cms:migrate": "node scripts/cms/migrate.mjs",
-    "cms:seed": "node scripts/cms/seed.mjs",
-    "cms:export-model": "node scripts/cms/export-model.mjs"
+    "cms:seed": "node scripts/cms/seed.mjs"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "16.2.2",

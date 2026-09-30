@@ -56,9 +56,18 @@ test("an Internal button to a page the site doesn't build fails instead of shipp
   assert.throws(() => mapButton(btn("c", { internalPage: pg("careers") })), /button\/c\.internalPage links to page "careers"/);
 });
 
+test("a title with only buttons (no text) fails naming the hero", () => {
+  assert.throws(() => mapHero(page({ title: doc(para(embed(btn("b3"), true))) })), /hero\/hero-home\.title has no text/);
+});
+
+test("an unsupported image type (e.g. TIFF) fails naming the hero, not deep in the path rule", () => {
+  const tiff = { id: "scan", title: "", description: "", contentType: "image/tiff" };
+  assert.throws(() => mapHero(page({ slides: [img("a"), img("b"), tiff] })), /hero\/hero-home\.slides links asset scan \(image\/tiff\)/);
+});
+
 test("a slide asset without an image file fails naming the hero and field", () => {
   const noFile = { id: "empty", title: "", description: "", contentType: "" };
-  assert.throws(() => mapHero(page({ slides: [img("a"), img("b"), noFile] })), /hero\/hero-home\.slides links asset empty, which has no image file/);
+  assert.throws(() => mapHero(page({ slides: [img("a"), img("b"), noFile] })), /hero\/hero-home\.slides links asset empty, which isn't a supported image/);
 });
 
 test("External buttons need an https URL; each page type requires its own field", () => {
