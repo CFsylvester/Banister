@@ -31,7 +31,7 @@ for (const [name, s] of Object.entries(scenarios)) {
   if (only && !only.includes(name)) continue;
   const r = spawnSync(process.execPath, ["scripts/visual-diff.mjs",
     "--target", `design/banister-v2.dc.html?startPage=${s.page}`, "--candidate", base + s.path,
-    "--threshold", threshold, "--viewports", s.vps, "--full-page", "--wait", "2600",
+    "--threshold", threshold, "--viewports", s.vps, "--full-page", "--wait", "2600", "--expect", "Banister International",
     "--steps", JSON.stringify(s.steps), "--out", `visual-diff-out/ix-${name}`], { encoding: "utf8" });
   const sum = `visual-diff-out/ix-${name}/summary.json`;
   if (r.status === 2 || !existsSync(sum)) { console.error(`${name}: gate error\n${r.stderr}`); ok = false; continue; }

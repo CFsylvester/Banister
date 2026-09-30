@@ -19,7 +19,7 @@ for (const [name, path] of Object.entries(pages)) {
   if (only && !only.includes(name)) continue;
   const r = spawnSync(process.execPath, ["scripts/visual-diff.mjs",
     "--target", `design/banister-v2.dc.html?startPage=${name}`, "--candidate", base + path,
-    "--threshold", threshold, "--viewports", viewports, "--full-page", "--wait", "2600", "--out", `visual-diff-out/${name}`],
+    "--threshold", threshold, "--viewports", viewports, "--full-page", "--wait", "2600", "--expect", "Banister International", "--out", `visual-diff-out/${name}`],
     { encoding: "utf8" });
   const sum = `visual-diff-out/${name}/summary.json`;
   if (r.status === 2 || !existsSync(sum)) { console.error(r.stderr); process.exit(2); }
