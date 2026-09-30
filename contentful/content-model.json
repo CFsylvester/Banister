@@ -15,7 +15,14 @@
           "type": "Symbol",
           "localized": false,
           "required": true,
-          "validations": [],
+          "validations": [
+            {
+              "size": {
+                "min": 3,
+                "max": 100
+              }
+            }
+          ],
           "disabled": false,
           "omitted": false
         },
@@ -25,7 +32,14 @@
           "type": "Symbol",
           "localized": false,
           "required": true,
-          "validations": [],
+          "validations": [
+            {
+              "size": {
+                "min": 2,
+                "max": 40
+              }
+            }
+          ],
           "disabled": false,
           "omitted": false
         },
@@ -63,7 +77,14 @@
           "type": "Symbol",
           "localized": false,
           "required": true,
-          "validations": [],
+          "validations": [
+            {
+              "size": {
+                "min": 3,
+                "max": 100
+              }
+            }
+          ],
           "disabled": false,
           "omitted": false
         },
@@ -123,7 +144,7 @@
         },
         {
           "id": "media",
-          "name": "Media (Slides or Image)",
+          "name": "Media",
           "type": "Link",
           "localized": false,
           "required": true,
@@ -132,7 +153,8 @@
               "linkContentType": [
                 "heroSlides",
                 "heroImage"
-              ]
+              ],
+              "message": "Choose Slides or Image"
             }
           ],
           "disabled": false,
@@ -156,7 +178,14 @@
           "type": "Symbol",
           "localized": false,
           "required": true,
-          "validations": [],
+          "validations": [
+            {
+              "size": {
+                "min": 3,
+                "max": 100
+              }
+            }
+          ],
           "disabled": false,
           "omitted": false
         },
@@ -171,6 +200,21 @@
               "linkMimetypeGroup": [
                 "image"
               ]
+            },
+            {
+              "assetImageDimensions": {
+                "width": {
+                  "min": 1200
+                },
+                "height": {}
+              },
+              "message": "The image must be at least 1200 px wide"
+            },
+            {
+              "assetFileSize": {
+                "max": 10485760
+              },
+              "message": "The image must be 10 MB or smaller"
             }
           ],
           "disabled": false,
@@ -194,7 +238,14 @@
           "type": "Symbol",
           "localized": false,
           "required": true,
-          "validations": [],
+          "validations": [
+            {
+              "size": {
+                "min": 3,
+                "max": 100
+              }
+            }
+          ],
           "disabled": false,
           "omitted": false
         },
@@ -222,6 +273,21 @@
                 "linkMimetypeGroup": [
                   "image"
                 ]
+              },
+              {
+                "assetImageDimensions": {
+                  "width": {
+                    "min": 1200
+                  },
+                  "height": {}
+                },
+                "message": "Images must be at least 1200 px wide"
+              },
+              {
+                "assetFileSize": {
+                  "max": 10485760
+                },
+                "message": "Images must be 10 MB or smaller"
               }
             ]
           }
@@ -243,7 +309,14 @@
           "type": "Symbol",
           "localized": false,
           "required": true,
-          "validations": [],
+          "validations": [
+            {
+              "size": {
+                "min": 2,
+                "max": 100
+              }
+            }
+          ],
           "disabled": false,
           "omitted": false
         },

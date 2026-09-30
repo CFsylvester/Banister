@@ -1,14 +1,13 @@
 #!/usr/bin/env node
-// model-from-migrations.mjs — replay contentful/migrations/*.cjs against a recording stub of the migration DSL
+// model-from-migrations.mjs — replay contentful/migrations/NNNN-*.ts against a recording stub of the migration DSL
 // and write contentful/content-model.json in contentful-export shape ({ contentTypes: [...] }), the input
 // cf-content-types-generator accepts (node_modules/cf-content-types-generator/README.md, "Generate From A Local Export").
 // The migrations stay the single source of truth; after a live bring-up, `pnpm cms:export-model` overwrites
 // this file with the real export. Supports only the DSL calls our migrations use — anything else throws.
 import { readdirSync, writeFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
-const require = createRequire(import.meta.url);
 const dir = resolve("contentful/migrations");
 const types = new Map();
 
@@ -27,6 +26,7 @@ const migration = {
       name: (v) => { ct.name = v; return api; },
       displayField: (v) => { ct.displayField = v; return api; },
       description: (v) => { ct.description = v; return api; },
+      changeFieldControl: () => api, // editor-interface settings are not part of the content-type export
       createField: (fid) => {
         const f = { id: fid, name: fid, type: null, localized: false, required: false, validations: [], disabled: false, omitted: false };
         ct.fields.push(f); return fieldApi(f);
@@ -38,8 +38,8 @@ const migration = {
 for (const k of ["editContentType", "deleteContentType", "transformEntries", "deriveLinkedEntries"])
   migration[k] = () => { throw new Error(`model-from-migrations: ${k} not supported by the stub — use a live export`); };
 
-const files = readdirSync(dir).filter((f) => /^\d{4}-.*\.cjs$/.test(f)).sort();
-for (const f of files) require(resolve(dir, f))(migration, {});
+const files = readdirSync(dir).filter((f) => /^\d{4}-.*\.ts$/.test(f)).sort();
+for (const f of files) (await import(pathToFileURL(resolve(dir, f)).href)).default(migration, {});
 const contentTypes = [...types.values()].sort((a, b) => a.sys.id.localeCompare(b.sys.id));
 for (const ct of contentTypes) if (ct.displayField && !ct.fields.some((f) => f.id === ct.displayField)) throw new Error(`${ct.sys.id}: displayField ${ct.displayField} is not a field`);
 writeFileSync("contentful/content-model.json", JSON.stringify({ contentTypes }, null, 2) + "\n");

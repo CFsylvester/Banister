@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-// cms:migrate --env <id> [--approve] — apply contentful/migrations/NNNN-*.cjs in order with
-// contentful-migration's runMigration({ filePath, spaceId, accessToken, environmentId, yes })
+// cms:migrate --env <id> [--approve] — apply contentful/migrations/NNNN-*.ts in order (one content model per
+// file) with contentful-migration's runMigration({ migrationFunction, spaceId, accessToken, environmentId, yes });
+// the .ts files are imported natively (Node 22 type stripping)
 // (node_modules/contentful-migration/README.md). Applied migrations are recorded in a `cmsMigrationLog`
 // entry so reruns skip them. Prints each migration's header comment as the plain-language summary.
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
 import { defaultLocale, die, environment, getOrNull, targetEnv } from "./lib.mjs";
 
 const require = createRequire(import.meta.url);
@@ -26,14 +28,15 @@ if (!log) { log = await env.createEntryWithId("cmsMigrationLog", "cmsMigrationLo
 const applied = new Set(log.fields.applied?.[loc] ?? []);
 
 const dir = resolve("contentful/migrations");
-const pending = readdirSync(dir).filter((f) => /^\d{4}-.*\.cjs$/.test(f)).sort().filter((f) => !applied.has(f));
+const pending = readdirSync(dir).filter((f) => /^\d{4}-.*\.ts$/.test(f)).sort().filter((f) => !applied.has(f));
 if (!pending.length) { console.log(`cms: ${envId} is up to date (${applied.size} applied)`); process.exit(0); }
 
 for (const f of pending) {
   const summary = readFileSync(resolve(dir, f), "utf8").split("\n").filter((l) => l.startsWith("//")).map((l) => l.replace(/^\/\/ ?/, "  ")).join("\n");
   console.log(`\n── ${f} → environment "${envId}"\n${summary}\n`);
   try {
-    await runMigration({ filePath: resolve(dir, f), spaceId: process.env.CONTENTFUL_SPACE_ID,
+    const migrationFunction = (await import(pathToFileURL(resolve(dir, f)).href)).default;
+    await runMigration({ migrationFunction, spaceId: process.env.CONTENTFUL_SPACE_ID,
       accessToken: process.env.CONTENTFUL_MANAGEMENT_TOKEN, environmentId: envId, yes: true });
   } catch (e) { die(`${f} failed: ${e.message}`, 1); }
   applied.add(f);
