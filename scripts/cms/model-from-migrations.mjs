@@ -17,11 +17,7 @@ const fieldApi = (field) => {
     api[k] = (v) => { field[k] = v; return api; };
   return api;
 };
-const migration = {
-  createContentType(id) {
-    if (types.has(id)) throw new Error(`content type ${id} created twice`);
-    const ct = { sys: { id, type: "ContentType" }, name: id, displayField: null, description: "", fields: [] };
-    types.set(id, ct);
+const ctApi = (ct) => {
     const api = {
       name: (v) => { ct.name = v; return api; },
       displayField: (v) => { ct.displayField = v; return api; },
@@ -31,11 +27,29 @@ const migration = {
         const f = { id: fid, name: fid, type: null, localized: false, required: false, validations: [], disabled: false, omitted: false };
         ct.fields.push(f); return fieldApi(f);
       },
+      moveField: (fid) => ({
+        afterField: (other) => {
+          const i = ct.fields.findIndex((f) => f.id === fid), [f] = ct.fields.splice(i, 1);
+          ct.fields.splice(ct.fields.findIndex((x) => x.id === other) + 1, 0, f);
+        },
+      }),
     };
     return api;
+};
+const migration = {
+  createContentType(id) {
+    if (types.has(id)) throw new Error(`content type ${id} created twice`);
+    const ct = { sys: { id, type: "ContentType" }, name: id, displayField: null, description: "", fields: [] };
+    types.set(id, ct);
+    return ctApi(ct);
+  },
+  editContentType(id) {
+    const ct = types.get(id);
+    if (!ct) throw new Error(`editContentType: ${id} does not exist yet`);
+    return ctApi(ct);
   },
 };
-for (const k of ["editContentType", "deleteContentType", "transformEntries", "deriveLinkedEntries"])
+for (const k of ["deleteContentType", "transformEntries", "deriveLinkedEntries"])
   migration[k] = () => { throw new Error(`model-from-migrations: ${k} not supported by the stub — use a live export`); };
 
 const files = readdirSync(dir).filter((f) => /^\d{4}-.*\.ts$/.test(f)).sort();

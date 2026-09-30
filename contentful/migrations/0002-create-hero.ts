@@ -1,12 +1,11 @@
 // 0002-create-hero — ONE content model holding all hero content (owner, 2026-09-30). Not a block.
-//   headline   rich text: bold only (renders teal); `button` entries embeddable inline or on their own line
+//   title      rich text: bold only (renders teal); `button` entries embeddable inline or on their own line
 //   isAnimated yes/no — stored now; what it does is decided later
-//   mediaType  Slides | Image
-//   slides     ≥ 3 images (used when mediaType = Slides)
-//   image      one image  (used when mediaType = Image)
-// Contentful can't make a field required *conditionally*, so "Slides needs slides / Image needs image" is
-// enforced by the site build (src/lib/cms/map/hero.ts), which fails naming the entry and field.
-// Needs button (0001). Conventions: agents-kit contentful skill + references/naming-and-modeling.md.
+//   slides     ≥ 3 images — used when filled ("slides win")
+//   image      one image  — used when slides is empty
+// "Slides or image must be filled" is enforced by the site build (src/lib/cms/map/hero.ts) — Contentful can't
+// make a field required conditionally. Needs button (0001).
+// Conventions: agents-kit contentful skill + references/naming-and-modeling.md.
 // Widget IDs: node_modules/contentful-management/dist/esm/constants/editor-interface-defaults/controls-defaults.mjs.
 import type { IValidation, MigrationFunction } from "contentful-migration";
 
@@ -24,7 +23,7 @@ const run: MigrationFunction = (migration) => {
     .validations([{ size: { min: 3, max: 100 } }]);
   hero.changeFieldControl("internalName", "builtin", "singleLine", { helpText: "For editors only — e.g. “Home — hero”." });
 
-  hero.createField("headline").name("Headline").type("RichText").required(true).validations([
+  hero.createField("title").name("Title").type("RichText").required(true).validations([
     { enabledMarks: ["bold"], message: "Only bold is allowed — bold words render teal" },
     { enabledNodeTypes: ["embedded-entry-inline", "embedded-entry-block"], message: "Only text and embedded buttons" },
     { nodes: {
@@ -32,23 +31,20 @@ const run: MigrationFunction = (migration) => {
       "embedded-entry-block": [{ linkContentType: ["button"], message: "Only buttons can be embedded" }],
     } },
   ]);
-  hero.changeFieldControl("headline", "builtin", "richTextEditor",
+  hero.changeFieldControl("title", "builtin", "richTextEditor",
     { helpText: "Bold words render teal. Insert a Button (Embed → Entry) inline or on its own line." });
 
   hero.createField("isAnimated").name("Animated").type("Boolean").required(true);
   hero.changeFieldControl("isAnimated", "builtin", "boolean", { trueLabel: "Yes", falseLabel: "No", helpText: "Animate the hero media." });
 
-  hero.createField("mediaType").name("Media type").type("Symbol").required(true)
-    .validations([{ in: ["Slides", "Image"] }]);
-  hero.changeFieldControl("mediaType", "builtin", "dropdown", { helpText: "Slides → fill Slides (3+ images). Image → fill Image." });
-
   hero.createField("slides").name("Slides").type("Array").required(false)
     .items({ type: "Link", linkType: "Asset", validations: IMAGE_RULES })
     .validations([{ size: { min: 3 }, message: "Slides need at least 3 images" }]);
-  hero.changeFieldControl("slides", "builtin", "assetLinksEditor", { helpText: "Used when Media type is Slides. At least 3 images; drag to reorder." });
+  hero.changeFieldControl("slides", "builtin", "assetLinksEditor",
+    { helpText: "At least 3 images; drag to reorder. If filled, slides are shown (Image is ignored)." });
 
   hero.createField("image").name("Image").type("Link").linkType("Asset").required(false)
     .validations(IMAGE_RULES);
-  hero.changeFieldControl("image", "builtin", "assetLinkEditor", { helpText: "Used when Media type is Image. One image." });
+  hero.changeFieldControl("image", "builtin", "assetLinkEditor", { helpText: "Shown when Slides is empty. One image." });
 };
 export default run;

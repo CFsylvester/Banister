@@ -1,5 +1,5 @@
 {
-  "_comment": "Seed for migrations 0001 button · 0002 hero · 0003 page = offline fixture (CONTENT_SOURCE=fixture) = initial content for a new space (pnpm cms:seed). Copy is character-for-character from the pre-CMS homepage. Deterministic IDs make seeding idempotent.",
+  "_comment": "Seed for migrations 0001–0004 (button · hero · page · button.internalPage) = offline fixture (CONTENT_SOURCE=fixture) = initial content for a new space (pnpm cms:seed). Home copy is character-for-character from the pre-CMS homepage. The Contact page exists as the CTA button's internal link target; its hero is a labelled placeholder because page.hero is required and Contact isn't built from Contentful yet. Deterministic IDs make seeding idempotent.",
   "assets": [
     {
       "id": "hero-tablet",
@@ -25,9 +25,16 @@
       "id": "button-speak-with-a-partner",
       "contentType": "button",
       "fields": {
-        "internalName": "Button — Speak with a partner (/contact)",
+        "internalName": "Button — Speak with a partner → Contact",
         "label": "SPEAK WITH A PARTNER",
-        "url": "/contact"
+        "pageType": "Internal",
+        "internalPage": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "page-contact"
+          }
+        }
       }
     },
     {
@@ -35,7 +42,32 @@
       "contentType": "hero",
       "fields": {
         "internalName": "Home — hero",
-        "headline": {
+        "isAnimated": true,
+        "mediaType": "Slides",
+        "slides": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-tablet"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-insight-greeting"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-insight-tablet"
+            }
+          }
+        ],
+        "title": {
           "nodeType": "document",
           "data": {},
           "content": [
@@ -93,32 +125,40 @@
               ]
             }
           ]
+        }
+      }
+    },
+    {
+      "id": "hero-contact",
+      "contentType": "hero",
+      "fields": {
+        "internalName": "Contact — hero (placeholder: the Contact page isn't built from Contentful yet)",
+        "title": {
+          "nodeType": "document",
+          "data": {},
+          "content": [
+            {
+              "nodeType": "paragraph",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "text",
+                  "value": "Contact",
+                  "marks": [],
+                  "data": {}
+                }
+              ]
+            }
+          ]
         },
-        "isAnimated": true,
-        "mediaType": "Slides",
-        "slides": [
-          {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "hero-tablet"
-            }
-          },
-          {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "hero-insight-greeting"
-            }
-          },
-          {
-            "sys": {
-              "type": "Link",
-              "linkType": "Asset",
-              "id": "hero-insight-tablet"
-            }
+        "isAnimated": false,
+        "image": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Asset",
+            "id": "hero-tablet"
           }
-        ]
+        }
       }
     },
     {
@@ -126,11 +166,28 @@
       "contentType": "page",
       "fields": {
         "internalName": "Home",
+        "slug": "home",
         "hero": {
           "sys": {
             "type": "Link",
             "linkType": "Entry",
             "id": "hero-home"
+          }
+        },
+        "blocks": []
+      }
+    },
+    {
+      "id": "page-contact",
+      "contentType": "page",
+      "fields": {
+        "internalName": "Contact",
+        "slug": "contact",
+        "hero": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "hero-contact"
           }
         },
         "blocks": []

@@ -4,13 +4,13 @@ import Quotes from "@/components/Quotes";
 import Stats from "@/components/Stats";
 import { homeInsights, quotes, stats } from "@/lib/content";
 import { mapHero } from "@/lib/cms/map/hero.ts";
-import { HeroHeadline } from "@/lib/cms/richtext";
+import { HeroTitle } from "@/lib/cms/richtext";
 import { getPage } from "@/lib/cms/source";
 
 // The hero comes from Contentful (page → hero) at build time. Everything below it is still code copy until
 // the owner's `page.blocks` types are built (specs/001-contentful-cms, Slice H).
 export default async function Home() {
-  const hero = mapHero(await getPage());
+  const hero = mapHero(await getPage("home"));
 
   return (
     <>
@@ -22,7 +22,7 @@ export default async function Home() {
               <div className="relative mr-[clamp(24px,5vw,56px)] px-[clamp(20px,2.6vw,32px)] py-[clamp(18px,2.4vw,30px)]">
                 <div className="absolute inset-0 bg-[#00324d] mix-blend-multiply" />
                 <div className="relative flex flex-wrap items-center justify-between gap-x-8 gap-y-5">
-                  <HeroHeadline doc={hero.headline} />
+                  <HeroTitle doc={hero.title} />
                 </div>
               </div>
             </div>

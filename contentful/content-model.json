@@ -44,17 +44,51 @@
           "omitted": false
         },
         {
-          "id": "url",
-          "name": "URL",
+          "id": "pageType",
+          "name": "Page type",
           "type": "Symbol",
           "localized": false,
           "required": true,
           "validations": [
             {
+              "in": [
+                "Internal",
+                "External"
+              ]
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "internalPage",
+          "name": "Internal page",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkContentType": [
+                "page"
+              ]
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry"
+        },
+        {
+          "id": "externalUrl",
+          "name": "External URL",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
               "regexp": {
-                "pattern": "^(/[a-z0-9/_-]*|https://\\S+)$"
+                "pattern": "^https://\\S+$"
               },
-              "message": "A site path such as /contact, or a full https:// URL"
+              "message": "A full https:// URL"
             }
           ],
           "disabled": false,
@@ -89,8 +123,8 @@
           "omitted": false
         },
         {
-          "id": "headline",
-          "name": "Headline",
+          "id": "title",
+          "name": "Title",
           "type": "RichText",
           "localized": false,
           "required": true,
@@ -139,23 +173,6 @@
           "localized": false,
           "required": true,
           "validations": [],
-          "disabled": false,
-          "omitted": false
-        },
-        {
-          "id": "mediaType",
-          "name": "Media type",
-          "type": "Symbol",
-          "localized": false,
-          "required": true,
-          "validations": [
-            {
-              "in": [
-                "Slides",
-                "Image"
-              ]
-            }
-          ],
           "disabled": false,
           "omitted": false
         },
@@ -257,6 +274,26 @@
                 "min": 3,
                 "max": 100
               }
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "slug",
+          "name": "Slug",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "unique": true
+            },
+            {
+              "regexp": {
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "message": "Lowercase words joined by hyphens, e.g. contact"
             }
           ],
           "disabled": false,

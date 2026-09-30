@@ -1,4 +1,6 @@
-// 0003-create-page — a page = one hero + blocks in drag-and-drop order. Needs hero (0002).
+// 0003-create-page — a page = slug + one hero + blocks in drag-and-drop order. Needs hero (0002).
+//   slug: the page's URL — "home" is the site root (/), anything else is /<slug>/. Buttons link to pages by
+//   reference and take the URL from this field.
 // Block types come in later migrations, which will add a linkContentType validation to `blocks`.
 import type { MigrationFunction } from "contentful-migration";
 
@@ -9,6 +11,11 @@ const run: MigrationFunction = (migration) => {
   page.createField("internalName").name("Internal name").type("Symbol").required(true)
     .validations([{ size: { min: 3, max: 100 } }]);
   page.changeFieldControl("internalName", "builtin", "singleLine", { helpText: "For editors only — e.g. “Home”." });
+
+  page.createField("slug").name("Slug").type("Symbol").required(true)
+    .validations([{ unique: true }, { regexp: { pattern: "^[a-z0-9]+(-[a-z0-9]+)*$" }, message: "Lowercase words joined by hyphens, e.g. contact" }]);
+  page.changeFieldControl("slug", "builtin", "slugEditor",
+    { trackingFieldId: "internalName", helpText: "The page's URL. Use home for the site root; otherwise it becomes /<slug>/." });
 
   page.createField("hero").name("Hero").type("Link").linkType("Entry").required(true)
     .validations([{ linkContentType: ["hero"] }]);

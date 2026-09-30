@@ -20,7 +20,7 @@ export function CmsButton({ entry, inline = false }: { entry: CmsEntry<ButtonFie
 
 const H1 = "m-0 text-[clamp(44px,6.4vw,92px)] leading-[1.05] font-bold tracking-[-.01em] text-white";
 
-// Inline content of a headline paragraph: bold → teal, inline-embedded buttons → gold button in the line.
+// Inline content of a title paragraph: bold → teal, inline-embedded buttons → gold button in the line.
 const inlineOpts: Options = {
   renderMark: { [MARKS.BOLD]: (text) => <span className="text-teal">{text}</span> },
   renderNode: {
@@ -32,11 +32,11 @@ const inline = (nodes: RichTextNode[]) =>
   documentToReactComponents({ nodeType: "document", data: {}, content: nodes } as unknown as Document, inlineOpts);
 
 /**
- * Hero headline rich text (migration 0001: bold + embedded buttons only). Consecutive paragraphs render as one
+ * Hero title rich text (migration 0002: bold + embedded buttons only). Consecutive paragraphs render as one
  * <h1> (joined by line breaks); a block-embedded button renders as the gold button beside/below it — with the
  * seed ("We **Build** Companies" + one block button) this is exactly the design's markup.
  */
-export function HeroHeadline({ doc }: { doc: RichTextDocument }) {
+export function HeroTitle({ doc }: { doc: RichTextDocument }) {
   const out: ReactNode[] = [];
   let run: RichTextNode[] = [];
   const flush = () => {

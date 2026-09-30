@@ -1,6 +1,6 @@
 // Source-agnostic content shapes. Both sources (the Contentful delivery client and the offline fixture) are
 // normalized into these, so the mappers and their tests never depend on SDK objects.
-// Model: contentful/migrations/ (0001 button, 0002 hero, 0003 page).
+// Model: contentful/migrations/ (0001 button, 0002 hero, 0003 page, 0004 button.internalPage).
 
 export type CmsAsset = {
   id: string;
@@ -23,13 +23,18 @@ export type RichTextNode = {
 };
 export type RichTextDocument = RichTextNode & { nodeType: "document"; content: RichTextNode[] };
 
-export type ButtonFields = { internalName?: string; label?: string; url?: string };
+export type ButtonFields = {
+  internalName?: string;
+  label?: string;
+  pageType?: "Internal" | "External";
+  internalPage?: CmsEntry<PageFields>;
+  externalUrl?: string;
+};
 export type HeroFields = {
   internalName?: string;
-  headline?: RichTextDocument;
+  title?: RichTextDocument;
   isAnimated?: boolean;
-  mediaType?: "Slides" | "Image";
   slides?: CmsAsset[];
   image?: CmsAsset;
 };
-export type PageFields = { internalName?: string; hero?: CmsEntry<HeroFields>; blocks?: CmsEntry<unknown>[] };
+export type PageFields = { internalName?: string; slug?: string; hero?: CmsEntry<HeroFields>; blocks?: CmsEntry<unknown>[] };

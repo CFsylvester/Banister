@@ -35,16 +35,17 @@ for (const a of seed.assets) {
   await asset.publish();
 }
 
-// Entries in dependency order: referenced entries first (page last).
-const order = ["button", "hero", "page"];
-const entries = [...seed.entries].sort((x, y) => order.indexOf(x.contentType) - order.indexOf(y.contentType));
-for (const e of entries) {
+// Two passes, because references can loop (page → hero → button → page): first create/update every entry so
+// every link target exists, then publish them all.
+const saved = [];
+for (const e of seed.entries) {
   const fields = localize(e.fields);
   let entry = await getOrNull(() => env.getEntry(e.id));
   if (entry) {
-    if (same(entry.fields, fields)) { count.unchanged++; if (!entry.isPublished()) await entry.publish(); continue; }
-    entry.fields = fields; entry = await entry.update(); count.updated++;
+    if (same(entry.fields, fields)) count.unchanged++;
+    else { entry.fields = fields; entry = await entry.update(); count.updated++; }
   } else { entry = await env.createEntryWithId(e.contentType, e.id, { fields }); count.created++; }
-  await entry.publish();
+  saved.push(entry);
 }
+for (const entry of saved) if (!entry.isPublished() || entry.isUpdated()) await entry.publish();
 console.log(`cms: seeded "${envId}" — ${count.created} created, ${count.updated} updated, ${count.unchanged} unchanged`);
