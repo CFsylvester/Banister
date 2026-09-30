@@ -1,31 +1,153 @@
 {
   "_comment": "Seed for migration 0001-page-hero = offline fixture (CONTENT_SOURCE=fixture) = initial content for a new space (pnpm cms:seed). One page → hero (headline with an embedded button; slides media). Copy is character-for-character from the pre-CMS homepage. Deterministic IDs make seeding idempotent.",
   "assets": [
-    { "id": "hero-tablet", "file": "design/assets/hero-tablet.jpg", "title": "Hero — tablet", "description": "" },
-    { "id": "hero-insight-greeting", "file": "design/assets/insight-greeting.jpg", "title": "Hero — greeting", "description": "" },
-    { "id": "hero-insight-tablet", "file": "design/assets/insight-tablet.jpg", "title": "Hero — tablet 2", "description": "" }
+    {
+      "id": "hero-tablet",
+      "file": "design/assets/hero-tablet.jpg",
+      "title": "Hero — tablet",
+      "description": ""
+    },
+    {
+      "id": "hero-insight-greeting",
+      "file": "design/assets/insight-greeting.jpg",
+      "title": "Hero — greeting",
+      "description": ""
+    },
+    {
+      "id": "hero-insight-tablet",
+      "file": "design/assets/insight-tablet.jpg",
+      "title": "Hero — tablet 2",
+      "description": ""
+    }
   ],
   "entries": [
-    { "id": "button-speak-with-a-partner", "contentType": "button", "fields": { "label": "SPEAK WITH A PARTNER", "url": "/contact" } },
-
-    { "id": "hero-slides-home", "contentType": "heroSlides", "fields": { "images": [
-      { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-tablet" } },
-      { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-insight-greeting" } },
-      { "sys": { "type": "Link", "linkType": "Asset", "id": "hero-insight-tablet" } } ] } },
-
-    { "id": "hero-home", "contentType": "hero", "fields": {
-      "headline": { "nodeType": "document", "data": {}, "content": [
-        { "nodeType": "paragraph", "data": {}, "content": [
-          { "nodeType": "text", "value": "We ", "marks": [], "data": {} },
-          { "nodeType": "text", "value": "Build", "marks": [ { "type": "bold" } ], "data": {} },
-          { "nodeType": "text", "value": " Companies", "marks": [], "data": {} } ] },
-        { "nodeType": "embedded-entry-block", "data": { "target": { "sys": { "type": "Link", "linkType": "Entry", "id": "button-speak-with-a-partner" } } }, "content": [] },
-        { "nodeType": "paragraph", "data": {}, "content": [ { "nodeType": "text", "value": "", "marks": [], "data": {} } ] } ] },
-      "isAnimated": true,
-      "media": { "sys": { "type": "Link", "linkType": "Entry", "id": "hero-slides-home" } } } },
-
-    { "id": "page-home", "contentType": "page", "fields": {
-      "hero": { "sys": { "type": "Link", "linkType": "Entry", "id": "hero-home" } },
-      "blocks": [] } }
+    {
+      "id": "button-speak-with-a-partner",
+      "contentType": "button",
+      "fields": {
+        "internalName": "Button — Speak with a partner (/contact)",
+        "label": "SPEAK WITH A PARTNER",
+        "url": "/contact"
+      }
+    },
+    {
+      "id": "hero-slides-home",
+      "contentType": "heroSlides",
+      "fields": {
+        "internalName": "Home — hero slides",
+        "images": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-tablet"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-insight-greeting"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Asset",
+              "id": "hero-insight-tablet"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hero-home",
+      "contentType": "hero",
+      "fields": {
+        "internalName": "Home — hero",
+        "headline": {
+          "nodeType": "document",
+          "data": {},
+          "content": [
+            {
+              "nodeType": "paragraph",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "text",
+                  "value": "We ",
+                  "marks": [],
+                  "data": {}
+                },
+                {
+                  "nodeType": "text",
+                  "value": "Build",
+                  "marks": [
+                    {
+                      "type": "bold"
+                    }
+                  ],
+                  "data": {}
+                },
+                {
+                  "nodeType": "text",
+                  "value": " Companies",
+                  "marks": [],
+                  "data": {}
+                }
+              ]
+            },
+            {
+              "nodeType": "embedded-entry-block",
+              "data": {
+                "target": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Entry",
+                    "id": "button-speak-with-a-partner"
+                  }
+                }
+              },
+              "content": []
+            },
+            {
+              "nodeType": "paragraph",
+              "data": {},
+              "content": [
+                {
+                  "nodeType": "text",
+                  "value": "",
+                  "marks": [],
+                  "data": {}
+                }
+              ]
+            }
+          ]
+        },
+        "isAnimated": true,
+        "media": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "hero-slides-home"
+          }
+        }
+      }
+    },
+    {
+      "id": "page-home",
+      "contentType": "page",
+      "fields": {
+        "internalName": "Home",
+        "hero": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Entry",
+            "id": "hero-home"
+          }
+        },
+        "blocks": []
+      }
+    }
   ]
 }

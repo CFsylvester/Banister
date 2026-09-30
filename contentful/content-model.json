@@ -6,9 +6,19 @@
         "type": "ContentType"
       },
       "name": "Button",
-      "displayField": "label",
+      "displayField": "internalName",
       "description": "A call-to-action button. Embed it anywhere a rich-text field allows buttons.",
       "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
         {
           "id": "label",
           "name": "Label",
@@ -44,9 +54,19 @@
         "type": "ContentType"
       },
       "name": "Hero",
-      "displayField": null,
+      "displayField": "internalName",
       "description": "The top of a page. Not a block — every page has exactly one.",
       "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
         {
           "id": "headline",
           "name": "Headline",
@@ -127,9 +147,19 @@
         "type": "ContentType"
       },
       "name": "Hero: Image",
-      "displayField": null,
+      "displayField": "internalName",
       "description": "A single hero image.",
       "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
         {
           "id": "image",
           "name": "Image",
@@ -155,9 +185,19 @@
         "type": "ContentType"
       },
       "name": "Hero: Slides",
-      "displayField": null,
+      "displayField": "internalName",
       "description": "A slideshow for the hero — at least 3 images.",
       "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
         {
           "id": "images",
           "name": "Images",
@@ -194,9 +234,19 @@
         "type": "ContentType"
       },
       "name": "Page",
-      "displayField": null,
+      "displayField": "internalName",
       "description": "A page: one hero, then blocks in drag-and-drop order.",
       "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
         {
           "id": "hero",
           "name": "Hero",

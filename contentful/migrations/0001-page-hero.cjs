@@ -3,31 +3,36 @@
 //   hero   = headline rich text (bold = teal; buttons embeddable inline or as blocks)
 //            + isAnimated toggle (behavior decided later) + media (heroSlides OR heroImage)
 //   heroSlides = at least 3 images · heroImage = exactly one image · button = label + url
+//   Every type has a required `internalName` as its display field (kit Contentful convention).
 // DSL: node_modules/contentful-migration/README.md. Validation keys (enabledNodeTypes, enabledMarks, nodes,
 // linkContentType, linkMimetypeGroup, size, regexp) checked against
 // node_modules/contentful-migration/built/lib/offline-api/validator/schema/field-validations-schema.js.
 // Additive only (FR-010). Apply to a sandbox first: `pnpm cms:migrate --env <sandbox>`.
 
 module.exports = function (migration) {
-  const button = migration.createContentType("button").name("Button").displayField("label")
+  const button = migration.createContentType("button").name("Button").displayField("internalName")
     .description("A call-to-action button. Embed it anywhere a rich-text field allows buttons.");
+  button.createField("internalName").name("Internal name").type("Symbol").required(true);
   button.createField("label").name("Label").type("Symbol").required(true);
   button.createField("url").name("URL").type("Symbol").required(true)
     .validations([{ regexp: { pattern: "^(/[a-z0-9/_-]*|https://\\S+)$" }, message: "A site path such as /contact, or a full https:// URL" }]);
 
-  const slides = migration.createContentType("heroSlides").name("Hero: Slides")
+  const slides = migration.createContentType("heroSlides").name("Hero: Slides").displayField("internalName")
     .description("A slideshow for the hero — at least 3 images.");
+  slides.createField("internalName").name("Internal name").type("Symbol").required(true);
   slides.createField("images").name("Images").type("Array").required(true)
     .items({ type: "Link", linkType: "Asset", validations: [{ linkMimetypeGroup: ["image"] }] })
     .validations([{ size: { min: 3 }, message: "Slides need at least 3 images" }]);
 
-  const image = migration.createContentType("heroImage").name("Hero: Image")
+  const image = migration.createContentType("heroImage").name("Hero: Image").displayField("internalName")
     .description("A single hero image.");
+  image.createField("internalName").name("Internal name").type("Symbol").required(true);
   image.createField("image").name("Image").type("Link").linkType("Asset").required(true)
     .validations([{ linkMimetypeGroup: ["image"] }]);
 
-  const hero = migration.createContentType("hero").name("Hero")
+  const hero = migration.createContentType("hero").name("Hero").displayField("internalName")
     .description("The top of a page. Not a block — every page has exactly one.");
+  hero.createField("internalName").name("Internal name").type("Symbol").required(true);
   hero.createField("headline").name("Headline").type("RichText").required(true).validations([
     { enabledMarks: ["bold"], message: "Only bold is allowed — bold words render teal" },
     { enabledNodeTypes: ["embedded-entry-inline", "embedded-entry-block"], message: "Only text and embedded buttons" },
@@ -40,8 +45,9 @@ module.exports = function (migration) {
   hero.createField("media").name("Media (Slides or Image)").type("Link").linkType("Entry").required(true)
     .validations([{ linkContentType: ["heroSlides", "heroImage"] }]);
 
-  const page = migration.createContentType("page").name("Page")
+  const page = migration.createContentType("page").name("Page").displayField("internalName")
     .description("A page: one hero, then blocks in drag-and-drop order.");
+  page.createField("internalName").name("Internal name").type("Symbol").required(true);
   page.createField("hero").name("Hero").type("Link").linkType("Entry").required(true)
     .validations([{ linkContentType: ["hero"] }]);
   page.createField("blocks").name("Blocks").type("Array").required(false)

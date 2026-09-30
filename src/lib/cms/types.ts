@@ -23,12 +23,13 @@ export type RichTextNode = {
 };
 export type RichTextDocument = RichTextNode & { nodeType: "document"; content: RichTextNode[] };
 
-export type ButtonFields = { label?: string; url?: string };
-export type HeroSlidesFields = { images?: CmsAsset[] };
-export type HeroImageFields = { image?: CmsAsset };
+export type ButtonFields = { internalName?: string; label?: string; url?: string };
+export type HeroSlidesFields = { internalName?: string; images?: CmsAsset[] };
+export type HeroImageFields = { internalName?: string; image?: CmsAsset };
 export type HeroFields = {
+  internalName?: string;
   headline?: RichTextDocument;
   isAnimated?: boolean;
   media?: CmsEntry<HeroSlidesFields> | CmsEntry<HeroImageFields>;
 };
-export type PageFields = { hero?: CmsEntry<HeroFields>; blocks?: CmsEntry<unknown>[] };
+export type PageFields = { internalName?: string; hero?: CmsEntry<HeroFields>; blocks?: CmsEntry<unknown>[] };
