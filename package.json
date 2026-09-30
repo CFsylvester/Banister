@@ -5,11 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
     "lint": "eslint",
-    "match:pages": "node scripts/match-design.mjs --base http://localhost:3217 --threshold 0.1",
-    "match:interactions": "node scripts/match-interactions.mjs --base http://localhost:3217 --threshold 0.1",
-    "assets:placeholders": "node scripts/make-placeholder-assets.mjs"
+    "match:pages": "node scripts/match-design.mjs --base http://localhost:3217/Banister --threshold 0.1",
+    "match:interactions": "node scripts/match-interactions.mjs --base http://localhost:3217/Banister --threshold 0.1",
+    "assets:placeholders": "node scripts/make-placeholder-assets.mjs",
+    "build:pages": "PAGES_BASE_PATH=/Banister next build",
+    "preview": "PAGES_BASE_PATH=/Banister node scripts/serve-out.mjs 3217"
   },
   "dependencies": {
     "next": "16.3.7",
