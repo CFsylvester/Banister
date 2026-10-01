@@ -1,6 +1,6 @@
 # Project context (read by Spec Kit / BMAD / the coding agents)
 - **Name:** Banister
-- **Stack:** Next.js 16 (App Router) + TypeScript (strict) + Tailwind v4 (no Preflight), static export under `/Banister`; pixel-gated against `design/banister-v2.dc.html`
+- **Stack:** Next.js 16 (App Router) + TypeScript (strict) + Tailwind v4 (no Preflight), hosted on Vercel with Cache Components (Contentful publish → revalidate in seconds); pixel-gated against `design/banister-v2.dc.html`
 - **Layout:** single
 - **Methodology:** spec
 - **Visibility:** private

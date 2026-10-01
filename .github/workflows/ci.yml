@@ -1,0 +1,30 @@
+# CI — test, lint, type-check and build every push and PR. Deploys are done by Vercel's Git integration
+# (specs/002-vercel-publishing), so this workflow no longer publishes anything. The GitHub Pages copy of the site
+# stays at its last deployment until the domain points at Vercel.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6 # version from package.json "packageManager"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22 # pnpm 11 requires Node >= 22.13; Vercel deploys on 22.x (package.json engines)
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test  # mapping, seed/model consistency, webhook verdict tests (no secrets)
+      - run: pnpm lint
+      - run: pnpm build # offline fixture content: no Contentful secrets in CI
+        env:
+          CONTENT_SOURCE: fixture
+      - run: npx tsc --noEmit # after build: Next generates route types during the build

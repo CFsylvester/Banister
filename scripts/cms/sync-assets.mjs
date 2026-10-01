@@ -5,7 +5,9 @@
 // (heroes' images + image), so an unrelated upload elsewhere in the space can't break or bloat the build;
 // files no longer referenced are pruned. Revision stamps live in .cache/cms/, not in the shipped folder.
 //   CONTENT_SOURCE=fixture    → copy the files listed in contentful/seed/home.json
-//   CONTENT_SOURCE=contentful → fetch via the Content Delivery API (read token only)
+//   CONTENT_SOURCE=contentful → nothing to sync: live pages use Contentful's image CDN, because an image published
+//                               after the build must still render (specs/002-vercel-publishing). The old download
+//                               path below is kept but only runs with --download.
 import { mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { extFor, sniffImageType } from "../../src/lib/cms/asset-path.ts";
@@ -23,6 +25,9 @@ if (src === "fixture") {
     const name = `${a.id}${extFor(sniffImageType(bytes))}`;
     writeFileSync(`${out}/${name}`, bytes); keep.add(name); written++;
   }
+} else if (src === "contentful" && !process.argv.includes("--download")) {
+  console.log("sync-assets (contentful): images are served from Contentful's CDN — nothing to sync");
+  process.exit(0);
 } else if (src === "contentful") {
   const missing = ["CONTENTFUL_SPACE_ID", "CONTENTFUL_DELIVERY_TOKEN"].filter((k) => !process.env[k]);
   if (missing.length) { console.error(`sync-assets: missing ${missing.join(", ")} (set them in .envrc, or use CONTENT_SOURCE=fixture)`); process.exit(2); }

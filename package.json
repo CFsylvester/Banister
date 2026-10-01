@@ -6,11 +6,10 @@
     "dev": "pnpm cms:prepare && next dev",
     "build": "pnpm cms:prepare && next build",
     "lint": "eslint",
-    "match:pages": "node scripts/match-design.mjs --base http://localhost:3217/Banister --threshold 0.1",
-    "match:interactions": "node scripts/match-interactions.mjs --base http://localhost:3217/Banister --threshold 0.1",
+    "match:pages": "node scripts/match-design.mjs --base http://localhost:3217 --threshold 0.1",
+    "match:interactions": "node scripts/match-interactions.mjs --base http://localhost:3217 --threshold 0.1",
     "assets:placeholders": "node scripts/make-placeholder-assets.mjs",
-    "build:pages": "pnpm cms:prepare && PAGES_BASE_PATH=/Banister next build",
-    "preview": "PAGES_BASE_PATH=/Banister node scripts/serve-out.mjs 3217",
+    "preview": "next start -p 3217",
     "test": "node --test 'src/**/*.test.ts'",
     "cms:model": "node scripts/cms/model-from-migrations.mjs",
     "cms:types": "cf-content-types-generator contentful/content-model.json -o src/types/contentful --response",
@@ -18,7 +17,9 @@
     "cms:prepare": "pnpm cms:model && pnpm cms:types && pnpm cms:assets",
     "cms:sandbox": "node scripts/cms/sandbox.mjs",
     "cms:migrate": "node scripts/cms/migrate.mjs",
-    "cms:seed": "node scripts/cms/seed.mjs"
+    "cms:seed": "node scripts/cms/seed.mjs",
+    "start": "next start",
+    "cms:webhook": "node scripts/cms/webhook.mjs"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "16.2.2",
@@ -45,5 +46,8 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@11.8.0"
+  "packageManager": "pnpm@11.8.0",
+  "engines": {
+    "node": "22.x"
+  }
 }
