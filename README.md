@@ -34,7 +34,7 @@ pnpm build:pages && pnpm preview   # http://localhost:3217/Banister/
 
 The homepage hero comes from Contentful at **build time**; everything else is still in code for now.
 
-- **Model:** `page` (slug + hero + blocks) → `hero` (rich-text title, slides/image) → `button` (internal page or
+- **Model:** `page` (slug + hero + blocks) → `hero` (rich-text title, images/image) → `button` (internal page or
   external URL). The migrations in `contentful/migrations/` are the source of truth, one content type per file.
 - **Content source:**
   - `CONTENT_SOURCE=fixture` renders the committed seed (`contentful/seed/home.json`) with no network or keys.

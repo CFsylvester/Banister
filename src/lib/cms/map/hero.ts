@@ -7,7 +7,7 @@ import { SITE_ROUTES } from "../routes.ts";
 export type ButtonProps = { label: string; href: string; external: boolean };
 export type HeroProps = {
   title: RichTextDocument;
-  /** Stored for the owner's later logic (e.g. hide slides when off); not acted on yet. */
+  /** Stored for the owner's later logic (e.g. hide the slideshow when off); not acted on yet. */
   isAnimated: boolean;
   media: { kind: "slides" | "image"; images: string[] };
 };
@@ -64,8 +64,8 @@ export function mapHero(page: CmsEntry<PageFields>): HeroProps {
   const hasText = title.content.some((p) => p.nodeType === "paragraph" && (p.content ?? []).some((c) => c.nodeType === "text" && !!c.value?.trim()));
   if (!hasText) throw new ContentError(hero.contentType, hero.id, "title", "has no text — add a line of text (buttons alone don't make a heading)");
 
-  // Slides win: if slides has images use them (≥ 3), otherwise the single image is required (migration 0002).
-  const slides = hero.fields.slides ?? [];
+  // Images win: if `images` has entries use them as the slideshow (≥ 3), otherwise the single `image` (migration 0002).
+  const images = hero.fields.images ?? [];
   // An asset with no file (or a non-image) would otherwise fail deep in the path rule without naming the hero.
   const path = (field: string) => (a: CmsAsset) => {
     const supported = (() => { try { extFor(a.contentType); return true; } catch { return false; } })();
@@ -74,13 +74,13 @@ export function mapHero(page: CmsEntry<PageFields>): HeroProps {
     return localAssetPath(a);
   };
   let out: HeroProps["media"];
-  if (slides.length) {
+  if (images.length) {
     // Unpublished images are dropped by the delivery API, so the count is of *published* images.
-    if (slides.length < 3) throw new ContentError(hero.contentType, hero.id, "slides", "needs at least 3 published images");
-    out = { kind: "slides", images: slides.map(path("slides")) };
+    if (images.length < 3) throw new ContentError(hero.contentType, hero.id, "images", "needs at least 3 published images");
+    out = { kind: "slides", images: images.map(path("images")) };
   } else if (hero.fields.image) {
     out = { kind: "image", images: [path("image")(hero.fields.image)] };
-  } else throw new ContentError(hero.contentType, hero.id, "slides/image", "needs slides (3+ images) or an image");
+  } else throw new ContentError(hero.contentType, hero.id, "images/image", "needs images (3+) or an image");
 
   return { title, isAnimated: hero.fields.isAnimated ?? true, media: out };
 }

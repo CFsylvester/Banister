@@ -18,22 +18,22 @@ const page = (hero: Partial<HeroFields>): CmsEntry<PageFields> => ({
   fields: { slug: "home", hero: { id: "hero-home", contentType: "hero", fields: {
     title: doc(para(text("We "), text("Build", true), text(" Companies")), embed(btn("b1"))),
     isAnimated: true,
-    slides: [img("a"), img("b"), img("c")],
+    images: [img("a"), img("b"), img("c")],
     ...hero } } },
 });
 
-test("slides map to local image paths in editor order", () => {
+test("images map to local image paths in editor order (shown as the slideshow)", () => {
   assert.deepEqual(mapHero(page({})).media, { kind: "slides", images: ["/cms/a.png", "/cms/b.png", "/cms/c.png"] });
 });
 
-test("slides win over image; image is used when slides is empty", () => {
+test("images win over image; image is used when images is empty", () => {
   assert.equal(mapHero(page({ image: img("x") })).media.kind, "slides");
-  assert.deepEqual(mapHero(page({ slides: [], image: img("x") })).media, { kind: "image", images: ["/cms/x.png"] });
+  assert.deepEqual(mapHero(page({ images: [], image: img("x") })).media, { kind: "image", images: ["/cms/x.png"] });
 });
 
-test("fewer than 3 slides, or no media at all, fails the build naming the hero", () => {
-  assert.throws(() => mapHero(page({ slides: [img("a"), img("b")] })), /hero\/hero-home\.slides needs at least 3 published images/);
-  assert.throws(() => mapHero(page({ slides: [], image: undefined })), /hero\/hero-home\.slides\/image needs slides/);
+test("fewer than 3 images, or no media at all, fails the build naming the hero", () => {
+  assert.throws(() => mapHero(page({ images: [img("a"), img("b")] })), /hero\/hero-home\.images needs at least 3 published images/);
+  assert.throws(() => mapHero(page({ images: [], image: undefined })), /hero\/hero-home\.images\/image needs images/);
 });
 
 test("isAnimated is passed through (behavior decided later)", () => {
@@ -62,12 +62,12 @@ test("a title with only buttons (no text) fails naming the hero", () => {
 
 test("an unsupported image type (e.g. TIFF) fails naming the hero, not deep in the path rule", () => {
   const tiff = { id: "scan", title: "", description: "", contentType: "image/tiff" };
-  assert.throws(() => mapHero(page({ slides: [img("a"), img("b"), tiff] })), /hero\/hero-home\.slides links asset scan \(image\/tiff\)/);
+  assert.throws(() => mapHero(page({ images: [img("a"), img("b"), tiff] })), /hero\/hero-home\.images links asset scan \(image\/tiff\)/);
 });
 
 test("a slide asset without an image file fails naming the hero and field", () => {
   const noFile = { id: "empty", title: "", description: "", contentType: "" };
-  assert.throws(() => mapHero(page({ slides: [img("a"), img("b"), noFile] })), /hero\/hero-home\.slides links asset empty, which isn't a supported image/);
+  assert.throws(() => mapHero(page({ images: [img("a"), img("b"), noFile] })), /hero\/hero-home\.images links asset empty, which isn't a supported image/);
 });
 
 test("External buttons need an https URL; each page type requires its own field", () => {

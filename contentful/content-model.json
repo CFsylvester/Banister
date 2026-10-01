@@ -177,8 +177,8 @@
           "omitted": false
         },
         {
-          "id": "slides",
-          "name": "Slides",
+          "id": "images",
+          "name": "Images",
           "type": "Array",
           "localized": false,
           "required": false,
@@ -187,7 +187,7 @@
               "size": {
                 "min": 3
               },
-              "message": "Slides need at least 3 images"
+              "message": "Add at least 3 images"
             }
           ],
           "disabled": false,

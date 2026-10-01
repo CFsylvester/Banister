@@ -2,7 +2,7 @@
 // sync-assets.mjs — before `next build`, put every image the site REFERENCES into public/cms/<assetId>.<ext>,
 // using the same path rule as the render path (src/lib/cms/asset-path.ts). Research R7: images are copied into
 // the static build so the live site never depends on Contentful's CDN. Only referenced images are synced
-// (heroes' slides + image), so an unrelated upload elsewhere in the space can't break or bloat the build;
+// (heroes' images + image), so an unrelated upload elsewhere in the space can't break or bloat the build;
 // files no longer referenced are pruned. Revision stamps live in .cache/cms/, not in the shipped folder.
 //   CONTENT_SOURCE=fixture    → copy the files listed in contentful/seed/home.json
 //   CONTENT_SOURCE=contentful → fetch via the Content Delivery API (read token only)
@@ -29,11 +29,11 @@ if (src === "fixture") {
   const { createClient } = await import("contentful");
   const client = createClient({ space: process.env.CONTENTFUL_SPACE_ID, accessToken: process.env.CONTENTFUL_DELIVERY_TOKEN,
     environment: process.env.CONTENTFUL_ENVIRONMENT || "master" }).withoutUnresolvableLinks;
-  // Referenced images: every published hero's slides + image (the only image fields in the model today).
+  // Referenced images: every published hero's images + image (the only image fields in the model today).
   const assets = new Map();
   for (let skip = 0; ; skip += 100) {
     const page = await client.getEntries({ content_type: "hero", include: 1, limit: 100, skip });
-    for (const h of page.items) for (const a of [...(h.fields.slides ?? []), h.fields.image].filter(Boolean)) assets.set(a.sys.id, a);
+    for (const h of page.items) for (const a of [...(h.fields.images ?? []), h.fields.image].filter(Boolean)) assets.set(a.sys.id, a);
     if (skip + page.items.length >= page.total) break;
   }
   for (const a of assets.values()) {

@@ -34,7 +34,7 @@ export type HeroFields = {
   internalName?: string;
   title?: RichTextDocument;
   isAnimated?: boolean;
-  slides?: CmsAsset[];
+  images?: CmsAsset[];
   image?: CmsAsset;
 };
 export type PageFields = { internalName?: string; slug?: string; hero?: CmsEntry<HeroFields>; blocks?: CmsEntry<unknown>[] };

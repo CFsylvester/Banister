@@ -1,9 +1,9 @@
 // 0002-create-hero — ONE content model holding all hero content (owner, 2026-09-30). Not a block.
 //   title      rich text: bold only (renders teal); `button` entries embeddable inline or on their own line
 //   isAnimated yes/no — stored now; what it does is decided later
-//   slides     ≥ 3 images — used when filled ("slides win")
-//   image      one image  — used when slides is empty
-// "Slides or image must be filled" is enforced by the site build (src/lib/cms/map/hero.ts) — Contentful can't
+//   images     ≥ 3 images — used when filled ("images win"; shown as the slideshow)
+//   image      one image  — used when images is empty
+// "Images or image must be filled" is enforced by the site build (src/lib/cms/map/hero.ts) — Contentful can't
 // make a field required conditionally. Needs button (0001).
 // Conventions: agents-kit contentful skill + references/naming-and-modeling.md.
 // Widget IDs: node_modules/contentful-management/dist/esm/constants/editor-interface-defaults/controls-defaults.mjs.
@@ -37,14 +37,14 @@ const run: MigrationFunction = (migration) => {
   hero.createField("isAnimated").name("Animated").type("Boolean").required(true);
   hero.changeFieldControl("isAnimated", "builtin", "boolean", { trueLabel: "Yes", falseLabel: "No", helpText: "Animate the hero media." });
 
-  hero.createField("slides").name("Slides").type("Array").required(false)
+  hero.createField("images").name("Images").type("Array").required(false)
     .items({ type: "Link", linkType: "Asset", validations: IMAGE_RULES })
-    .validations([{ size: { min: 3 }, message: "Slides need at least 3 images" }]);
-  hero.changeFieldControl("slides", "builtin", "assetLinksEditor",
-    { helpText: "At least 3 images; drag to reorder. If filled, slides are shown (Image is ignored)." });
+    .validations([{ size: { min: 3 }, message: "Add at least 3 images" }]);
+  hero.changeFieldControl("images", "builtin", "assetLinksEditor",
+    { helpText: "At least 3 images; drag to reorder. If filled, these are shown (Image is ignored)." });
 
   hero.createField("image").name("Image").type("Link").linkType("Asset").required(false)
     .validations(IMAGE_RULES);
-  hero.changeFieldControl("image", "builtin", "assetLinkEditor", { helpText: "Shown when Slides is empty. One image." });
+  hero.changeFieldControl("image", "builtin", "assetLinkEditor", { helpText: "Shown when Images is empty. One image." });
 };
 export default run;
