@@ -1,7 +1,7 @@
 import "server-only";
 // Content source (specs/001-contentful-cms R2/R6; specs/002-vercel-publishing). Reads are cached with
-// `'use cache'` + cacheLife('max') + cacheTag(CMS_TAG); a Contentful publish calls revalidateTag(CMS_TAG) through
-// /api/revalidate so the next request renders fresh content. Docs: node_modules/next/dist/docs/01-app/
+// `'use cache'` + cacheLife('cms') + cacheTag(CMS_TAG); a Contentful publish calls revalidateTag(CMS_TAG) through
+// /api/revalidate/ so the next full page load renders fresh content. Docs: node_modules/next/dist/docs/01-app/
 // 03-api-reference/04-functions/cacheTag.md, cacheLife.md, revalidateTag.md.
 //   CONTENT_SOURCE=fixture    → contentful/seed/*.json (no network, no credentials; used by CI + pixel gates)
 //   CONTENT_SOURCE=contentful → Content Delivery API (default). Needs CONTENTFUL_SPACE_ID +
@@ -70,7 +70,7 @@ export const CMS_TAG = "cms";
 /** A page by its slug ("home" = the site root). Slugs are unique (migration 0003); a missing page fails loudly. */
 export async function getPage(slug: string): Promise<CmsEntry<PageFields>> {
   "use cache";
-  cacheLife("max"); // safety-net refresh every 30 days; publishes invalidate it immediately via CMS_TAG
+  cacheLife("cms"); // next.config.ts: hourly safety-net refresh; publishes invalidate it immediately via CMS_TAG
   cacheTag(CMS_TAG);
   if (source() === "fixture") {
     const hit = fixtureEntries("page").find((p) => p.fields?.slug === slug);

@@ -18,12 +18,14 @@ Set `CONTENT_SOURCE=fixture` (or Contentful keys) in `.envrc` (direnv) first; se
 
 - Vercel's Git integration builds and deploys every push: previews for branches, production from `main`.
 - **Vercel project environment variables (Production):** `CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`,
-  `CONTENTFUL_ENVIRONMENT` (set to `master`), `REVALIDATE_SECRET`. The management token is never set on Vercel.
+  `CONTENTFUL_ENVIRONMENT` (set to `master`), `REVALIDATE_SECRET`, and `LIVE_ENVIRONMENTS` only if `cms:webhook`
+  reports that `master` is an alias. The management token is never set on Vercel.
 - **Publish → live:** a Contentful webhook (filtered to `master`, sending `REVALIDATE_SECRET` as a secret header)
-  calls `POST /api/revalidate`. That marks all CMS content stale (`revalidateTag("cms", { expire: 0 })`), so the
-  next visitor gets fresh content. Create or update the webhook once the site has a URL:
+  calls `POST /api/revalidate/` (trailing slash). That marks all CMS content stale (`revalidateTag("cms", { expire: 0 })`),
+  so the next full page load gets fresh content (a tab already open may keep its client-side copy for up to 5 minutes
+  while navigating within the site). An hourly background refresh is the safety net if a webhook is ever missed. Create or update the webhook once the site has a URL:
   ```bash
-  pnpm cms:webhook --url https://<site>/api/revalidate --env master --approve
+  pnpm cms:webhook --url https://<site>/api/revalidate/ --env master --approve
   ```
 - **Domain:** stays at its current DNS provider. Add the A (root) or CNAME (subdomain) record Vercel shows under
   Project → Settings → Domains.

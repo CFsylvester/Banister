@@ -27,4 +27,4 @@ jobs:
       - run: pnpm build # offline fixture content: no Contentful secrets in CI
         env:
           CONTENT_SOURCE: fixture
-      - run: npx tsc --noEmit # after build: Next generates route types during the build
+      - run: pnpm exec tsc --noEmit # after build: Next generates route types during the build
