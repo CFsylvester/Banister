@@ -29,6 +29,8 @@ type SeedFile = {
   assets: { id: string; file: string; title: string; description: string }[];
   entries: { id: string; contentType: string; fields: Record<string, unknown> }[];
 };
+// Read once per server process: the seed is fixed for a deployment, so a revalidate re-renders from the same
+// fixture (edit the seed → restart the server to see it).
 let fixtureCache: { byId: Map<string, Node> } | null = null;
 function fixture() {
   if (fixtureCache) return fixtureCache;

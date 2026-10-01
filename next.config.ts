@@ -6,17 +6,19 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Enables `'use cache'` + cacheTag/cacheLife — how CMS reads are cached and invalidated on publish.
   cacheComponents: true,
-  // CMS reads (src/lib/cms/source.ts): publishes invalidate them immediately via revalidateTag; this hourly
-  // background refresh is only a safety net for a missed or raced webhook (cacheLife.md, "Custom cache profiles").
+  // CMS reads (src/lib/cms/source.ts): publishes invalidate them immediately via revalidateTag; the hourly
+  // background refresh (first request after the hour still gets the old copy) is only a safety net for a missed webhook (cacheLife.md, "Custom cache profiles").
   cacheLife: {
     cms: { stale: 300, revalidate: 60 * 60, expire: 60 * 60 * 24 * 365 },
   },
   // Keep the /about/ style URLs the site already uses. This makes /api/revalidate 308 to /api/revalidate/, so the
   // Contentful webhook must call the trailing-slash URL (scripts/cms/webhook.mjs enforces it).
   trailingSlash: true,
-  // CONTENT_SOURCE=fixture reads these at runtime (e.g. on a Vercel preview), so ship them with the server
-  // (05-config/01-next-config-js/output.md, "outputFileTracingIncludes").
-  outputFileTracingIncludes: { "/*": ["./contentful/seed/**/*", "./design/assets/**/*"] },
+  // CONTENT_SOURCE=fixture reads these at runtime (e.g. a Vercel preview without CMS keys), so ship them with the
+  // server — only for fixture builds; Contentful builds don't need them (output.md, "outputFileTracingIncludes").
+  ...(process.env.CONTENT_SOURCE === "fixture"
+    ? { outputFileTracingIncludes: { "/*": ["./contentful/seed/**/*", "./design/assets/**/*"] } }
+    : {}),
 };
 
 export default nextConfig;

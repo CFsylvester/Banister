@@ -3,13 +3,13 @@
 // Marks every CMS-derived page stale with `{ expire: 0 }`, so the next full page load renders fresh content instead
 // of one stale copy (node_modules/next/dist/docs/01-app/03-api-reference/04-functions/revalidateTag.md,
 // "Revalidation Behavior"). Decision logic: src/lib/cms/webhook.ts (unit-tested). The secret is checked BEFORE the
-// body is read, so unauthenticated callers can't make the function buffer a payload.
+// body is read, and the body is read with a byte cap, so callers can't make the function buffer a large payload.
 import { revalidateTag } from "next/cache";
 import { CMS_TAG } from "@/lib/cms/source";
-import { checkCaller, checkEnvironment, liveEnvironments, SECRET_HEADER, type Verdict } from "@/lib/cms/webhook.ts";
+import { checkCaller, checkEnvironment, liveEnvironments, MAX_BODY_BYTES, readCapped, SECRET_HEADER, type Verdict } from "@/lib/cms/webhook.ts";
 
 function refuse(v: Exclude<Verdict, { action: "revalidate" }>) {
-  if (v.status === 500) console.error("[revalidate] REVALIDATE_SECRET is not set for this deployment");
+  if (v.action === "reject" && v.misconfigured) console.error("[revalidate] REVALIDATE_SECRET is not set for this deployment");
   return Response.json({ revalidated: false, reason: v.reason }, { status: v.status });
 }
 
@@ -20,7 +20,9 @@ export async function POST(request: Request) {
     contentLength: request.headers.get("content-length"),
   });
   if (caller.action !== "revalidate") return refuse(caller);
-  const env = checkEnvironment(await request.text(), liveEnvironments(process.env));
+  const body = await readCapped(request.body, MAX_BODY_BYTES);
+  if (body === null) return refuse({ action: "reject", status: 413, reason: "payload too large" });
+  const env = checkEnvironment(body, liveEnvironments(process.env));
   if (env.action !== "revalidate") return refuse(env);
   revalidateTag(CMS_TAG, { expire: 0 });
   return Response.json({ revalidated: true, tag: CMS_TAG, now: Date.now() });

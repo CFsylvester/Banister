@@ -17,9 +17,9 @@ deferred to [issue #3](https://github.com/CFsylvester/Banister/issues/3); scope 
 
 ## Design (what was built)
 - `next.config.ts`: `cacheComponents: true`, plus a `cms` cache profile (stale 5 min, background refresh hourly, expire 1 year). Static export and `basePath` removed. `trailingSlash` is kept, so the endpoint is `/api/revalidate/`; the slash-less path 308-redirects. `outputFileTracingIncludes` ships the fixture files for preview builds.
-- `src/lib/cms/source.ts`: `getPage()` is `'use cache'`, with `cacheLife("cms")` and `cacheTag("cms")`. If a webhook is ever missed, the hourly refresh is the safety net.
-- `src/app/api/revalidate/route.ts`: `POST` runs `checkCaller()` before reading the body (sha256 + constant-time secret compare; the size is capped at 64 KB by Content-Length). After reading, `checkEnvironment()` accepts `CONTENTFUL_ENVIRONMENT` plus any `LIVE_ENVIRONMENTS`, for an alias target. Only then does it call `revalidateTag("cms", { expire: 0 })`. Errors return generic reasons; a missing secret is logged on the server. The logic is in `src/lib/cms/webhook.ts` (unit-tested).
-- `scripts/cms/webhook.mjs` (`pnpm cms:webhook`) maintains exactly one webhook and stops if it finds duplicates. The webhook has:
+- `src/lib/cms/source.ts`: `getPage()` is `'use cache'`, with `cacheLife("cms")` and `cacheTag("cms")`. If a webhook is ever missed, the background refresh catches it within about an hour (the first request after the hour still gets the old copy).
+- `src/app/api/revalidate/route.ts`: `POST` runs `checkCaller()` before reading the body (sha256 + constant-time secret compare; a declared Content-Length over 64 KB is refused). The body is then read with a 64 KB byte cap, which also covers chunked bodies. After reading, `checkEnvironment()` accepts `CONTENTFUL_ENVIRONMENT` plus any `LIVE_ENVIRONMENTS`, for an alias target. Only then does it call `revalidateTag("cms", { expire: 0 })`. Errors return generic reasons. A missing secret returns the same 401 as a wrong one and is logged on the server. The logic is in `src/lib/cms/webhook.ts` (unit-tested).
+- `scripts/cms/webhook.mjs` (`pnpm cms:webhook`) maintains one webhook per environment, matched by exact name, and stops if it finds duplicates. It validates the URL by parsing it, and after an alias change it must be re-run. The webhook has:
   - the URL `/api/revalidate/`; any other form is refused;
   - the topics `*.publish` and `*.unpublish`;
   - a filter `sys.environment.sys.id in [env, alias target]`;
@@ -40,11 +40,12 @@ Sources (first-party, verified 2026-10-01):
 | Production server: content changed, no publish | Still serves the cached page ("Companies") |
 | `POST /api/revalidate` (no slash) | 308 (hence the slash URL) |
 | `POST /api/revalidate/`, wrong secret | 401 `unauthorized` |
-| Right secret, 70 KB body | 413 |
+| Right secret, 70 KB body (with Content-Length / chunked, none) | 413 / 413 |
+| `REVALIDATE_SECRET` unset on the server | 401 `unauthorized` (same as a wrong secret); logged on the server |
 | Publish payload for sandbox `mig-001` | 202, ignored; page unchanged |
-| Publish payload for `master` | 200; **very next request** shows the new content ("Careers") |
+| Publish payload for `master` | 200; the next full page load shows the new content ("Careers") (single local process) |
 | Pixel gates on the server build | ALL PAGES MATCH (35/35) and ALL INTERACTIONS MATCH (10/10), 0%. On one run `industries` was 0.581% at the wide width; two re-runs were 0%. It isn't a CMS page, so this is treated as a flake. |
-| `pnpm test` / lint / tsc (after `next build` or `next typegen`) / clean fixture build | 22/22 · clean · clean · pass |
+| `pnpm test` / lint / tsc (after `next build` or `next typegen`) / clean fixture build | 23/23 · clean · clean · pass |
 
 ## Pending (needs Banister and the owner)
 1. Banister creates the Vercel Pro team and invites Claire (doc sent separately).

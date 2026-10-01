@@ -23,7 +23,9 @@ Set `CONTENT_SOURCE=fixture` (or Contentful keys) in `.envrc` (direnv) first; se
 - **Publish → live:** a Contentful webhook (filtered to `master`, sending `REVALIDATE_SECRET` as a secret header)
   calls `POST /api/revalidate/` (trailing slash). That marks all CMS content stale (`revalidateTag("cms", { expire: 0 })`),
   so the next full page load gets fresh content (a tab already open may keep its client-side copy for up to 5 minutes
-  while navigating within the site). An hourly background refresh is the safety net if a webhook is ever missed. Create or update the webhook once the site has a URL:
+  while navigating within the site). If a webhook is ever missed, a background refresh picks the change up within
+  about an hour (on the first visit after the hour). If `master` is an environment alias, re-run `cms:webhook` and
+  update `LIVE_ENVIRONMENTS` after every alias change. Create or update the webhook once the site has a URL:
   ```bash
   pnpm cms:webhook --url https://<site>/api/revalidate/ --env master --approve
   ```

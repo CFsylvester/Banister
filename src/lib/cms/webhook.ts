@@ -14,7 +14,7 @@ export const MAX_BODY_BYTES = 64 * 1024;
 export type Verdict =
   | { action: "revalidate" }
   | { action: "ignore"; status: 202; reason: string }
-  | { action: "reject"; status: 401 | 413 | 500; reason: string };
+  | { action: "reject"; status: 401 | 413; reason: string; misconfigured?: true };
 
 // Hash both sides first: equal-length digests, so the comparison leaks neither content nor length.
 const digest = (v: string) => createHash("sha256").update(v).digest();
@@ -22,15 +22,31 @@ const sameSecret = (a: string, b: string) => timingSafeEqual(digest(a), digest(b
 
 /** Step 1, before reading the body: is the caller Contentful (right secret), and is the request small enough? */
 export function checkCaller(input: { secretHeader: string | null; expectedSecret: string | undefined; contentLength: string | null }): Verdict {
-  if (!input.expectedSecret) return { action: "reject", status: 500, reason: "server not configured" };
+  // A missing server secret looks like any other auth failure to the caller; the route logs it server-side.
+  if (!input.expectedSecret) return { action: "reject", status: 401, reason: "unauthorized", misconfigured: true };
   if (!input.secretHeader || !sameSecret(input.secretHeader, input.expectedSecret)) return { action: "reject", status: 401, reason: "unauthorized" };
-  if (Number(input.contentLength ?? 0) > MAX_BODY_BYTES) return { action: "reject", status: 413, reason: "payload too large" };
+  const declared = Number(input.contentLength); // absent or garbage → unknown; readCapped() enforces the cap while reading
+  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) return { action: "reject", status: 413, reason: "payload too large" };
   return { action: "revalidate" };
+}
+
+/** Reads the body but stops once it passes `max` bytes (null), so chunked bodies without Content-Length are capped too. */
+export async function readCapped(body: ReadableStream<Uint8Array> | null, max = MAX_BODY_BYTES): Promise<string | null> {
+  if (!body) return "";
+  const reader = body.getReader(), chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > max) { await reader.cancel(); return null; }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString("utf8");
 }
 
 /** Step 2, after reading the body: was the publish in an environment this site reads? */
 export function checkEnvironment(rawBody: string, live: readonly string[]): Verdict {
-  if (Buffer.byteLength(rawBody) > MAX_BODY_BYTES) return { action: "reject", status: 413, reason: "payload too large" };
   let env: unknown;
   try { env = (JSON.parse(rawBody || "{}") as { sys?: { environment?: { sys?: { id?: unknown } } } })?.sys?.environment?.sys?.id; }
   catch { env = undefined; } // an unparsable body can't name another environment; the secret already matched
