@@ -1,38 +1,47 @@
 # Banister International — website
 
-Next.js 16 (App Router) + Tailwind v4 + TypeScript, built from `design/banister-v2.dc.html` and deployed to
-GitHub Pages at **https://cfsylvester.github.io/Banister/**.
+Next.js 16 (App Router, Cache Components) + Tailwind v4 + TypeScript, built from `design/banister-v2.dc.html`,
+hosted on **Vercel**. Content comes from Contentful; publishing in Contentful updates the live site within seconds.
 
-Requires Node ≥ 22.13 (pnpm 11): `nvm use 22`.
+Requires Node 22 (`nvm use 22`; Vercel deploys on 22.x via `package.json` engines).
 
 ## Develop
 
 ```bash
 pnpm install
-pnpm dev            # http://localhost:3000 (no base path)
+pnpm dev            # http://localhost:3000
 ```
 
-## Deploy (GitHub Pages)
+Set `CONTENT_SOURCE=fixture` (or Contentful keys) in `.envrc` (direnv) first; see Content below.
 
-The site is a **static export** (`output: "export"` in `next.config.ts`) served under the `/Banister` sub-path.
+## Deploy (Vercel)
 
-- Every push to `main` runs `.github/workflows/pages.yml`, which builds with `PAGES_BASE_PATH` from
-  `actions/configure-pages` and publishes `out/`.
-- Repo setting required: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-- Links via `next/link` get the base path automatically; images must go through `asset()` (`src/lib/asset.ts`) —
-  the shared `<Img>` component already does.
-- No server at runtime: no route handlers, server actions, or request-time `searchParams` (the contact page reads
-  `?aud=` client-side). Forms currently simulate submission — wire them to a hosted form/API endpoint.
+- Vercel's Git integration builds and deploys every push: previews for branches, production from `main`.
+- **Vercel project environment variables (Production):** `CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`,
+  `CONTENTFUL_ENVIRONMENT` (set to `master`), `REVALIDATE_SECRET`, and `LIVE_ENVIRONMENTS` only if `cms:webhook`
+  reports that `master` is an alias. The management token is never set on Vercel.
+- **Publish → live:** a Contentful webhook (filtered to `master`, sending `REVALIDATE_SECRET` as a secret header)
+  calls `POST /api/revalidate/` (trailing slash). That marks all CMS content stale (`revalidateTag("cms", { expire: 0 })`),
+  so the next full page load gets fresh content (a tab already open may keep its client-side copy for up to 5 minutes
+  while navigating within the site). If a webhook is ever missed, a background refresh picks the change up within
+  about an hour (on the first visit after the hour). If `master` is an environment alias, re-run `cms:webhook` and
+  update `LIVE_ENVIRONMENTS` after every alias change. Create or update the webhook once the site has a URL:
+  ```bash
+  pnpm cms:webhook --url https://<site>/api/revalidate/ --env master --approve
+  ```
+- **Domain:** stays at its current DNS provider. Add the A (root) or CNAME (subdomain) record Vercel shows under
+  Project → Settings → Domains.
+- CI (`.github/workflows/ci.yml`) runs tests, lint, the fixture build and tsc on every push and PR.
 
-Preview the exact Pages build locally:
+Production build locally (what the pixel gates check):
 
 ```bash
-pnpm build:pages && pnpm preview   # http://localhost:3217/Banister/
+CONTENT_SOURCE=fixture pnpm build && pnpm preview   # http://localhost:3217/
 ```
 
 ## Content (Contentful)
 
-The homepage hero comes from Contentful at **build time**; everything else is still in code for now.
+The homepage hero comes from Contentful (cached, refreshed on publish); everything else is still in code for now.
 
 - **Model:** `page` (slug + hero + blocks) → `hero` (rich-text title, images/image) → `button` (internal page or
   external URL). The migrations in `contentful/migrations/` are the source of truth, one content type per file.

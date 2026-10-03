@@ -1,19 +1,24 @@
 import type { NextConfig } from "next";
 
-// GitHub Pages serves this repo at https://cfsylvester.github.io/Banister/, so production builds are a static
-// export under a sub-path. The deploy workflow passes the path from actions/configure-pages' `base_path` output
-// (https://github.com/actions/configure-pages/blob/v6.0.0/action.yml). Unset → "" for local `next dev`.
-// Static export + basePath: node_modules/next/dist/docs/01-app/02-guides/static-exports.md and
-// node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/basePath.md.
-const basePath = process.env.PAGES_BASE_PATH ?? "";
-
+// Hosted on Vercel (Node runtime), not a static export: Contentful publishes refresh pages on demand
+// (specs/002-vercel-publishing). Docs: node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/
+// cacheComponents.md, 04-functions/cacheTag.md, 04-functions/revalidateTag.md.
 const nextConfig: NextConfig = {
-  output: "export",
-  basePath,
-  // Emit /about/index.html (not about.html) so Pages serves /Banister/about/ without a server rewrite.
+  // Enables `'use cache'` + cacheTag/cacheLife — how CMS reads are cached and invalidated on publish.
+  cacheComponents: true,
+  // CMS reads (src/lib/cms/source.ts): publishes invalidate them immediately via revalidateTag; the hourly
+  // background refresh (first request after the hour still gets the old copy) is only a safety net for a missed webhook (cacheLife.md, "Custom cache profiles").
+  cacheLife: {
+    cms: { stale: 300, revalidate: 60 * 60, expire: 60 * 60 * 24 * 365 },
+  },
+  // Keep the /about/ style URLs the site already uses. This makes /api/revalidate 308 to /api/revalidate/, so the
+  // Contentful webhook must call the trailing-slash URL (scripts/cms/webhook.mjs enforces it).
   trailingSlash: true,
-  // next/link applies basePath itself; plain <img src="/assets/…"> does not, so expose it to src/lib/asset.ts.
-  env: { NEXT_PUBLIC_BASE_PATH: basePath },
+  // CONTENT_SOURCE=fixture reads these at runtime (e.g. a Vercel preview without CMS keys), so ship them with the
+  // server — only for fixture builds; Contentful builds don't need them (output.md, "outputFileTracingIncludes").
+  ...(process.env.CONTENT_SOURCE === "fixture"
+    ? { outputFileTracingIncludes: { "/*": ["./contentful/seed/**/*", "./design/assets/**/*"] } }
+    : {}),
 };
 
 export default nextConfig;

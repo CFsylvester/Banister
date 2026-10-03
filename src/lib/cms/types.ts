@@ -9,6 +9,8 @@ export type CmsAsset = {
   description: string;
   /** MIME type of the actual bytes (image/png, image/jpeg, …) — decides the local file extension. */
   contentType: string;
+  /** Contentful CDN URL (https) for live content; absent for the offline fixture, which uses local copies. */
+  url?: string;
 };
 
 export type CmsEntry<F> = { id: string; contentType: string; fields: F };

@@ -14,8 +14,9 @@ export function normalize(v: unknown, resolveLink: (sys: Sys) => unknown, path: 
   if (typeof n.nodeType === "string") return normalizeRichText(n as RichNode, resolveLink, path); // rich text
   if (n.sys?.type === "Link") return normalize(resolveLink(n.sys), resolveLink, path);
   if (n.sys?.type === "Asset") {
-    const f = n.fields as { title?: string; description?: string; file?: { contentType?: string } };
-    return { id: n.sys.id!, title: f.title ?? "", description: f.description ?? "", contentType: f.file?.contentType ?? "" } satisfies CmsAsset;
+    const f = n.fields as { title?: string; description?: string; file?: { contentType?: string; url?: string } };
+    const url = f.file?.url ? (f.file.url.startsWith("//") ? `https:${f.file.url}` : f.file.url) : undefined;
+    return { id: n.sys.id!, title: f.title ?? "", description: f.description ?? "", contentType: f.file?.contentType ?? "", ...(url ? { url } : {}) } satisfies CmsAsset;
   }
   if (n.sys?.type === "Entry") {
     const id = n.sys.id!, seen = path.has(id), next = new Set(path).add(id);

@@ -71,7 +71,9 @@ export function mapHero(page: CmsEntry<PageFields>): HeroProps {
     const supported = (() => { try { extFor(a.contentType); return true; } catch { return false; } })();
     if (!supported) throw new ContentError(hero.contentType, hero.id, field,
       `links asset ${a.id}${a.contentType ? ` (${a.contentType})` : ""}, which isn't a supported image (png, jpeg, webp, gif, svg, avif)`);
-    return localAssetPath(a);
+    // Live content: Contentful's image CDN (an image published after the build must still render).
+    // Offline fixture: the local copy synced into public/cms at build.
+    return a.url ?? localAssetPath(a);
   };
   let out: HeroProps["media"];
   if (images.length) {

@@ -1,5 +1,13 @@
 <!--
-Sync Impact Report
+Sync Impact Report — 2.0.0 (2026-10-01)
+- Version: 1.0.0 → 2.0.0 (MAJOR: Principle V redefined). Owner decision 2026-10-01: host on Vercel so a Contentful
+  publish reaches the live site in seconds. Build-time-only / any-static-host is retired; content is cached and
+  revalidated on publish (specs/002-vercel-publishing). Domain stays at its own DNS provider.
+- Changed: Principle II stack line, Principle IV (production build = `pnpm build` + `pnpm preview`, no basePath),
+  Principle V, Secrets (REVALIDATE_SECRET), Definition of done commands.
+- Templates: no structural change needed ✅.
+
+Sync Impact Report — 1.0.0
 - Version: template (unratified) → 1.0.0 (initial ratification)
 - Source: agents-kit preset `.specify/presets/agents-kit/templates/constitution.md`, adapted to this repo
 - Principles: I Spec-first · II Detect before prescribe · III Verify, don't assume · IV Design fidelity is
@@ -25,8 +33,8 @@ implement → validate); the spec is the source of truth. Trivial changes (copy 
 the lifecycle. *Spec quality = output quality.*
 
 ### II. Detect before prescribe
-Match what this repo actually uses: **Next.js 16 App Router + TypeScript strict + Tailwind v4, single app,
-static export**. Divergences from the agents-kit canonical stack (SCSS tokens, monorepo, Vercel) are
+Match what this repo actually uses: **Next.js 16 App Router + TypeScript strict + Tailwind v4, single app, hosted
+on Vercel with Cache Components**. Divergences from the agents-kit canonical stack (SCSS tokens, monorepo) are
 owner decisions recorded here — new work MUST follow the repo, not the kit default, and MUST flag any new
 divergence rather than silently introducing it.
 
@@ -38,23 +46,27 @@ and the pixel gates below. Version-specific API guidance MUST come from current 
 ### IV. Design fidelity is measured
 The approved design (`design/banister-v2.dc.html`) is the visual source of truth. Any change that can
 affect rendering MUST keep `pnpm match:pages` (7 pages × 5 widths) and `pnpm match:interactions` (10
-states) at **MATCH, threshold 0.1%**, run against the exact production build (`pnpm build:pages &&
+states) at **MATCH, threshold 0.1%**, run against the production build (`CONTENT_SOURCE=fixture pnpm build &&
 pnpm preview`). A deliberate visual change updates the design first, or is recorded as an approved
 deviation in its spec. The gate decides "matches" — never an eyeball.
 
-### V. Content is data, layout is code
+### V. Content is data, layout is code — published content goes live in seconds
 Editorial content (copy, images, lists, SEO) belongs in the CMS, not in components; components own only
-layout, motion, and interaction. Content is fetched at **build time** — no request-time server features
-(route handlers relying on Request, server actions, cookies, request-time `searchParams`), so the site
-stays deployable to any static host.
+layout, motion, and interaction. Every CMS read MUST be cached (`'use cache'` + `cacheLife` + the shared `cms`
+cache tag) and MUST be invalidated by a publish: a Contentful webhook, filtered to the live environment and
+authenticated with a secret header, calls `/api/revalidate`, which revalidates the tag so the next request renders
+fresh content. No other request-time server features without a spec. The offline fixture
+(`CONTENT_SOURCE=fixture`) MUST keep working with no network or credentials (CI and the pixel gates use it).
 
 ### VI. Plan-and-approve before irreversible work
 Content-model migrations, schema changes, repository/host settings, and deploys MUST be proposed as a
 concrete plan, approved by the owner, and applied to a sandbox/branch first.
 
 ## Non-negotiables (acceptance gates)
-- **Secrets:** never in tracked files — env-var references only. CMA/management tokens are build/CI-only
-  and MUST never reach the client bundle; only values safe to publish may use `NEXT_PUBLIC_`.
+- **Secrets:** never in tracked files — env-var references only (direnv `.envrc` locally; Vercel project
+  environment variables in production). The management token is for the setup scripts only and is never set on
+  Vercel. `REVALIDATE_SECRET` is server-only. Nothing secret reaches the client bundle; only values safe to publish
+  may use `NEXT_PUBLIC_`.
 - **Next.js:** Server Components by default; `'use client'` only at interactive leaves; no server-only or
   secret code reachable from a Client Component.
 - **Styling (Tailwind v4 — owner-chosen divergence from the kit's SCSS default, 2026-09-29):** colours and
@@ -73,9 +85,9 @@ concrete plan, approved by the owner, and applied to a sandbox/branch first.
   names; reduced-motion respected where the design does.
 
 ## Definition of done (every feature)
-- [ ] `pnpm lint`, `npx tsc --noEmit`, and `pnpm build:pages` pass (commands cited in the PR).
+- [ ] `pnpm lint`, `npx tsc --noEmit`, `pnpm test` and `CONTENT_SOURCE=fixture pnpm build` pass (commands cited in the PR).
 - [ ] Pixel gates MATCH at 0.1% against the production build, or an approved deviation is recorded.
-- [ ] No secret reachable from the client bundle (grep the `out/` build for token prefixes).
+- [ ] No secret reachable from the client bundle (grep `.next/static` for secret values).
 - [ ] Styling uses theme tokens or design-exact arbitrary values only.
 - [ ] Server/Client boundaries respected.
 - [ ] Each spec acceptance criterion is validated; this constitution is not violated.
@@ -87,4 +99,4 @@ section added/expanded; PATCH: wording). Every plan's "Constitution Check" gates
 review verifies compliance. Runtime guidance for agents lives in `AGENTS.md` and
 `.specify/memory/project-context.md`.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-09-30
+**Version**: 2.0.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-01

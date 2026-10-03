@@ -1,5 +1,8 @@
 import "server-only";
-// Build-time content source (specs/001-contentful-cms research R1/R2/R6).
+// Content source (specs/001-contentful-cms R2/R6; specs/002-vercel-publishing). Reads are cached with
+// `'use cache'` + cacheLife('cms') + cacheTag(CMS_TAG); a Contentful publish calls revalidateTag(CMS_TAG) through
+// /api/revalidate/ so the next full page load renders fresh content. Docs: node_modules/next/dist/docs/01-app/
+// 03-api-reference/04-functions/cacheTag.md, cacheLife.md, revalidateTag.md.
 //   CONTENT_SOURCE=fixture    → contentful/seed/*.json (no network, no credentials; used by CI + pixel gates)
 //   CONTENT_SOURCE=contentful → Content Delivery API (default). Needs CONTENTFUL_SPACE_ID +
 //                               CONTENTFUL_DELIVERY_TOKEN (+ optional CONTENTFUL_ENVIRONMENT, default master),
@@ -8,6 +11,7 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createClient } from "contentful";
+import { cacheLife, cacheTag } from "next/cache";
 import type { TypePageSkeleton } from "@/types/contentful";
 import { sniffImageType } from "./asset-path.ts";
 import { normalize, type Node, type Sys } from "./normalize.ts";
@@ -25,6 +29,8 @@ type SeedFile = {
   assets: { id: string; file: string; title: string; description: string }[];
   entries: { id: string; contentType: string; fields: Record<string, unknown> }[];
 };
+// Read once per server process: the seed is fixed for a deployment, so a revalidate re-renders from the same
+// fixture (edit the seed → restart the server to see it).
 let fixtureCache: { byId: Map<string, Node> } | null = null;
 function fixture() {
   if (fixtureCache) return fixtureCache;
@@ -60,8 +66,14 @@ function client() {
 const noLinks = () => { throw new Error("unexpected unresolved link from the delivery API"); };
 
 // ---------- public API ----------
+/** Every CMS-derived page shares one tag: on a site this size, refreshing all of it on any publish is simplest. */
+export const CMS_TAG = "cms";
+
 /** A page by its slug ("home" = the site root). Slugs are unique (migration 0003); a missing page fails loudly. */
 export async function getPage(slug: string): Promise<CmsEntry<PageFields>> {
+  "use cache";
+  cacheLife("cms"); // next.config.ts: hourly safety-net refresh; publishes invalidate it immediately via CMS_TAG
+  cacheTag(CMS_TAG);
   if (source() === "fixture") {
     const hit = fixtureEntries("page").find((p) => p.fields?.slug === slug);
     if (!hit) throw new Error(`fixture: no page with slug "${slug}"`);
