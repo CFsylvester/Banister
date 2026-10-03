@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { GRID_4, stats } from "@/lib/content";
+import { GRID_4 } from "@/lib/content";
 
 const DURATION = 1600, STAGGER = 150;
 
 /** Count-up stat cards: start when 35% of the grid is visible, ease-out-cubic, 150ms stagger per card. */
-export default function Stats() {
+export default function Stats({ heading, stats }: { heading: string; stats: [number, string, string][] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [t, setT] = useState<{ start: number; now: number } | null>(null);
 
@@ -26,7 +26,7 @@ export default function Stats() {
 
   return (
     <section className="site px-gutter pt-[clamp(56px,7vw,96px)]">
-      <h2 className="m-0 mb-7 text-[clamp(26px,2.4vw,32px)] font-bold text-navy">Our track record</h2>
+      <h2 className="m-0 mb-7 text-[clamp(26px,2.4vw,32px)] font-bold text-navy">{heading}</h2>
       <div ref={ref} className="grid gap-5" style={{ gridTemplateColumns: GRID_4(20) }}>
         {stats.map(([n, suffix, label], i) => {
           const p = t ? Math.max(0, Math.min(1, (t.now - t.start - i * STAGGER) / DURATION)) : 0;

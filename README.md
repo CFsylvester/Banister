@@ -30,6 +30,27 @@ Preview the exact Pages build locally:
 pnpm build:pages && pnpm preview   # http://localhost:3217/Banister/
 ```
 
+## Content (Contentful)
+
+The homepage hero comes from Contentful at **build time**; everything else is still in code for now.
+
+- **Model:** `page` (slug + hero + blocks) → `hero` (rich-text title, images/image) → `button` (internal page or
+  external URL). The migrations in `contentful/migrations/` are the source of truth, one content type per file.
+- **Content source:**
+  - `CONTENT_SOURCE=fixture` renders the committed seed (`contentful/seed/home.json`) with no network or keys.
+    CI and the pixel gates use it.
+  - Otherwise the build reads Contentful using the variables exported by direnv from `.envrc` (git-ignored):
+    `CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`, `CONTENTFUL_ENVIRONMENT`.
+  - The management token (`CONTENTFUL_MANAGEMENT_TOKEN`) is used only by the setup scripts.
+- **Setup scripts:** always target a sandbox first; `master` is refused without `--approve`.
+  ```bash
+  pnpm cms:sandbox mig-001
+  pnpm cms:migrate --env mig-001
+  pnpm cms:seed --env mig-001
+  ```
+- **Model workflow:** edit or add a migration, then run `pnpm cms:model` (replays the migrations into
+  `contentful/content-model.json`) and `pnpm cms:types`. `pnpm test` runs the mapping tests.
+
 ## Verify against the design (pixel-diff)
 
 With `pnpm preview` running:

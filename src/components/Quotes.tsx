@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { quotes } from "@/lib/content";
 
 type Mode = "words" | "slide" | "fade";
 const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -10,7 +9,9 @@ const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)
  * then it fades and advances. Dots jump to a quote and restart the timer.
  * `fadeMs` — the home page fades the outgoing quote over .6s, the industries page over .3s.
  */
-export default function Quotes({ className = "", fadeMs = 600, mode = "words" }: { className?: string; fadeMs?: number; mode?: Mode }) {
+export default function Quotes({ heading, quotes, className = "", fadeMs = 600, mode = "words" }: {
+  heading: string; quotes: { text: string; who: string }[]; className?: string; fadeMs?: number; mode?: Mode;
+}) {
   const [q, setQ] = useState(0);
   const [shown, setShown] = useState(false);
   const [cycle, setCycle] = useState(0);
@@ -26,12 +27,12 @@ export default function Quotes({ className = "", fadeMs = 600, mode = "words" }:
       adv = setTimeout(() => { setQ((x) => (x + 1) % quotes.length); setCycle((c) => c + 1); }, 320);
     }, 7000);
     return () => { clearTimeout(show); clearTimeout(next); clearTimeout(adv); };
-  }, [cycle]);
+  }, [cycle, quotes.length]);
 
   return (
     <section className={`bg-navy ${className}`}>
       <div className="site px-gutter py-[clamp(56px,7vw,88px)]">
-        <h2 className="m-0 mb-8 text-[clamp(26px,2.4vw,32px)] font-bold text-teal">What our clients are saying</h2>
+        <h2 className="m-0 mb-8 text-[clamp(26px,2.4vw,32px)] font-bold text-teal">{heading}</h2>
         <div className="grid max-w-[980px] grid-cols-[72px_minmax(0,1fr)] gap-x-5 gap-y-2">
           <span className="font-[Georgia,serif] text-[110px] leading-[.8] font-extrabold text-teal" aria-hidden="true">“</span>
           <div className="grid" aria-live="polite">

@@ -1,0 +1,343 @@
+{
+  "contentTypes": [
+    {
+      "sys": {
+        "id": "button",
+        "type": "ContentType"
+      },
+      "name": "Button",
+      "displayField": "internalName",
+      "description": "A call-to-action button. Embed it anywhere a rich-text field allows buttons.",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "size": {
+                "min": 3,
+                "max": 100
+              }
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "label",
+          "name": "Label",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "size": {
+                "min": 2,
+                "max": 40
+              }
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "pageType",
+          "name": "Page type",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "in": [
+                "Internal",
+                "External"
+              ]
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "internalPage",
+          "name": "Internal page",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkContentType": [
+                "page"
+              ]
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry"
+        },
+        {
+          "id": "externalUrl",
+          "name": "External URL",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "regexp": {
+                "pattern": "^https://\\S+$"
+              },
+              "message": "A full https:// URL"
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        }
+      ]
+    },
+    {
+      "sys": {
+        "id": "hero",
+        "type": "ContentType"
+      },
+      "name": "Hero",
+      "displayField": "internalName",
+      "description": "The top of a page. Not a block — every page has exactly one.",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "size": {
+                "min": 3,
+                "max": 100
+              }
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "RichText",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "enabledMarks": [
+                "bold"
+              ],
+              "message": "Only bold is allowed — bold words render teal"
+            },
+            {
+              "enabledNodeTypes": [
+                "embedded-entry-inline",
+                "embedded-entry-block"
+              ],
+              "message": "Only text and embedded buttons"
+            },
+            {
+              "nodes": {
+                "embedded-entry-inline": [
+                  {
+                    "linkContentType": [
+                      "button"
+                    ],
+                    "message": "Only buttons can be embedded"
+                  }
+                ],
+                "embedded-entry-block": [
+                  {
+                    "linkContentType": [
+                      "button"
+                    ],
+                    "message": "Only buttons can be embedded"
+                  }
+                ]
+              }
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "isAnimated",
+          "name": "Animated",
+          "type": "Boolean",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "images",
+          "name": "Images",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "size": {
+                "min": 3
+              },
+              "message": "Add at least 3 images"
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "linkType": "Asset",
+            "validations": [
+              {
+                "linkMimetypeGroup": [
+                  "image"
+                ]
+              },
+              {
+                "assetImageDimensions": {
+                  "width": {
+                    "min": 1200
+                  },
+                  "height": {}
+                },
+                "message": "Images must be at least 1200 px wide"
+              },
+              {
+                "assetFileSize": {
+                  "max": 10485760
+                },
+                "message": "Images must be 10 MB or smaller"
+              }
+            ]
+          }
+        },
+        {
+          "id": "image",
+          "name": "Image",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkMimetypeGroup": [
+                "image"
+              ]
+            },
+            {
+              "assetImageDimensions": {
+                "width": {
+                  "min": 1200
+                },
+                "height": {}
+              },
+              "message": "Images must be at least 1200 px wide"
+            },
+            {
+              "assetFileSize": {
+                "max": 10485760
+              },
+              "message": "Images must be 10 MB or smaller"
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        }
+      ]
+    },
+    {
+      "sys": {
+        "id": "page",
+        "type": "ContentType"
+      },
+      "name": "Page",
+      "displayField": "internalName",
+      "description": "A page: one hero, then blocks in drag-and-drop order.",
+      "fields": [
+        {
+          "id": "internalName",
+          "name": "Internal name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "size": {
+                "min": 3,
+                "max": 100
+              }
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "slug",
+          "name": "Slug",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "unique": true
+            },
+            {
+              "regexp": {
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "message": "Lowercase words joined by hyphens, e.g. contact"
+            }
+          ],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "hero",
+          "name": "Hero",
+          "type": "Link",
+          "localized": false,
+          "required": true,
+          "validations": [
+            {
+              "linkContentType": [
+                "hero"
+              ]
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry"
+        },
+        {
+          "id": "blocks",
+          "name": "Blocks",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "size": {
+                "max": 0
+              },
+              "message": "No block types exist yet"
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "linkType": "Entry"
+          }
+        }
+      ]
+    }
+  ]
+}

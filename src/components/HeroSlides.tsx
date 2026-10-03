@@ -2,12 +2,12 @@
 /* eslint-disable @next/next/no-img-element -- see ui.tsx */
 import { useEffect, useState } from "react";
 import { asset } from "@/lib/asset";
-import { heroes } from "@/lib/content";
 
 const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 /** Cross-fading Ken Burns hero: each slide eases to scale(1.06) over 7s, advances every 6s. */
-export default function HeroSlides() {
+/** `slides` are image paths from the CMS (src/lib/cms/map/hero.ts). One image = no slideshow timer. */
+export default function HeroSlides({ slides: heroes }: { slides: string[] }) {
   const [h, setH] = useState(0);
   const [shown, setShown] = useState(false);
   // `cycle` restarts the timers exactly as the design's startHero() does after each advance.
@@ -16,13 +16,13 @@ export default function HeroSlides() {
   useEffect(() => {
     // `shown` is reset to false by whatever bumps `cycle`, so the 40ms re-show below replays the entrance.
     const show = setTimeout(() => setShown(true), 40);
-    if (reduceMotion()) return () => clearTimeout(show);
+    if (reduceMotion() || heroes.length < 2) return () => clearTimeout(show);
     const next = setTimeout(() => { setH((x) => (x + 1) % heroes.length); setShown(false); setCycle((c) => c + 1); }, 6000);
     return () => { clearTimeout(show); clearTimeout(next); };
-  }, [cycle]);
+  }, [cycle, heroes.length]);
 
   return heroes.map((src, i) => (
-    <img key={src} src={asset(src)} alt=""
+    <img key={`${i}-${src}`} src={asset(src)} alt=""
       className="absolute inset-0 h-full w-full object-cover object-[50%_30%]"
       style={{ opacity: i === h ? 1 : 0, transform: i === h && shown ? "scale(1.06)" : "scale(1)", transition: "opacity 1.2s ease, transform 7s linear" }} />
   ));

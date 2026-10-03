@@ -52,3 +52,12 @@ visual-diff-out/
 .claude/skills/speckit-*/
 .bmad-core/
 .bmad-*/
+
+# Contentful: generated types + build-time image downloads (regenerated every build)
+/src/types/contentful/
+/public/cms/
+# direnv (secrets) — already matched by .env*, listed explicitly for clarity
+.envrc
+
+# build caches
+/.cache/

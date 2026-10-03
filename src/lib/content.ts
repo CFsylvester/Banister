@@ -15,7 +15,8 @@ export const nav = [
   { href: "/contact", label: "Contact" },
 ];
 
-export const heroes = ["/assets/hero-tablet.jpg", "/assets/insight-greeting.jpg", "/assets/insight-tablet.jpg"];
+// The homepage hero lives in Contentful (contentful/seed/home.json). Everything else here still feeds
+// sections that are not in the CMS yet (homepage blocks, other pages).
 
 export const stats: [number, string, string][] = [
   [3500, "+", "successful placements"],

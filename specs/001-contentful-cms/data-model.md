@@ -1,5 +1,13 @@
 # Data Model: Contentful content types
 
+> **Superseded for the current slice (2026-09-30).** The owner redesigned the model. What is built now:
+> `page` (internalName, slug, hero, blocks) · `hero` (internalName, title rich text with embedded buttons,
+> isAnimated, images ≥ 3 / image, where images win) · `button` (internalName, label, pageType Internal|External,
+> internalPage → page, externalUrl). Source of truth: `contentful/migrations/0001–0004` and the generated
+> `contentful/content-model.json`. The tables below are the ORIGINAL plan, kept for the later slices
+> (blocks, articles, site settings). Revise them against the owner's model before building those.
+
+
 Conventions (constitution; kit Contentful skill):
 - Content-type IDs are singular `camelCase`. Field IDs are `camelCase`.
 - Every type has a display field (`title`, `name` or `internalName`).

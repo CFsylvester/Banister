@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Quotes from "@/components/Quotes";
 import { Img } from "@/components/ui";
-import { industries } from "@/lib/content";
+import { industries, quotes } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Industries — Banister International" };
 
@@ -22,7 +22,7 @@ export default function IndustriesPage() {
           ))}
         </div>
       </section>
-      <Quotes fadeMs={300} />
+      <Quotes heading="What our clients are saying" quotes={quotes} fadeMs={300} />
     </>
   );
 }

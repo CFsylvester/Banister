@@ -1,12 +1,12 @@
 # Quickstart: prove the CMS integration end to end
 
 Validation guide. Commands and variables are defined in [contracts/env-and-scripts.md](contracts/env-and-scripts.md).
-All Contentful variables live in `.env.local` (git-ignored). They are never written inline in commands
+All Contentful variables live in `.envrc` (direnv, git-ignored). They are never written inline in commands
 or docs.
 
 ## A. Offline (no Contentful account yet): proves the mapping layer and pixel parity
 
-Set `CONTENT_SOURCE` to `fixture` in `.env.local`, then:
+Set `CONTENT_SOURCE` to `fixture` in `.envrc`, then:
 
 ```bash
 nvm use 22 && pnpm install
@@ -22,7 +22,7 @@ Expected:
 
 ## B. Fresh space (owner has created the account, space and tokens)
 
-1. Put the space ID, delivery token and management token in `.env.local`, and remove the fixture
+1. Put the space ID, delivery token and management token in `.envrc`, and remove the fixture
    setting.
 2. Create a sandbox and apply the model there first:
    ```bash
@@ -30,15 +30,14 @@ Expected:
    pnpm cms:migrate --env mig-001        # prints a summary, applies to the sandbox
    pnpm cms:seed --env mig-001
    ```
-3. Point the build at the sandbox: set the environment variable to `mig-001` in `.env.local`. Then:
+3. Point the build at the sandbox: set `CONTENTFUL_ENVIRONMENT` to `mig-001` in `.envrc` (direnv). Then:
    ```bash
    pnpm build:pages && pnpm preview
    pnpm match:pages && pnpm match:interactions               # expect MATCH
    ```
-4. **Owner approval**, then promote to master (and set `.env.local` back to `master`):
+4. **Owner approval**, then promote to master (and set `CONTENTFUL_ENVIRONMENT` back to `master` in `.envrc`):
    ```bash
    pnpm cms:migrate --env master --approve && pnpm cms:seed --env master --approve
-   pnpm cms:export-model && git add contentful/content-model.json
    ```
 5. **Idempotency:** run `pnpm cms:seed --env mig-001` again. It should report 0 created and only
    updates or no-ops.
@@ -58,7 +57,7 @@ Expected:
 
 ## D. Security check (SC-006)
 
-After a live build, scan `out/` for the delivery and management token values held in `.env.local`,
+After a live build, scan `out/` for the delivery and management token values held in `.envrc`,
 using a small script that reads them from the environment so they never appear on the command line. It
 must find nothing. The token formats are whatever the owner's tokens actually look like `[unverified]`,
 so the scan matches exact values rather than guessing a prefix.
