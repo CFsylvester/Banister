@@ -23,6 +23,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test  # mapping, seed/model consistency, webhook verdict tests (no secrets)
+      - run: pnpm ezekia:test # Ezekia skill generator self-test + offline pins (no network)
       - run: pnpm lint
       - run: pnpm build # offline fixture content: no Contentful secrets in CI
         env:

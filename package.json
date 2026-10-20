@@ -19,7 +19,10 @@
     "cms:migrate": "node scripts/cms/migrate.mjs",
     "cms:seed": "node scripts/cms/seed.mjs",
     "start": "next start",
-    "cms:webhook": "node scripts/cms/webhook.mjs"
+    "cms:webhook": "node scripts/cms/webhook.mjs",
+    "ezekia:sync": "node .claude/skills/ezekia-api/scripts/ezekia-sync.mjs",
+    "ezekia:check": "node .claude/skills/ezekia-api/scripts/ezekia-sync.mjs --check",
+    "ezekia:test": "node .claude/skills/ezekia-api/scripts/ezekia-sync.test.mjs && node .claude/skills/ezekia-api/scripts/ezekia-sync.mjs --check --offline"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "16.2.2",
