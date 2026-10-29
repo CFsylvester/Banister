@@ -109,9 +109,16 @@ export function createEzekiaClient(opts: ClientOptions) {
         sunsetWarned = true;
         warn(`Ezekia: ${label} returned Sunset: ${res.headers.get("sunset")} — this API version is being retired`);
       }
+      // The timeout signal also covers reading the body. Ezekia has already answered by then, so a stall here is never
+      // retried; it surfaces as an upstream error instead of a raw TimeoutError.
+      const readBody = async () => {
+        try { return await res.text(); } catch (err) { throw new EzekiaUpstreamError(label, res.status, { cause: err }); }
+      };
       if (res.ok) {
-        const text = await res.text();
-        if (!text) return undefined as T;
+        if (res.status === 204) return undefined as T;
+        const text = await readBody();
+        // Every endpoint this client calls documents a 200 body, so an empty one is an Ezekia fault, not "no data".
+        if (!text) throw new EzekiaError(label, res.status, "empty response");
         // Never surface the parser's message: it quotes the response body, which may hold personal data.
         try { return JSON.parse(text) as T; } catch { throw new EzekiaError(label, res.status, "response was not valid JSON"); }
       }
@@ -133,8 +140,10 @@ export function createEzekiaClient(opts: ClientOptions) {
       if (res.status === 404) throw new EzekiaNotFoundError(label);
       if (res.status === 409) throw new EzekiaConflictError(label);
       if (res.status === 422) {
-        const err = (await res.json().catch(() => ({}))) as { errors?: Record<string, unknown> };
-        throw new EzekiaValidationError(label, err.errors ?? {});
+        let errors: Record<string, unknown> = {};
+        try { errors = (JSON.parse(await readBody()) as { errors?: Record<string, unknown> }).errors ?? {}; }
+        catch (e) { if (e instanceof EzekiaUpstreamError) throw e; } // unparseable 422 body → validation error, no field list
+        throw new EzekiaValidationError(label, errors);
       }
       throw new EzekiaError(label, res.status);
     }

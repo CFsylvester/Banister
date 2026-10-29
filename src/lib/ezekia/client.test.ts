@@ -168,11 +168,12 @@ test("every attempt carries a timeout signal", async () => {
   assert.ok(h.seen[0].init.signal instanceof AbortSignal);
 });
 
-test("2xx bodies: empty → undefined; non-JSON → EzekiaError without echoing the body", async () => {
+test("2xx bodies: 204 → undefined; empty 200 or non-JSON → EzekiaError without echoing the body", async () => {
   const empty = harness([new Response(null, { status: 204 })]);
   assert.equal(await empty.client.me(), undefined);
   const blank = harness([new Response("", { status: 200 })]);
-  assert.equal(await blank.client.me(), undefined);
+  await assert.rejects(blank.client.createPersonFromCv(new Blob(["x"]), "cv.pdf"), (e: unknown) =>
+    e instanceof EzekiaError && /empty response/.test(e.message));
   const html = harness([new Response("<html>Jane Doe</html>", { status: 200 })]);
   await assert.rejects(html.client.me(), (e: unknown) => e instanceof EzekiaError && !(e instanceof EzekiaUpstreamError) && !e.message.includes("Jane"));
 });
@@ -245,4 +246,22 @@ test("a multipart body is re-sent in full on retry (real HTTP server, real fetch
     assert.equal(bodies.length, 2);
     for (const b of bodies) assert.ok(b.includes("unique-marker") && b.includes('name="files[]"'));
   } finally { server.close(); }
+});
+
+test("a body that stalls after the headers → EzekiaUpstreamError, not resent (real HTTP server)", async () => {
+  const { createServer } = await import("node:http");
+  let hits = 0;
+  const server = createServer((_req, res) => {
+    hits++;
+    res.writeHead(200, { "content-type": "application/json" });
+    res.write('{"data":'); // never finishes
+  });
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
+  try {
+    const { port } = server.address() as { port: number };
+    const client = createEzekiaClient({ token, baseUrl: `http://127.0.0.1:${port}`, sleep: async () => {}, timeoutMs: 150 });
+    await assert.rejects(client.updatePersonNames(3, { firstName: "A", lastName: "B" }), (e: unknown) =>
+      e instanceof EzekiaUpstreamError && e.status === 200);
+    assert.equal(hits, 1);
+  } finally { server.closeAllConnections(); server.close(); }
 });
