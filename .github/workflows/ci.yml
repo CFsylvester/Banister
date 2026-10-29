@@ -28,4 +28,5 @@ jobs:
       - run: pnpm build # offline fixture content: no Contentful secrets in CI
         env:
           CONTENT_SOURCE: fixture
+      - run: pnpm check:client-bundle # no Ezekia client code or token in browser JS (.next/static)
       - run: pnpm exec tsc --noEmit # after build: Next generates route types during the build
