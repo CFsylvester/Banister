@@ -223,6 +223,10 @@ export function createEzekiaClient(opts: ClientOptions) {
     addDocument: (personId: number, file: Blob, filename: string) =>
       call<EzekiaDocument>({ method: "POST", route: "/people/{id}/documents", params: { id: personId }, form: fileForm("files[]", file, filename) }),
 
+    /** `PUT /lists/{projectId}/people/{personId}` — adds a person to a list (`v4.v4.lists.people.update`). */
+    addPersonToList: (listId: number, personId: number) =>
+      call<{ data: { id: number; name?: string } }>({ method: "PUT", route: "/lists/{projectId}/people/{personId}", params: { projectId: listId, personId } }),
+
     /** `POST /people/notes` — one note on one or more people. Returns `{ updated, notUpdated }`. */
     addNote: (personIds: number[], noteText: string) =>
       call<{ updated: unknown[]; notUpdated: unknown[] }>({ method: "POST", route: "/people/notes", json: { people: personIds, noteText } }),
