@@ -1,27 +1,29 @@
 "use client";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
+import { subscribe } from "@/app/actions/subscribe";
+import { EMAIL_HELP, HONEYPOT_FIELD, validEmail } from "@/lib/signup";
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 type Phase = "idle" | "sending" | "sent";
 
 export default function SubscribeBand() {
   const [email, setEmail] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  useEffect(() => () => clearTimeout(timer.current), []);
+  // Ref, not state: blocks a second submit in the same tick, before React re-renders with phase "sending".
+  const inFlight = useRef(false);
 
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const v = email.trim();
-    if (!v) { setErr("Please enter your email address."); setPhase("idle"); return; }
-    if (!EMAIL.test(v)) { setErr("Please enter a valid email address, e.g. name@company.com."); setPhase("idle"); return; }
-    if (phase === "sending") return;
+    if (inFlight.current) return;
+    if (!email.trim()) { setErr("Please enter your email address."); setPhase("idle"); return; }
+    if (!validEmail(email)) { setErr(EMAIL_HELP); setPhase("idle"); return; }
+    inFlight.current = true;
     setErr(null); setPhase("sending");
-    // [assumption] No subscription backend yet — the design simulates a 900ms round-trip. Wire a real
-    // endpoint (server action / route handler) here before launch.
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setPhase("sent"), 900);
+    // Adds the email to the Ezekia sign-up list (src/app/actions/subscribe.ts).
+    const res = await subscribe(new FormData(e.currentTarget)).catch(() => ({ ok: false as const, error: "Sorry, we couldn’t sign you up just now. Please try again later." }));
+    inFlight.current = false;
+    if (res.ok) setPhase("sent");
+    else { setErr(res.error); setPhase("idle"); }
   };
 
   const msg = err || (phase === "sent" ? "Thanks — you’re on the list." : "");
@@ -33,9 +35,11 @@ export default function SubscribeBand() {
         <span className="pb-[22px] text-[18px] font-bold text-navy">Sign up for quarterly articles and perspectives</span>
         <div className="flex max-w-[480px] flex-[1_1_320px] flex-col gap-1.5">
           <div className="flex border-b-2" style={{ borderBottomColor: err ? "#b3261e" : "#003f5e" }}>
-            <input type="email" value={email} placeholder="EMAIL ADDRESS" aria-label="Email address"
+            {/* Honeypot for bots: hidden from people and assistive tech; the server action ignores filled-in sign-ups. */}
+            <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+            <input type="email" name="email" value={email} readOnly={phase === "sending"} placeholder="EMAIL ADDRESS" aria-label="Email address"
               aria-invalid={err ? "true" : "false"} aria-describedby="sub-msg"
-              onChange={(e) => { const v = e.target.value; setEmail(v); setErr(err && !EMAIL.test(v.trim()) ? err : null); setPhase("idle"); }}
+              onChange={(e) => { const v = e.target.value; setEmail(v); setErr(err && !validEmail(v) ? err : null); setPhase((p) => (p === "sending" ? p : "idle")); }}
               className="min-w-0 flex-1 border-0 bg-transparent px-0 py-2.5 text-[15px] font-semibold tracking-[.04em] text-navy outline-none" />
             <button type="submit" aria-label="Subscribe"
               className="relative flex w-11 cursor-pointer items-center justify-center overflow-hidden border-0 bg-navy text-[18px] text-white">

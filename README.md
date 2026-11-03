@@ -31,6 +31,14 @@ Set `CONTENT_SOURCE=fixture` (or Contentful keys) in `.envrc` (direnv) first; se
   ```
 - **Domain:** stays at its current DNS provider. Add the A (root) or CNAME (subdomain) record Vercel shows under
   Project → Settings → Domains.
+- **Sign-up abuse protection** (`src/lib/subscribe-handler.ts`, no env vars): a honeypot, then in-memory limits of 5
+  sign-ups per IP per 10 minutes, and 1 per second and 20 per minute across all visitors. These stop bursts but aren't
+  a global quota: each Vercel instance counts on its own, and total volume isn't capped (one IP can still add 720 people
+  a day). A few addresses can use up the shared caps, delaying real sign-ups by up to a minute. Look for
+  `subscribe: rate limited` in the logs: `(ip)` is one address hitting its limit, `(instance)` is the shared caps. Junk
+  people in Ezekia or sustained `(instance)` lines are the signal to add stronger protection, such as a
+  [Vercel WAF rate-limit rule](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting) or
+  [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/get-started/).
 - CI (`.github/workflows/ci.yml`) runs tests, lint, the fixture build and tsc on every push and PR.
 
 Production build locally (what the pixel gates check):
