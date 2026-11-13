@@ -88,9 +88,9 @@ export const people = [
 export const siteMap = [
   { title: "Services", href: "/services", links: ["Executive search", "Next generation leadership", "Search & advisory", "Informed search"].map((t) => ({ t, href: "/services" })) },
   { title: "Firm", href: "/about", links: [{ t: "About", href: "/about" }, { t: "Leadership", href: "/about" }, { t: "Industries", href: "/industries" }] },
-  // The /insights listing is hidden, so this column points at the one white paper. Restore when it comes back:
+  // Insights is out of the footer for now. Restore one of these when it comes back:
+  // { title: "Insights", href: ARTICLE_HREF, links: [{ t: "White paper", href: ARTICLE_HREF }] },
   // { title: "Insights", href: "/insights", links: [{ t: "Latest insights", href: "/insights" }, { t: "Newsroom", href: "/insights" }, { t: "White paper", href: ARTICLE_HREF }] },
-  { title: "Insights", href: ARTICLE_HREF, links: [{ t: "White paper", href: ARTICLE_HREF }] },
   { title: "Contact", href: "/contact", links: [{ t: "For employers", href: "/contact?aud=employer" }, { t: "For candidates", href: "/contact?aud=candidate" }] },
 ];
 

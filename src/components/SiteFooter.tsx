@@ -2,43 +2,57 @@ import Link from "next/link";
 import { siteMap } from "@/lib/content";
 import { Img } from "./ui";
 
-const icon = "block h-11 w-11 cursor-pointer hover:opacity-85";
+// One continuous gradient. The cyan starts right under the last row of text and eases in over the empty bottom band,
+// so there is no seam where it begins.
+const bg = `linear-gradient(180deg,#003f5e 0%,#00415f 25%,#0d6781 calc(100% - var(--band)),#13798f calc(100% - var(--band) * .75),#1b90a0 calc(100% - var(--band) * .5),#23a8b3 calc(100% - var(--band) * .25),#2bc1c6 100%)`;
+
+const icon = "block h-[42px] w-[42px] cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85";
 
 export default function SiteFooter() {
   return (
-    <footer className="text-white" style={{ background: "linear-gradient(180deg,#003f5e 0%,#00415f 22%,#0d6781 60%,#2bc1c6 100%)" }}>
-      <div className="site px-gutter flex flex-col gap-[clamp(28px,3.6vw,44px)] pt-[clamp(36px,4.4vw,56px)] pb-7">
-        <div className="flex items-center justify-between gap-6">
-          <Link href="/" className="group contents" aria-label="Banister International home">
+    <footer className="text-white [--band:clamp(56px,6vw,88px)]" style={{ background: bg }}>
+      {/* Text sits on the dark part only: white on #0d6781 is 6.4:1, #e3edf2 is 5.5:1 (WCAG 1.4.3 needs 4.5:1).
+          The cyan (white on #2bc1c6 is 2.2:1) fades in across the empty band below the text. */}
+      <div className="site px-gutter pt-[clamp(48px,6vw,76px)] pb-5">
+        {/* Logo left, contact icons right. */}
+        <div className="flex flex-wrap items-center justify-between gap-6 border-b border-white/20 pb-[clamp(32px,4vw,46px)]">
+          <Link href="/" className="group block" aria-label="Banister International home">
             <Img src="/assets/banister-logo-white.svg" alt="Banister International"
-              className="block h-[clamp(44px,5.6vw,68px)] w-auto max-w-[65%] cursor-pointer object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
+              className="block h-[clamp(40px,4vw,48px)] w-auto cursor-pointer object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
           </Link>
-          <div className="flex flex-none gap-2.5">
-            {/* [assumption] LinkedIn URL not given in the design — the icon is not linked yet. */}
-            <Img src="/assets/icon-linkedin.png" alt="LinkedIn" className={icon} />
-            <Link href="/contact" className="block"><Img src="/assets/icon-email.png" alt="Email" className={icon} /></Link>
-            <Link href="/contact" className="block"><Img src="/assets/icon-phone.png" alt="Phone" className={icon} /></Link>
+          <div className="flex gap-3.5">
+            <a href="https://www.linkedin.com/company/banisterinternational/home/" target="_blank" rel="noopener noreferrer" className="group block">
+              <Img src="/assets/icon-linkedin.svg" alt="Banister International on LinkedIn (opens in a new tab)" className={icon} />
+            </a>
+            <a href="mailto:info@banisterintus.com" className="group block">
+              <Img src="/assets/icon-email.svg" alt="Email info@banisterintus.com" className={icon} />
+            </a>
+            <a href="tel:+12246555563" className="group block">
+              <Img src="/assets/icon-phone.svg" alt="Call (224) 655-5563" className={icon} />
+            </a>
           </div>
         </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-x-8 gap-y-7">
+        {/* Three equal columns. */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-10 border-b border-white/20 py-[clamp(40px,4.4vw,52px)] sm:grid-cols-3">
           {siteMap.map((col) => (
-            <div key={col.title} className="flex flex-col gap-2.5">
-              <Link href={col.href} className="mb-1 cursor-pointer text-[12.5px] font-extrabold tracking-[.1em] text-white uppercase no-underline hover:text-white">{col.title}</Link>
+            <div key={col.title} className="flex flex-col items-start gap-[14px]">
+              <Link href={col.href} className="mb-1.5 cursor-pointer text-[11.5px] font-extrabold tracking-[.14em] text-white uppercase no-underline hover:text-white">{col.title}</Link>
               {col.links.map((l) => (
-                <Link key={l.t} href={l.href} className="cursor-pointer text-[14px] leading-[1.4] text-[#d6e6ee] no-underline hover:text-white hover:underline">{l.t}</Link>
+                <Link key={l.t} href={l.href} className="cursor-pointer text-[14.5px] leading-[1.4] text-[#e3edf2] no-underline hover:text-white hover:underline">{l.t}</Link>
               ))}
             </div>
           ))}
         </div>
-        <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3 border-t border-white/28 pt-5">
-          <span className="text-[13px] font-semibold tracking-[.1em]">AMERICAS • EUROPE • MIDDLE EAST • ASIA PACIFIC</span>
-          <div className="flex flex-wrap gap-x-2.5 gap-y-1.5 text-[13.5px]">
-            <span>Copyright © 2026 Banister International</span><span>|</span>
-            <span className="cursor-pointer hover:underline">Privacy Policy</span><span>|</span>
+        <div className="flex flex-col gap-3 pt-7 md:flex-row md:items-center md:justify-between md:gap-8">
+          <span className="text-[11.5px] font-semibold tracking-[.14em]">AMERICAS · EUROPE · MIDDLE EAST · ASIA PACIFIC</span>
+          <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-[13px] text-[#e3edf2]">
+            <span>© 2026 Banister International</span>
+            <span className="cursor-pointer hover:underline">Privacy Policy</span>
             <span className="cursor-pointer hover:underline">Terms and Conditions</span>
           </div>
         </div>
       </div>
+      <div aria-hidden="true" className="h-(--band)" />
     </footer>
   );
 }
