@@ -32,13 +32,26 @@ export const Icon = ({ src, loading = "lazy", ...props }: ComponentProps<"img">)
   <img alt="" loading={loading} {...props} src={typeof src === "string" ? asset(src) : src} />
 );
 
+// → (U+2192) and ● (U+25CF) are the only characters every route renders outside Open Sans's latin unicode-range, and ✓
+// (U+2713) appears after a form is sent. Chrome downloaded the 22 KB "symbols" file (and, for →, a 46 KB face) whose
+// unicode-ranges cover them, found no glyph, and fell back to system-ui anyway (CSS Fonts 4 §4.5.1 — a face whose range
+// covers a character is fetched before the browser can tell it lacks the glyph:
+// https://www.w3.org/TR/css-fonts-4/#composite-fonts; CDP CSS.getPlatformFontsForNode reported ".SF NS" for all three
+// on macOS, 2026-11-13). Naming system-ui on the glyph itself draws the same character from the same font without
+// fetching either file. Callers keep it inside an Open Sans element, so line heights are unchanged; aria-hidden because
+// each one only decorates a label.
+const sysGlyph = { fontFamily: "system-ui, sans-serif" };
+export const Arrow = () => <span aria-hidden="true" style={sysGlyph}>→</span>;
+export const Dot = () => <span aria-hidden="true" style={sysGlyph}>●</span>;
+export const Check = () => <span aria-hidden="true" style={sysGlyph}>✓</span>;
+
 const ctaBase = "flex cursor-pointer items-center gap-[18px] font-bold tracking-[.06em] no-underline";
 
 /** Solid navy "SPEAK WITH A PARTNER →" style button. */
 export function NavyCta({ href, children, className = "" }: { href: string; children: ReactNode; className?: string }) {
   return (
     <Link href={href} className={`${ctaBase} bg-navy px-[22px] py-[14px] text-[12.5px] text-white hover:bg-navy-hover hover:text-white ${className}`}>
-      {children} <span>→</span>
+      {children} <span><Arrow /></span>
     </Link>
   );
 }
@@ -46,7 +59,7 @@ export function NavyCta({ href, children, className = "" }: { href: string; chil
 /** Outlined "LEARN MORE →" button (renders a non-link span when no href, as the newsroom cards do). */
 export function OutlineCta({ href, children, className = "px-4 py-2.5" }: { href?: string; children: ReactNode; className?: string }) {
   const cls = `${ctaBase} self-start border border-navy text-[12.5px] text-navy hover:bg-navy hover:text-white ${className}`;
-  const inner = <>{children} <span>→</span></>;
+  const inner = <>{children} <span><Arrow /></span></>;
   return href ? <Link href={href} className={cls}>{inner}</Link> : <span className={cls}>{inner}</span>;
 }
 

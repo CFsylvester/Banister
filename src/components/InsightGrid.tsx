@@ -1,4 +1,5 @@
-import { GRID_3, type Insight, news as newsItems } from "@/lib/content";
+import { type Insight, news as newsItems } from "@/lib/content";
+import { GRID_3 } from "@/lib/grid";
 import { Img, OutlineCta, Tags } from "./ui";
 
 /** "Our latest insight" vs "Our latest insights" — the heading follows how many insights are live. */

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { LEGAL } from "@/lib/legal";
 import Blank from "./Blank";
-import { NavyCta } from "./ui";
+import { Arrow, Check, NavyCta } from "./ui";
 
 type Audience = "candidate" | "employer";
 
@@ -70,7 +70,7 @@ export default function ContactForm({ initialAudience, candidateOpen }: { initia
           style={{ visibility: sent ? "visible" : "hidden", opacity: sent ? 1 : 0, transform: sent ? "none" : "translateY(12px)", transition: "opacity .5s ease .15s, transform .6s cubic-bezier(.2,.8,.2,1) .15s" }}>
           {sent && (
             <span className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-navy text-[32px] font-extrabold text-gold"
-              style={{ animation: "bnPop .55s cubic-bezier(.2,.9,.3,1.3) .3s both" }}>✓</span>
+              style={{ animation: "bnPop .55s cubic-bezier(.2,.9,.3,1.3) .3s both" }}><Check /></span>
           )}
           <h2 className="mx-0 mt-1.5 mb-0 text-[clamp(28px,3vw,36px)] leading-[1.15] font-bold tracking-[-.01em] text-navy">
             {who.name ? `Thank you, ${who.name}.` : "Thank you."}
@@ -134,7 +134,7 @@ export default function ContactForm({ initialAudience, candidateOpen }: { initia
                 <span key="s" className="h-3.5 w-3.5 rounded-full border-2 border-white/35 border-t-white" style={{ animation: "bnSpin .6s linear infinite, bnIn .2s both" }} />
               </>
             ) : (
-              <><span key="t">SUBMIT</span><span key="a">→</span></>
+              <><span key="t">SUBMIT</span><span key="a"><Arrow /></span></>
             )}
           </button>
         </form>

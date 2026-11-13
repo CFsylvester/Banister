@@ -9,12 +9,16 @@ import "./globals.css";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
-  // "symbols" carries the → ↓ arrows used in every CTA; without it they fall back to a system glyph.
-  subsets: ["latin", "symbols"],
-  weight: ["400", "600", "700", "800"],
+  // Latin only: → ● ✓ render in system-ui (Arrow, Dot, Check in components/ui.tsx), so nothing needs "symbols" — Open
+  // Sans drew none of them anyway. `subsets` only decides the preloads; every subset's @font-face rule still ships
+  // (fixture build, 2026-11-13: 20 rules = 10 subsets x normal + italic).
+  subsets: ["latin"],
+  // No `weight`: Open Sans is variable (font.md, `weight`: required only for non-variable fonts), so next/font emits one
+  // face per subset spanning its wght axis, 300–800 (next/dist/compiled/@next/font/dist/google/font-data.json). Listing
+  // weights emitted one identical face per weight per subset.
   // Italic is a separate, non-preloaded instance below.
   style: "normal",
-  // Match the design's stack exactly ('Open Sans', system-ui): glyphs Open Sans lacks (e.g. ↓) must fall back
+  // Match the design's stack exactly ('Open Sans', system-ui): glyphs Open Sans lacks (e.g. ↓ →) must fall back
   // to system-ui, not next/font's metric-adjusted Arial. Trade-off: slightly more CLS while the font swaps in.
   // Option documented in node_modules/next/dist/docs/01-app/03-api-reference/02-components/font.md.
   adjustFontFallback: false,
@@ -26,7 +30,14 @@ const openSans = Open_Sans({
 // picks them up (font.md, `preload`). Turbopack rejects a second instance of the same family with the options above
 // ("next/font/google queries have exactly one entry"), so this one is minimal: Open Sans is variable, so it covers
 // every weight, and `subsets` only decides what gets preloaded (font.md, `subsets`).
-const openSansItalic = Open_Sans({ variable: "--font-open-sans-italic", subsets: ["latin"], style: "italic", preload: false });
+const openSansItalic = Open_Sans({
+  variable: "--font-open-sans-italic", subsets: ["latin"], style: "italic", preload: false,
+  // Nothing reads this instance's family list (body uses --font-open-sans), so its metric-adjusted "Open Sans Fallback"
+  // @font-face was dead CSS. Turbopack only dropped that rule once `fallback` was given too (adjustFontFallback: false
+  // alone still emitted it — fixture build, 2026-11-13).
+  adjustFontFallback: false,
+  fallback: ["system-ui", "sans-serif"],
+});
 
 // metadataBase resolves every relative metadata URL (OG images) against production (generate-metadata.md, "metadataBase").
 // No canonical here: a page that forgot its own would inherit one pointing at another URL. Each page sets the full set

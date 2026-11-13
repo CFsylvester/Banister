@@ -4,6 +4,7 @@ import { LEGAL } from "@/lib/legal";
 import { useRef, useState, type FormEvent } from "react";
 import { subscribe } from "@/app/actions/subscribe";
 import { EMAIL_HELP, HONEYPOT_FIELD, validEmail } from "@/lib/signup";
+import { Arrow, Check } from "./ui";
 
 type Phase = "idle" | "sending" | "sent";
 
@@ -47,14 +48,14 @@ export default function SubscribeBand() {
               className="relative flex w-11 cursor-pointer items-center justify-center overflow-hidden border-0 bg-navy text-[18px] text-white">
               {phase === "sending" ? (
                 <span key="sp" className="flex items-center justify-center">
-                  <span className="absolute" style={{ animation: "bnFly .28s ease-in forwards" }}>→</span>
+                  <span className="absolute" style={{ animation: "bnFly .28s ease-in forwards" }}><Arrow /></span>
                   <span className="h-4 w-4 rounded-full border-2 border-white/35 border-t-white" style={{ animation: "bnSpin .6s linear infinite, bnIn .2s .2s both" }} />
                 </span>
               ) : phase === "sent" ? (
                 <span key="ok" className="absolute inset-0 flex items-center justify-center" style={{ animation: "bnFlash .6s ease-out" }}>
-                  <span className="inline-block font-extrabold text-gold" style={{ animation: "bnPop .45s cubic-bezier(.2,.9,.3,1.3) both" }}>✓</span>
+                  <span className="inline-block font-extrabold text-gold" style={{ animation: "bnPop .45s cubic-bezier(.2,.9,.3,1.3) both" }}><Check /></span>
                 </span>
-              ) : <span key="ar">→</span>}
+              ) : <span key="ar"><Arrow /></span>}
             </button>
           </div>
           <span id="sub-msg" role="status" className="min-h-4 text-[13px] leading-4 font-semibold" style={{ color: err ? "#8a1c15" : "#003f5e" }}>

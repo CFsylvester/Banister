@@ -7,14 +7,6 @@ export const tags = (list: string[]): Tag[] =>
 
 export const ARTICLE_HREF = "/insights/state-of-talent-acquisition";
 
-export const nav = [
-  { href: "/services", label: "Services" },
-  { href: "/industries", label: "Industries" },
-  { href: "/about", label: "About" },
-  // { href: "/insights", label: "Insights" }, — hidden with the /insights listing (src/app/insights/page.tsx)
-  { href: "/contact", label: "Contact" },
-];
-
 // The homepage hero lives in Contentful (contentful/seed/home.json). Everything else here still feeds
 // sections that are not in the CMS yet (homepage blocks, other pages).
 
@@ -94,8 +86,3 @@ export const siteMap = [
   // { title: "Insights", href: "/insights", links: [{ t: "Latest insights", href: "/insights" }, { t: "Newsroom", href: "/insights" }, { t: "White paper", href: ARTICLE_HREF }] },
   { title: "Contact", href: "/contact", links: [{ t: "For employers", href: "/contact?aud=employer" }, { t: "For candidates", href: "/contact?aud=candidate" }] },
 ];
-
-// Shared responsive grid tracks from the design (4-up → 2-up below 760px, 3-up → 1-up below 640px).
-export const GRID_4 = (gap: number) =>
-  `repeat(auto-fit,minmax(min(calc((100% - ${gap}px)/2),max(calc((100% - ${gap * 3}px)/4),calc((760px - 100%)*999))),1fr))`;
-export const GRID_3 = "repeat(auto-fit,minmax(min(100%,max(calc((100% - 64px)/3),calc((640px - 100%)*999))),1fr))";
