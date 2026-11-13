@@ -5,8 +5,14 @@ import type { ComponentProps, ReactNode } from "react";
 import { asset } from "@/lib/asset";
 import type { Tag } from "@/lib/content";
 
-export const Img = ({ src, ...props }: ComponentProps<"img">) => (
-  <img alt="" {...props} src={typeof src === "string" ? asset(src) : src} />
+// Lazy by default: React DOM emits a <link rel="preload"> for every eager <img>, and those hints ride along in the
+// RSC payloads <Link> prefetches, so an eager image on /services was downloaded by every page that links there
+// (the `case "img"` preload in next/dist/compiled/react-dom/cjs/react-dom-server.node.production.js and in
+// next/dist/compiled/react-server-dom-turbopack/cjs/react-server-dom-turbopack-server.node.production.js both skip
+// loading="lazy", fetchPriority="low", data: URLs, and images inside <picture> or <noscript>).
+// Above-the-fold images opt back in with loading="eager" (and fetchPriority="high" for the LCP image).
+export const Img = ({ src, loading = "lazy", ...props }: ComponentProps<"img">) => (
+  <img alt="" loading={loading} {...props} src={typeof src === "string" ? asset(src) : src} />
 );
 
 const ctaBase = "flex cursor-pointer items-center gap-[18px] font-bold tracking-[.06em] no-underline";

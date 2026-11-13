@@ -22,7 +22,9 @@ export default function HeroSlides({ slides: heroes }: { slides: string[] }) {
   }, [cycle, heroes.length]);
 
   return heroes.map((src, i) => (
-    <img key={`${i}-${src}`} src={asset(src)} alt=""
+    // Slide 0 is the LCP image. Later slides stay hidden for 6s, so they fetch at low priority instead of
+    // competing with it (fetchPriority="low" also keeps React from emitting a preload for them).
+    <img key={`${i}-${src}`} src={asset(src)} alt="" fetchPriority={i === 0 ? "high" : "low"}
       className="absolute inset-0 h-full w-full object-cover object-[50%_30%]"
       style={{ opacity: i === h ? 1 : 0, transform: i === h && shown ? "scale(1.06)" : "scale(1)", transition: "opacity 1.2s ease, transform 7s linear" }} />
   ));
