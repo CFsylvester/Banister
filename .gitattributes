@@ -1,0 +1,6 @@
+# PDFs and images are binary: never diff them as text or rewrite their line endings (core.autocrlf would corrupt a PDF's xref offsets).
+*.pdf binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary

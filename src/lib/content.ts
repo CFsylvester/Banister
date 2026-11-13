@@ -11,7 +11,7 @@ export const nav = [
   { href: "/services", label: "Services" },
   { href: "/industries", label: "Industries" },
   { href: "/about", label: "About" },
-  { href: "/insights", label: "Insights" },
+  // { href: "/insights", label: "Insights" }, — hidden with the /insights listing (src/app/insights/page.tsx)
   { href: "/contact", label: "Contact" },
 ];
 
@@ -32,16 +32,6 @@ export const quotes = [
 ];
 
 export type Insight = { img: string; tags: Tag[]; title: string; dek: string; href: string };
-export const homeInsights: Insight[] = [
-  { img: "/assets/operations.jpg", tags: tags(["White paper", "Professional services", "Talent acquisition"]), title: "The state of talent acquisition in professional services", dek: "Perspectives from executive search partners and talent acquisition leaders.", href: ARTICLE_HREF },
-  { img: "/assets/insight-whiteboard.jpg", tags: tags(["Article", "HR leadership", "Workforce planning"]), title: "Why is HR the “cobbler’s children” in the world of talent acquisition?", dek: "HR built a whole sub-function around succession planning, workforce planning and people movement — then rarely applied it to itself.", href: ARTICLE_HREF },
-  { img: "/assets/insight-hardhats.jpg", tags: tags(["Article", "[Topic]"]), title: "[Third article title]", dek: "[One-sentence summary.]", href: ARTICLE_HREF },
-];
-export const insights: Insight[] = [
-  { ...homeInsights[0], img: "/assets/insight-greeting.jpg" },
-  { ...homeInsights[1], img: "/assets/handshake-city.jpg" },
-  { ...homeInsights[2], img: "/assets/insight-tablet.jpg" },
-];
 export const news = [
   { img: "/assets/duffy-alliance.jpg", tags: tags(["News", "Partnerships"]), title: "Banister International expands service offerings through strategic alliance with Duffy Group", date: "August 31, 2026" },
   { img: "/assets/hero-handshake.jpg", tags: tags(["News", "Legal search", "Partnerships"]), title: "Banister International launches strategic partnership with Shapiro Legal Search to introduce legal executive search", date: "May 4, 2026" },
@@ -99,7 +89,9 @@ export const people = [
 export const siteMap = [
   { title: "Services", href: "/services", links: ["Executive search", "Next generation leadership", "Search & advisory", "Informed search"].map((t) => ({ t, href: "/services" })) },
   { title: "Firm", href: "/about", links: [{ t: "About", href: "/about" }, { t: "Leadership", href: "/about" }, { t: "Industries", href: "/industries" }] },
-  { title: "Insights", href: "/insights", links: [{ t: "Latest insights", href: "/insights" }, { t: "Newsroom", href: "/insights" }, { t: "White paper", href: ARTICLE_HREF }] },
+  // The /insights listing is hidden, so this column points at the one white paper. Restore when it comes back:
+  // { title: "Insights", href: "/insights", links: [{ t: "Latest insights", href: "/insights" }, { t: "Newsroom", href: "/insights" }, { t: "White paper", href: ARTICLE_HREF }] },
+  { title: "Insights", href: ARTICLE_HREF, links: [{ t: "White paper", href: ARTICLE_HREF }] },
   { title: "Contact", href: "/contact", links: [{ t: "For employers", href: "/contact?aud=employer" }, { t: "For candidates", href: "/contact?aud=candidate" }] },
 ];
 
