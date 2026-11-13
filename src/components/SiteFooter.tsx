@@ -48,7 +48,7 @@ export default function SiteFooter() {
           <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-[13px] text-[#e3edf2]">
             <span>© 2026 Banister International</span>
             <Link href="/privacy/" className="text-inherit no-underline hover:underline">Privacy Policy</Link>
-            <span className="cursor-pointer hover:underline">Terms and Conditions</span>
+            <Link href="/terms-and-conditions/" className="text-inherit no-underline hover:underline">Terms and Conditions</Link>
           </div>
         </div>
       </div>

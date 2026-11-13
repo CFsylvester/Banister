@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import Link from "next/link";
 import Blank from "@/components/Blank";
+import { Email, H2, LegalPage, linkCls, P, Ul } from "@/components/LegalPage";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = { title: "Privacy Policy — Banister International" };
@@ -14,18 +14,11 @@ export const metadata: Metadata = { title: "Privacy Policy — Banister Internat
 // launch state and become true only when that backend ships, which #38 already makes a launch blocker.
 // Section anchors (#candidates, #clients, #newsletter) are linked from the forms.
 
-const H2 = ({ id, children }: { id?: string; children: ReactNode }) => (
-  <h2 id={id} className="m-0 mt-10 mb-3 scroll-mt-24 text-[clamp(22px,2.2vw,26px)] font-bold text-navy">{children}</h2>
-);
-const P = ({ children }: { children: ReactNode }) => <p className="m-0 mb-4">{children}</p>;
-const Ul = ({ children }: { children: ReactNode }) => <ul className="m-0 mb-4 flex list-disc flex-col gap-1.5 pl-6">{children}</ul>;
-const email = <a href={`mailto:${LEGAL.privacyEmail}`} className="font-semibold text-navy underline">{LEGAL.privacyEmail}</a>;
+const email = <Email />;
 
 export default function PrivacyPage() {
   return (
-    <article className="px-gutter mx-auto max-w-[820px] pt-[clamp(48px,6vw,72px)] pb-[clamp(64px,7vw,96px)] text-[16.5px] leading-[1.7] text-ink">
-      <h1 className="m-0 mb-3 text-[clamp(32px,3.4vw,44px)] font-bold text-navy">Privacy Policy</h1>
-      <p className="m-0 mb-8 text-[14px] text-slate">Effective <Blank>{LEGAL.effectiveDate}</Blank></p>
+    <LegalPage title="Privacy Policy">
 
       <P>
         This policy explains what <Blank>{LEGAL.entity}</Blank> (“Banister International”, “we”, “us”) collects through this
@@ -117,8 +110,8 @@ export default function PrivacyPage() {
       <H2>Contact us</H2>
       <P>
         <Blank>{LEGAL.entity}</Blank>, <Blank>{LEGAL.postalAddress}</Blank>. Email {email}, or use our{" "}
-        <Link href="/contact/" className="font-semibold text-navy underline">contact form</Link>.
+        <Link href="/contact/" className={linkCls}>contact form</Link>.
       </P>
-    </article>
+    </LegalPage>
   );
 }
