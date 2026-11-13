@@ -16,9 +16,9 @@ export default async function Home() {
 
   return (
     <>
-      <section style={{ background: "linear-gradient(180deg,#003f5e 0%,#003f5e 62%,#0b5f7a 86%,#1f9fb0 100%)" }}>
-        <div className="site px-gutter pt-2">
-          <div className="relative flex min-h-[clamp(360px,44vw,560px)] items-end overflow-hidden border-b-4 border-teal">
+      <section className="flex min-h-[calc(100dvh-var(--header-h))] flex-col" style={{ background: "linear-gradient(180deg,#003f5e 0%,#003f5e 62%,#0b5f7a 86%,#1f9fb0 100%)" }}>
+        <div className="site px-gutter flex w-full flex-1 flex-col pt-2">
+          <div className="relative flex flex-1 items-end overflow-hidden border-b-4 border-teal">
             <HeroSlides slides={hero.media.images} />
             <div className="relative flex w-full flex-col gap-[clamp(20px,2.4vw,32px)] pb-[clamp(18px,2vw,28px)]">
               <div className="relative mr-[clamp(24px,5vw,56px)] px-[clamp(20px,2.6vw,32px)] py-[clamp(18px,2.4vw,30px)]">
