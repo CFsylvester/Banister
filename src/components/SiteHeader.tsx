@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { nav } from "@/lib/content";
+import { nav } from "@/lib/nav";
 import { Arrow, Dot, Icon } from "./ui";
 
 // The design switches desktop nav ↔ burger at innerWidth 820 (isMobile = vw < 820).

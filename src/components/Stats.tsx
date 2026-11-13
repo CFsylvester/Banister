@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { GRID_4 } from "@/lib/content";
+import { GRID_4 } from "@/lib/grid";
 
 const DURATION = 1600, STAGGER = 150;
 

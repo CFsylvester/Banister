@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import { Arrow, Icon } from "@/components/ui";
-import { drivers, GRID_4, services } from "@/lib/content";
+import { drivers, services } from "@/lib/content";
+import { GRID_4 } from "@/lib/grid";
 
 export const metadata: Metadata = { title: "Services — Banister International" };
 
