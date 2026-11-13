@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav } from "@/lib/content";
-import { Img } from "./ui";
+import { Icon } from "./ui";
 
 // The design switches desktop nav ↔ burger at innerWidth 820 (isMobile = vw < 820).
 const MOBILE_MQ = "(max-width: 819.98px)";
@@ -30,7 +30,7 @@ export default function SiteHeader() {
           logo shrinks inside its 52px box instead of pushing the menu button onto a second line. */}
       <div className="site px-gutter flex flex-wrap items-center justify-between gap-x-10 gap-y-4 pt-[26px] pb-[34px] max-[819px]:flex-nowrap max-[819px]:gap-x-4">
         <Link href="/" className="group block min-w-0" aria-label="Banister International home">
-          <Img src="/assets/banister-logo-white.svg" alt="Banister International" className="block h-[52px] w-auto max-w-full object-contain object-left cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
+          <Icon src="/assets/banister-logo-white.svg" alt="Banister International" loading="eager" className="block h-[52px] w-auto max-w-full object-contain object-left cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
         </Link>
         <nav className="hidden flex-wrap gap-[clamp(18px,2.6vw,36px)] min-[820px]:flex" aria-label="Main">
           {nav.map((n) => (

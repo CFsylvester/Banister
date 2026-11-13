@@ -57,13 +57,14 @@ export const drivers = [
   { icon: "/assets/driver-insights.svg", title: "Insights", body: "Every search is led by a partner with at least 20 years of search experience." },
 ];
 
+// "\n" marks the line breaks from the design; the page renders them with white-space: pre-line.
 export const industries = [
-  ["aerospace", "Aerospace & Defense"], ["building-services", "Building services and HVAC"],
-  ["construction", "Construction, Real estate, and Building services"], ["consumer", "Consumer goods and Retail"],
-  ["financial", "Financial services"], ["food", "Food, Beverage, and Restaurant brands"],
-  ["industrial", "Industrial and Automotive"], ["insurance", "Insurance and Managed care"],
-  ["consulting", "Management consulting, Accounting, and Professional services"], ["manufacturing", "Manufacturing and Packaging"],
-  ["private-equity", "PE and Investment firms"], ["technology", "Technology, Media, and Tele\u00ADcommunications"],
+  ["aerospace", "Aerospace and\nDefense"], ["building-services", "Building services\nand HVAC"],
+  ["consumer", "Consumer goods\nand Retail"], ["financial", "Financial services"],
+  ["food", "Food and Beverage"], ["industrial", "Industrial and\nAutomotive"],
+  ["insurance", "Insurance"], ["consulting", "Management consulting,\nAccounting, and\nProfessional services"],
+  ["manufacturing", "Manufacturing and\nPackaging"], ["private-equity", "PE and\nInvestment firms"],
+  ["technology", "Media and\nTele\u00ADcommunications"],
 ].map(([k, name]) => ({ name, icon: `/assets/icon-${k}.svg` }));
 
 export const people = [

@@ -13,7 +13,7 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Banister International | Executive Search Firm",
-  description: "Partner-led executive search since 1999, placing leaders from Senior Director to C-suite and board level across twelve industries.",
+  description: "Partner-led executive search since 1999, placing leaders from Senior Director to C-suite and board level across eleven industries.",
   path: "/",
 });
 
