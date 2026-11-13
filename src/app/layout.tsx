@@ -3,6 +3,8 @@ import { Open_Sans } from "next/font/google";
 import SiteHeader from "@/components/SiteHeader";
 import SubscribeBand from "@/components/SubscribeBand";
 import SiteFooter from "@/components/SiteFooter";
+import JsonLd from "@/components/JsonLd";
+import { SITE_NAME, SITE_URL, siteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -18,9 +20,14 @@ const openSans = Open_Sans({
   fallback: ["system-ui", "sans-serif"],
 });
 
+// metadataBase resolves every relative metadata URL (OG images) against production (generate-metadata.md, "metadataBase").
+// No canonical here: a page that forgot its own would inherit one pointing at another URL. Each page sets the full set
+// with pageMetadata() (src/lib/seo.ts).
 export const metadata: Metadata = {
-  title: "Banister International",
-  description: "Banister International is a human capital advisory firm delivering high-impact talent solutions to transformational organizations.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
+  description: "Partner-led executive search since 1999, placing leaders from Senior Director to C-suite and board level across twelve industries.",
+  openGraph: { siteName: SITE_NAME, locale: "en_US", type: "website" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -30,6 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           React hydrates. suppressHydrationWarning only covers this element's own attributes, one level
           deep — mismatches in children still report. https://react.dev/reference/react-dom/client/hydrateRoot */}
       <body suppressHydrationWarning>
+        <JsonLd data={siteJsonLd} />
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1">{children}</main>

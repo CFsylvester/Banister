@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import Blank from "@/components/Blank";
 import { Email, H2, LegalPage, linkCls, P, Ul } from "@/components/LegalPage";
 import { LEGAL } from "@/lib/legal";
 
-export const metadata: Metadata = { title: "Privacy Policy — Banister International" };
+export const metadata: Metadata = pageMetadata({
+  title: "Privacy Policy | Banister International",
+  description: "How Banister International collects, uses, shares and keeps the personal information you give us through this website, and your rights over it.",
+  path: "/privacy",
+});
 
 // US-only policy [Design Choice, owner 2026-11-13]: candidate submissions are accepted from the US only (src/lib/geo.ts),
 // so this is written to US law and makes no EU, UK or other non-US statements. Drafted from reports/Banister privacy and
