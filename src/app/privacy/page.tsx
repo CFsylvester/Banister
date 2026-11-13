@@ -19,7 +19,7 @@ const H2 = ({ id, children }: { id?: string; children: ReactNode }) => (
 );
 const P = ({ children }: { children: ReactNode }) => <p className="m-0 mb-4">{children}</p>;
 const Ul = ({ children }: { children: ReactNode }) => <ul className="m-0 mb-4 flex list-disc flex-col gap-1.5 pl-6">{children}</ul>;
-const email = <Blank>{LEGAL.privacyEmail}</Blank>;
+const email = <a href={`mailto:${LEGAL.privacyEmail}`} className="font-semibold text-navy underline">{LEGAL.privacyEmail}</a>;
 
 export default function PrivacyPage() {
   return (

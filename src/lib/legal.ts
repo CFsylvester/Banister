@@ -3,12 +3,13 @@
 export const LEGAL = {
   entity: "[LEGAL ENTITY NAME]",
   postalAddress: "[POSTAL ADDRESS]",
-  privacyEmail: "[PRIVACY EMAIL]",
+  /** [Design Choice, owner 2026-11-13] the footer's contact address (src/components/SiteFooter.tsx). */
+  privacyEmail: "info@banisterintus.com",
   /** Years without contact after which a website submission is deleted. [Design Choice, owner 2026-11-13] 4: the
    * shortest that still meets California's 4-year referral-record rule, if it applies (reports/, "Global candidate
    * storage"). */
   cutoffYears: "4",
-  effectiveDate: "[EFFECTIVE DATE]",
+  effectiveDate: "November 13, 2026",
   /** [Design Choice, owner 2026-11-13] the same clock as candidates. */
   employerRetention: "4 years from our last contact",
   /** [Design Choice, owner 2026-11-13] confirmed as Banister's practice. */
