@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import PageHero from "@/components/PageHero";
 import { Icon } from "@/components/ui";
 import { drivers, GRID_4, services } from "@/lib/content";
 
-export const metadata: Metadata = { title: "Services — Banister International" };
+export const metadata: Metadata = pageMetadata({
+  title: "Executive Search Services | Banister International",
+  description: "Executive search from Senior Director to C-suite and board, next-generation leadership search, and search and advisory projects, each led by a partner.",
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

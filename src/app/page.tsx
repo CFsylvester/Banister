@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import HeroSlides from "@/components/HeroSlides";
 import InsightGrid, { insightsHeading } from "@/components/InsightGrid";
 // Testimonials are hidden until approved quotes are ready — restore with the <Quotes> block below.
@@ -8,6 +9,13 @@ import { /* quotes, */ stats } from "@/lib/content";
 import { mapHero } from "@/lib/cms/map/hero.ts";
 import { HeroTitle } from "@/lib/cms/richtext";
 import { getPage } from "@/lib/cms/source";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Banister International | Executive Search Firm",
+  description: "Partner-led executive search since 1999, placing leaders from Senior Director to C-suite and board level across eleven industries.",
+  path: "/",
+});
 
 // The hero comes from Contentful (page → hero) at build time. Everything below it is still code copy until
 // the owner's `page.blocks` types are built (specs/001-contentful-cms, Slice H).
@@ -34,7 +42,7 @@ export default async function Home() {
 
       <section className="site px-gutter grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] gap-x-16 gap-y-6 pt-[clamp(48px,6vw,80px)]">
         <p className="m-0 text-[clamp(20px,1.9vw,25px)] leading-[1.5] text-pretty text-navy">
-          Founded in 1999, Banister International is a human capital advisory firm delivering high-impact talent solutions to transformational organizations.
+          Founded in 1999, Banister International is an executive search and human capital advisory firm delivering high-impact talent solutions to transformational organizations.
         </p>
         <p className="m-0 text-[16px] leading-[1.75] text-pretty">
           We specialize in executive search, next-generation leadership, search and advisory projects, and interim leadership. Every engagement uses a branded search approach that tells the client’s story, led by one dedicated Client Engagement Partner from start to finish.

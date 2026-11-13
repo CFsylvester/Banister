@@ -1,16 +1,40 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Img, NavyCta } from "@/components/ui";
 import { STATE_OF_TA_REPORT } from "@/config/insights";
+import JsonLd from "@/components/JsonLd";
 import { asset } from "@/lib/asset";
+import { absUrl, orgRef, SITE_URL } from "@/lib/seo";
 // Related reading and "also of interest" are hidden until there is content for them — restore with the commented
 // <aside> below. The sidebar shows the report download card in the meantime.
 // import { related } from "@/lib/content";
 
-export const metadata: Metadata = { title: "The state of talent acquisition in professional services — Banister International" };
+export const metadata: Metadata = pageMetadata({
+  title: "The State of Talent Acquisition in Professional Services | Banister",
+  description: "A white paper from Banister International leadership and a talent acquisition leader on what is changing in hiring, what is not, and where it is headed.",
+  path: "/insights/state-of-talent-acquisition",
+  type: "article",
+  image: { url: "/insights/state-of-talent-acquisition/opengraph-image/", width: 1200, height: 630, alt: "White paper: The state of talent acquisition in professional services" },
+});
 
 // Copy from the live page: https://banisterintus.com/the-state-of-talent-acquisition-in-professional-services/
 const REPORT_FILENAME = "The-State-of-TA-in-Professional-Services_Banister-International.pdf";
 const body = "m-0 text-[17px] leading-[1.8]";
+// The live page's article:published_time (checked 2026-11-13). The live author was the WordPress account "wpengine",
+// so the firm is credited instead — the page's lead says the insights come from Banister International leadership.
+const PUBLISHED = "2026-10-01";
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "The state of talent acquisition in professional services",
+  description: "Insights from Banister International leadership and a seasoned talent acquisition leader on what is changing, what remains consistent, and where the industry is headed.",
+  image: `${SITE_URL}/assets/insight-state-of-ta.jpg`,
+  datePublished: PUBLISHED,
+  author: { ...orgRef, "@type": "Organization", name: "Banister International", url: absUrl("/") },
+  publisher: orgRef,
+  mainEntityOfPage: absUrl("/insights/state-of-talent-acquisition"),
+};
 
 const explores = [
   ["The current state of talent acquisition", "How technology, AI, data, and candidate expectations are reshaping talent acquisition, and how organizations are approaching strategic hiring, passive candidates, relationship capital, workforce planning, and leadership succession."],
@@ -21,6 +45,7 @@ const explores = [
 export default function ArticlePage() {
   return (
     <>
+      <JsonLd data={articleJsonLd} />
       <section className="relative overflow-hidden bg-black">
         {/* The photo fills only the left of the hero and fades into the black behind the title. Below lg it spans the
             width under a flat dim so the title stays readable. */}
@@ -32,7 +57,9 @@ export default function ArticlePage() {
         </div>
         <div className="site px-gutter relative flex justify-end py-[clamp(64px,8vw,112px)]">
           <div className="flex max-w-[560px] flex-col gap-4">
-            <span className="text-[13px] font-semibold tracking-[.04em] text-teal">White Paper</span>
+            <span className="text-[13px] font-semibold tracking-[.04em] text-teal">
+              White Paper · <time dateTime={PUBLISHED}>October 1, 2026</time>
+            </span>
             <h1 className="m-0 text-[clamp(34px,4vw,54px)] leading-[1.1] font-bold tracking-[-.01em] text-pretty text-white">
               The state of talent acquisition in professional services
             </h1>

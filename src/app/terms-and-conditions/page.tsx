@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import Blank from "@/components/Blank";
 import { Email, H2, LegalPage, linkCls, P, Ul } from "@/components/LegalPage";
 import { LEGAL } from "@/lib/legal";
 
-export const metadata: Metadata = { title: "Terms and Conditions — Banister International" };
+export const metadata: Metadata = pageMetadata({
+  title: "Terms and Conditions | Banister International",
+  description: "The terms for using the Banister International website: how you may use its content, what sending us an inquiry or résumé means, and how to reach us.",
+  path: "/terms-and-conditions",
+});
 
 // Same URL as the live WordPress site (#36). Short, plain-language terms for a site that sells nothing, drafted from
 // research_notes/Privacy page and cookie consent/terms_and_conditions.md ("Clause checklist"). Deliberately left out,
