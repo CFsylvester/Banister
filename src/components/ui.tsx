@@ -32,16 +32,18 @@ export const Icon = ({ src, loading = "lazy", ...props }: ComponentProps<"img">)
   <img alt="" loading={loading} {...props} src={typeof src === "string" ? asset(src) : src} />
 );
 
-// → (U+2192) and ● (U+25CF) are the only characters every route renders outside Open Sans's latin unicode-range. Chrome
-// downloaded the 22 KB "symbols" file and a 46 KB face whose unicode-ranges cover them, found no glyph in either, and
-// fell back to system-ui anyway (CSS Fonts 4 §4.5.1 — a face whose range covers a character is fetched before the
-// browser can tell it lacks the glyph: https://www.w3.org/TR/css-fonts-4/#composite-fonts; CDP
-// CSS.getPlatformFontsForNode reported ".SF NS" for both on macOS, 2026-11-13). Naming system-ui on the glyph itself
-// draws the same character from the same font without fetching either file. The outer element keeps Open Sans, so
-// line heights are unchanged; aria-hidden because the arrow only decorates the label.
+// → (U+2192) and ● (U+25CF) are the only characters every route renders outside Open Sans's latin unicode-range, and ✓
+// (U+2713) appears after a form is sent. Chrome downloaded the 22 KB "symbols" file (and, for →, a 46 KB face) whose
+// unicode-ranges cover them, found no glyph, and fell back to system-ui anyway (CSS Fonts 4 §4.5.1 — a face whose range
+// covers a character is fetched before the browser can tell it lacks the glyph:
+// https://www.w3.org/TR/css-fonts-4/#composite-fonts; CDP CSS.getPlatformFontsForNode reported ".SF NS" for all three
+// on macOS, 2026-11-13). Naming system-ui on the glyph itself draws the same character from the same font without
+// fetching either file. Callers keep it inside an Open Sans element, so line heights are unchanged; aria-hidden because
+// each one only decorates a label.
 const sysGlyph = { fontFamily: "system-ui, sans-serif" };
 export const Arrow = () => <span aria-hidden="true" style={sysGlyph}>→</span>;
 export const Dot = () => <span aria-hidden="true" style={sysGlyph}>●</span>;
+export const Check = () => <span aria-hidden="true" style={sysGlyph}>✓</span>;
 
 const ctaBase = "flex cursor-pointer items-center gap-[18px] font-bold tracking-[.06em] no-underline";
 

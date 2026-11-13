@@ -4,7 +4,7 @@ import { LEGAL } from "@/lib/legal";
 import { useRef, useState, type FormEvent } from "react";
 import { subscribe } from "@/app/actions/subscribe";
 import { EMAIL_HELP, HONEYPOT_FIELD, validEmail } from "@/lib/signup";
-import { Arrow } from "./ui";
+import { Arrow, Check } from "./ui";
 
 type Phase = "idle" | "sending" | "sent";
 
@@ -53,7 +53,7 @@ export default function SubscribeBand() {
                 </span>
               ) : phase === "sent" ? (
                 <span key="ok" className="absolute inset-0 flex items-center justify-center" style={{ animation: "bnFlash .6s ease-out" }}>
-                  <span className="inline-block font-extrabold text-gold" style={{ animation: "bnPop .45s cubic-bezier(.2,.9,.3,1.3) both" }}>✓</span>
+                  <span className="inline-block font-extrabold text-gold" style={{ animation: "bnPop .45s cubic-bezier(.2,.9,.3,1.3) both" }}><Check /></span>
                 </span>
               ) : <span key="ar"><Arrow /></span>}
             </button>

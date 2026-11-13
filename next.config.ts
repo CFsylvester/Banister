@@ -44,9 +44,10 @@ const nextConfig: NextConfig = {
       },
       // public/assets/ (logos, icons, photos). next start serves public/ with `max-age=0` (public-folder.md, "Caching"), so
       // every page view revalidated every file. The names aren't content-hashed, so no `immutable`: four hours fresh,
-      // then up to a week served from cache while it revalidates. 4h is the image optimizer's default minimumCacheTTL
-      // (14400 — /_next/image answers `max-age=14400`), and the optimizer keeps max(minimumCacheTTL, this max-age) with
-      // no way to purge it (image.md, `minimumCacheTTL`), so a longer max-age would pin stale optimized photos longer.
+      // then up to a week served from cache while it revalidates (stale-while-revalidate, RFC 5861 [unverified]). 4h is
+      // the image optimizer's default minimumCacheTTL (14400 — /_next/image answers `max-age=14400`), and the optimizer
+      // keeps max(minimumCacheTTL, this max-age) with no way to purge it (image.md, `minimumCacheTTL`), so a longer
+      // max-age would pin stale optimized photos longer. Measured on `next start`; Vercel's CDN path [unverified].
       {
         source: "/assets/:path*",
         headers: [{ key: "Cache-Control", value: "public, max-age=14400, stale-while-revalidate=604800" }],

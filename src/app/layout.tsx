@@ -7,14 +7,16 @@ import "./globals.css";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
-  // Latin only: → and ● render in system-ui (Arrow and Dot in components/ui.tsx), so nothing needs "symbols" — Open Sans
-  // drew neither glyph anyway. `subsets` only decides the preloads; every subset's @font-face rule still ships.
+  // Latin only: → ● ✓ render in system-ui (Arrow, Dot, Check in components/ui.tsx), so nothing needs "symbols" — Open
+  // Sans drew none of them anyway. `subsets` only decides the preloads; every subset's @font-face rule still ships
+  // (fixture build, 2026-11-13: 20 rules = 10 subsets x normal + italic).
   subsets: ["latin"],
-  // No `weight`: Open Sans is variable, so one "300 800" face per subset covers 400–800 (font.md, `weight`). Listing
+  // No `weight`: Open Sans is variable (font.md, `weight`: required only for non-variable fonts), so next/font emits one
+  // face per subset spanning its wght axis, 300–800 (next/dist/compiled/@next/font/dist/google/font-data.json). Listing
   // weights emitted one identical face per weight per subset.
   // Italic is a separate, non-preloaded instance below.
   style: "normal",
-  // Match the design's stack exactly ('Open Sans', system-ui): glyphs Open Sans lacks (e.g. ↓) must fall back
+  // Match the design's stack exactly ('Open Sans', system-ui): glyphs Open Sans lacks (e.g. ↓ →) must fall back
   // to system-ui, not next/font's metric-adjusted Arial. Trade-off: slightly more CLS while the font swaps in.
   // Option documented in node_modules/next/dist/docs/01-app/03-api-reference/02-components/font.md.
   adjustFontFallback: false,

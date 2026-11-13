@@ -34,7 +34,7 @@ export default function Stats({ heading, stats }: { heading: string; stats: [num
           return (
             <div key={label} className="relative flex flex-col gap-3.5 bg-mist px-7 pt-9 pb-8"
               style={{ opacity: t ? 1 : 0, transform: t ? "none" : "translateY(16px)", transition: "opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1)" }}>
-              {/* The bar grows by scaleX, not width: a transform skips layout and paint each frame (`none` once full). */}
+              {/* The bar grows by scaleX, not width: a transform change doesn't trigger layout each frame (`none` once full). */}
               <span className="absolute top-0 left-0 h-1 w-full origin-left bg-gold" style={{ transform: e < 1 ? `scaleX(${e})` : "none" }} />
               <span className="grid text-[clamp(42px,4.2vw,60px)] leading-none font-extrabold tracking-[-.02em] text-navy tabular-nums">
                 <span className="invisible [grid-area:1/1]" aria-hidden="true">{n.toLocaleString("en-US") + suffix}</span>
