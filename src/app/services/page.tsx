@@ -46,7 +46,8 @@ export default function ServicesPage() {
                     The left margin (a % of this capped wrapper, not the grid cell) makes room for the number circle that hangs off that vertex. */}
                 <div className="w-full max-w-[240px]">
                   <div className="relative ml-[8.19%] @container">
-                    <Icon src="/assets/hex-base.svg" className="block h-auto w-full" />
+                    {/* width/height = the SVG's 750×750 viewBox, so the lazy image holds its square before it loads. */}
+                    <Icon src="/assets/hex-base.svg" width={750} height={750} className="block h-auto w-full" />
                     <Icon src={d.icon} className="absolute top-[17%] left-[20.67%] w-[58.67%]" />
                     <span aria-hidden="true" className="absolute top-[32.53%] left-[-8.92%] flex aspect-square w-[30.13%] items-center justify-center rounded-full border-[0.9cqw] border-white bg-teal text-[16.5cqw] leading-none font-extrabold text-navy">
                       {i + 1}

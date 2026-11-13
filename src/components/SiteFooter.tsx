@@ -17,7 +17,7 @@ export default function SiteFooter() {
         {/* Logo left, contact icons right. */}
         <div className="flex flex-wrap items-center justify-between gap-6 border-b border-white/20 pb-[clamp(32px,4vw,46px)]">
           <Link href="/" className="group block" aria-label="Banister International home">
-            <Icon src="/assets/banister-logo-white.svg" alt="Banister International"
+            <Icon src="/assets/banister-logo-white.svg" alt="Banister International" width={530} height={122}
               className="block h-[clamp(40px,4vw,48px)] w-auto cursor-pointer object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
           </Link>
           <div className="flex gap-3.5">
