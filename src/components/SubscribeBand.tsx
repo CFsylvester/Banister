@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+import { LEGAL } from "@/lib/legal";
 import { useRef, useState, type FormEvent } from "react";
 import { subscribe } from "@/app/actions/subscribe";
 import { EMAIL_HELP, HONEYPOT_FIELD, validEmail } from "@/lib/signup";
@@ -38,7 +40,7 @@ export default function SubscribeBand() {
             {/* Honeypot for bots: hidden from people and assistive tech; the server action ignores filled-in sign-ups. */}
             <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
             <input type="email" name="email" value={email} readOnly={phase === "sending"} placeholder="EMAIL ADDRESS" aria-label="Email address"
-              aria-invalid={err ? "true" : "false"} aria-describedby="sub-msg"
+              aria-invalid={err ? "true" : "false"} aria-describedby="sub-msg sub-notice"
               onChange={(e) => { const v = e.target.value; setEmail(v); setErr(err && !validEmail(v) ? err : null); setPhase((p) => (p === "sending" ? p : "idle")); }}
               className="min-w-0 flex-1 border-0 bg-transparent px-0 py-2.5 text-[15px] font-semibold tracking-[.04em] text-navy outline-none" />
             <button type="submit" aria-label="Subscribe"
@@ -58,6 +60,12 @@ export default function SubscribeBand() {
           <span id="sub-msg" role="status" className="min-h-4 text-[13px] leading-4 font-semibold" style={{ color: err ? "#8a1c15" : "#003f5e" }}>
             {msg ? <span key={msg} className="inline-block" style={{ animation: "bnFade .35s ease-out both" }}>{msg}</span> : null}
           </span>
+          {/* Notice at the point of sign-up, no checkbox (report item D8). Unsubscribe is by email until a sending tool is chosen. */}
+          <p id="sub-notice" className="m-0 text-[12.5px] leading-[1.5] text-navy">
+            We keep your address in our contact database, provided by Ezekia. Unsubscribe at any time by emailing{" "}
+            <a href={`mailto:${LEGAL.privacyEmail}`} className="font-semibold text-navy underline">{LEGAL.privacyEmail}</a>.{" "}
+            <Link href="/privacy/#newsletter" className="font-semibold text-navy underline">Privacy Policy</Link>
+          </p>
         </div>
       </form>
     </section>
