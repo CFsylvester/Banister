@@ -4,7 +4,10 @@
 
 /** Vercel's "two-character ISO 3166-1 country code" for the requester's public IP
  * (https://vercel.com/docs/headers/request-headers#x-vercel-ip-country). The docs don't say whether it can be absent,
- * or whether Vercel overwrites a value the client sends [unverified], so this is a best-effort check, not proof. */
+ * or whether Vercel overwrites a value the client sends [unverified], so this is a best-effort check, not proof.
+ * It is only the visitor's country while traffic reaches Vercel directly: [Design Choice, owner 2026-11-13] Cloudflare
+ * stays DNS-only, because behind a proxy "client-IP and geolocation information can reflect that proxy"
+ * (https://vercel.com/kb/guide/can-i-use-a-proxy-on-top-of-my-vercel-deployment). Turning the proxy on breaks this gate. */
 export const COUNTRY_HEADER = "x-vercel-ip-country";
 
 /** The US plus its inhabited territories and minor outlying islands, which have their own ISO 3166-1 codes. */
