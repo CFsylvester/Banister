@@ -2,7 +2,8 @@
 // renders highlighted (src/components/Blank.tsx) so it can't pass for real text; fill all of them before launch (#36).
 export const LEGAL = {
   entity: "[LEGAL ENTITY NAME]",
-  postalAddress: "[POSTAL ADDRESS]",
+  /** Owner-supplied 2026-11-13. */
+  postalAddress: "4422 N Ravenswood Ave, Chicago, IL 60640, United States",
   /** [Design Choice, owner 2026-11-13] the footer's contact address (src/components/SiteFooter.tsx). */
   privacyEmail: "info@banisterintus.com",
   /** Years without contact after which a website submission is deleted. [Design Choice, owner 2026-11-13] 4: the
