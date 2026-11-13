@@ -3,8 +3,18 @@ import { pageMetadata } from "@/lib/seo";
 import PageHero from "@/components/PageHero";
 // Testimonials are hidden until approved quotes are ready — restore with the <Quotes> block below.
 // import Quotes from "@/components/Quotes";
-import { Icon } from "@/components/ui";
+import RevealIcon, { type HoverMotion } from "@/components/RevealIcon";
 import { industries /* , quotes */ } from "@/lib/content";
+
+// Per-icon hover motions (globals.css .reveal-icon).
+const HOVER: Partial<Record<string, HoverMotion>> = {
+  "/assets/icon-aerospace.svg": "fly", "/assets/icon-building-services.svg": "spin",
+  "/assets/icon-consumer.svg": "roll", "/assets/icon-financial.svg": "lift",
+  "/assets/icon-food.svg": "hop", "/assets/icon-industrial.svg": "drive",
+  "/assets/icon-insurance.svg": "pulse", "/assets/icon-consulting.svg": "lift",
+  "/assets/icon-manufacturing.svg": "nod", "/assets/icon-private-equity.svg": "flip",
+  "/assets/icon-technology.svg": "wiggle",
+};
 
 export const metadata: Metadata = pageMetadata({
   title: "Executive Search by Industry | Banister International",
@@ -27,9 +37,11 @@ export default function IndustriesPage() {
           including finance and accounting leaders and general counsel and legal leadership.
         </p>
         <div className="grid grid-cols-2 gap-x-[clamp(12px,3vw,44px)] auto-rows-fr gap-y-[clamp(12px,1.4vw,20px)] md:grid-cols-3 lg:grid-cols-4">
-          {industries.map((i) => (
+          {industries.map((i, n) => (
             <div key={i.icon} className="flex min-h-[clamp(150px,22vw,220px)] flex-col items-center border-[3px] border-gold px-1 pt-[clamp(8px,0.8vw,12px)] pb-2 lg:aspect-square lg:min-h-0 lg:pb-0 text-center transition-colors hover:bg-mist">
-              <Icon src={i.icon} className="size-[clamp(88px,11vw,150px)] object-contain" />
+              {/* Stagger by column so each row ripples left to right as it enters (4 columns at lg). */}
+              <RevealIcon src={i.icon} hover={HOVER[i.icon]} delayMs={(n % 4) * 90}
+                className="size-[clamp(88px,11vw,150px)]" />
               <span className="text-[clamp(14px,1.3vw,20px)] leading-[1.25] font-semibold whitespace-pre-line text-navy">{i.name}</span>
             </div>
           ))}
