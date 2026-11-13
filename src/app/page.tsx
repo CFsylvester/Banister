@@ -1,8 +1,9 @@
 import HeroSlides from "@/components/HeroSlides";
 import InsightGrid from "@/components/InsightGrid";
-import Quotes from "@/components/Quotes";
+// Testimonials are hidden until approved quotes are ready — restore with the <Quotes> block below.
+// import Quotes from "@/components/Quotes";
 import Stats from "@/components/Stats";
-import { homeInsights, quotes, stats } from "@/lib/content";
+import { homeInsights, /* quotes, */ stats } from "@/lib/content";
 import { mapHero } from "@/lib/cms/map/hero.ts";
 import { HeroTitle } from "@/lib/cms/richtext";
 import { getPage } from "@/lib/cms/source";
@@ -41,7 +42,7 @@ export default async function Home() {
 
       <Stats heading="Our track record" stats={stats} />
 
-      <Quotes heading="What our clients are saying" quotes={quotes} className="mt-[clamp(72px,8vw,112px)]" />
+      {/* <Quotes heading="What our clients are saying" quotes={quotes} className="mt-[clamp(72px,8vw,112px)]" /> */}
 
       <section className="site px-gutter py-[clamp(72px,8vw,112px)]">
         <h2 className="m-0 mb-8 text-[clamp(26px,2.4vw,32px)] font-bold text-navy">Our latest insights</h2>

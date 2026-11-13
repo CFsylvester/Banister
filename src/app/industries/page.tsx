@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import Quotes from "@/components/Quotes";
+// Testimonials are hidden until approved quotes are ready — restore with the <Quotes> block below.
+// import Quotes from "@/components/Quotes";
 import { Img } from "@/components/ui";
-import { industries, quotes } from "@/lib/content";
+import { industries /* , quotes */ } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Industries — Banister International" };
 
@@ -22,7 +23,7 @@ export default function IndustriesPage() {
           ))}
         </div>
       </section>
-      <Quotes heading="What our clients are saying" quotes={quotes} fadeMs={300} />
+      {/* <Quotes heading="What our clients are saying" quotes={quotes} fadeMs={300} /> */}
     </>
   );
 }
