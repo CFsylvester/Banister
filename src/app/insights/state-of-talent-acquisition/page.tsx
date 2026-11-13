@@ -25,11 +25,9 @@ export default function ArticlePage() {
         {/* The photo fills only the left of the hero and fades into the black behind the title. Below lg it spans the
             width under a flat dim so the title stays readable. */}
         <div className="absolute inset-y-0 left-0 w-full lg:w-1/2">
-          {/* LCP image. <picture> keeps React from emitting a preload hint that the homepage's prefetch of this page
-              would act on (see PageHero). */}
-          <picture className="contents">
-            <Img src="/assets/insight-state-of-ta.jpg" loading="eager" fetchPriority="high" className="h-full w-full object-cover object-[left_22%]" />
-          </picture>
+          {/* LCP image: eager + high priority (see Img). */}
+          <Img src="/assets/insight-state-of-ta.jpg" fill sizes="(min-width: 1024px) 50vw, 100vw" loading="eager" fetchPriority="high"
+            className="object-cover object-[left_22%]" />
           <div className="absolute inset-0 bg-black/60 lg:bg-transparent lg:bg-[linear-gradient(90deg,rgba(0,0,0,0)_50%,#000_100%)]" />
         </div>
         <div className="site px-gutter relative flex justify-end py-[clamp(64px,8vw,112px)]">

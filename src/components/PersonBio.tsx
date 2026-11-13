@@ -11,7 +11,7 @@ export default function PersonBio({ person: p }: { person: (typeof people)[numbe
   return (
     <div className="grid grid-cols-1 sm:grid-cols-[minmax(140px,300px)_minmax(0,1fr)] gap-x-[clamp(24px,4vw,56px)] gap-y-6 border-b border-rule py-10">
       <div className="w-full max-w-[300px] self-start overflow-hidden bg-fog">
-        <Img src={p.img} alt={p.name} className="block aspect-[4/5] w-full object-cover object-top"
+        <Img src={p.img} alt={p.name} width={600} height={750} sizes="300px" className="block aspect-[4/5] w-full object-cover object-top"
           style={{ transform: "none", transition: "transform .8s cubic-bezier(.2,.8,.2,1)" }} />
       </div>
       <div className="flex max-w-[760px] flex-col gap-3.5">

@@ -1,7 +1,6 @@
 "use client";
-/* eslint-disable @next/next/no-img-element -- see ui.tsx */
 import { useEffect, useState } from "react";
-import { asset } from "@/lib/asset";
+import { Img } from "./ui";
 
 const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
@@ -23,9 +22,10 @@ export default function HeroSlides({ slides: heroes }: { slides: string[] }) {
 
   return heroes.map((src, i) => (
     // Slide 0 is the LCP image. Later slides stay hidden for 6s, so they fetch at low priority instead of
-    // competing with it (fetchPriority="low" also keeps React from emitting a preload for them).
-    <img key={`${i}-${src}`} src={asset(src)} alt="" fetchPriority={i === 0 ? "high" : "low"}
-      className="absolute inset-0 h-full w-full object-cover object-[50%_30%]"
+    // competing with it. The frame is the .site box less its gutters: 1144px at full width, ~92vw below.
+    <Img key={`${i}-${src}`} src={src} fill sizes="(min-width: 1240px) 1144px, 92vw"
+      loading="eager" fetchPriority={i === 0 ? "high" : "low"}
+      className="object-cover object-[50%_30%]"
       style={{ opacity: i === h ? 1 : 0, transform: i === h && shown ? "scale(1.06)" : "scale(1)", transition: "opacity 1.2s ease, transform 7s linear" }} />
   ));
 }

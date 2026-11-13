@@ -14,6 +14,16 @@ const nextConfig: NextConfig = {
   // Keep the /about/ style URLs the site already uses. This makes /api/revalidate 308 to /api/revalidate/, so the
   // Contentful webhook must call the trailing-slash URL (scripts/cms/webhook.mjs enforces it).
   trailingSlash: true,
+  // next/image (src/components/ui.tsx Img). Options from node_modules/next/dist/docs/01-app/03-api-reference/
+  // 02-components/image.md: `formats` defaults to WebP only, so AVIF is listed first for browsers that accept it;
+  // `remotePatterns` lets live-mode hero images (asset URLs from Contentful, src/lib/cms/normalize.ts — served from
+  // images.ctfassets.net [unverified]) through the optimizer, scoped to this space's path. Builds without a space ID
+  // (fixture mode serves /cms/... locally) allow no remote host, so the optimizer can't be used for other spaces.
+  // The default `qualities` ([75]) and sizes are kept (node_modules/next/dist/shared/lib/image-config.js).
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: process.env.CONTENTFUL_SPACE_ID ? [new URL(`https://images.ctfassets.net/${process.env.CONTENTFUL_SPACE_ID}/**`)] : [],
+  },
   // Baseline security headers (report item D14), values from
   // node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/headers.md. HSTS leaves out
   // includeSubDomains because other banisterintus.com hosts (mail, the old WordPress site) aren't known to be HTTPS-only

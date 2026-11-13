@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { siteMap } from "@/lib/content";
-import { Img } from "./ui";
+import { Icon } from "./ui";
 
 // One continuous gradient. The cyan starts right under the last row of text and eases in over the empty bottom band,
 // so there is no seam where it begins.
@@ -17,18 +17,18 @@ export default function SiteFooter() {
         {/* Logo left, contact icons right. */}
         <div className="flex flex-wrap items-center justify-between gap-6 border-b border-white/20 pb-[clamp(32px,4vw,46px)]">
           <Link href="/" className="group block" aria-label="Banister International home">
-            <Img src="/assets/banister-logo-white.svg" alt="Banister International"
+            <Icon src="/assets/banister-logo-white.svg" alt="Banister International"
               className="block h-[clamp(40px,4vw,48px)] w-auto cursor-pointer object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
           </Link>
           <div className="flex gap-3.5">
             <a href="https://www.linkedin.com/company/banisterinternational/home/" target="_blank" rel="noopener noreferrer" className="group block">
-              <Img src="/assets/icon-linkedin.svg" alt="Banister International on LinkedIn (opens in a new tab)" className={icon} />
+              <Icon src="/assets/icon-linkedin.svg" alt="Banister International on LinkedIn (opens in a new tab)" className={icon} />
             </a>
             <a href="mailto:info@banisterintus.com" className="group block">
-              <Img src="/assets/icon-email.svg" alt="Email info@banisterintus.com" className={icon} />
+              <Icon src="/assets/icon-email.svg" alt="Email info@banisterintus.com" className={icon} />
             </a>
             <a href="tel:+12246555563" className="group block">
-              <Img src="/assets/icon-phone.svg" alt="Call (224) 655-5563" className={icon} />
+              <Icon src="/assets/icon-phone.svg" alt="Call (224) 655-5563" className={icon} />
             </a>
           </div>
         </div>
