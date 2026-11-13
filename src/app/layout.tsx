@@ -10,7 +10,8 @@ const openSans = Open_Sans({
   // Latin only: → and ● render in system-ui (Arrow and Dot in components/ui.tsx), so nothing needs "symbols" — Open Sans
   // drew neither glyph anyway. `subsets` only decides the preloads; every subset's @font-face rule still ships.
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  // No `weight`: Open Sans is variable, so one "300 800" face per subset covers 400–800 (font.md, `weight`). Listing
+  // weights emitted one identical face per weight per subset.
   // Italic is a separate, non-preloaded instance below.
   style: "normal",
   // Match the design's stack exactly ('Open Sans', system-ui): glyphs Open Sans lacks (e.g. ↓) must fall back
@@ -25,7 +26,14 @@ const openSans = Open_Sans({
 // picks them up (font.md, `preload`). Turbopack rejects a second instance of the same family with the options above
 // ("next/font/google queries have exactly one entry"), so this one is minimal: Open Sans is variable, so it covers
 // every weight, and `subsets` only decides what gets preloaded (font.md, `subsets`).
-const openSansItalic = Open_Sans({ variable: "--font-open-sans-italic", subsets: ["latin"], style: "italic", preload: false });
+const openSansItalic = Open_Sans({
+  variable: "--font-open-sans-italic", subsets: ["latin"], style: "italic", preload: false,
+  // Nothing reads this instance's family list (body uses --font-open-sans), so its metric-adjusted "Open Sans Fallback"
+  // @font-face was dead CSS. Turbopack only dropped that rule once `fallback` was given too (adjustFontFallback: false
+  // alone still emitted it — fixture build, 2026-11-13).
+  adjustFontFallback: false,
+  fallback: ["system-ui", "sans-serif"],
+});
 
 export const metadata: Metadata = {
   title: "Banister International",
