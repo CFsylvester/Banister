@@ -18,7 +18,6 @@ const photos = [
 const files = [
   ...photos,
   ["banister-logo-white.png", 416, 104],
-  ...["quality", "execution", "speed", "insights"].map((n) => [`hex-${n}.png`, 440, 440]),
   ...["linkedin", "email", "phone"].map((n) => [`icon-${n}.png`, 88, 88]),
 ];
 
