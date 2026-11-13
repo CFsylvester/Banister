@@ -68,14 +68,13 @@ export const drivers = [
 ];
 
 export const industries = [
-  ["aerospace", "Aerospace, defense and automotive"], ["building-products", "Building products and HVAC"],
-  ["construction", "Construction, real estate and building services"], ["consumer", "Consumer goods and retail"],
-  ["education", "Education, training and coaching"], ["financial", "Financial services"],
-  ["food", "Food, beverage and restaurant brands"], ["hospitality", "Hospitality and real estate"],
-  ["insurance", "Insurance and managed care"], ["consulting", "Management consulting, accounting and professional services"],
-  ["manufacturing", "Manufacturing, packaging, industrial and transportation"], ["private-equity", "Private equity and investment firms"],
-  ["sport", "Sport, entertainment and associations"], ["technology", "Technology, media and telecommunications"],
-].map(([k, name]) => ({ name, icon: `/assets/icon-${k}.png` }));
+  ["aerospace", "Aerospace & Defense"], ["building-services", "Building services and HVAC"],
+  ["construction", "Construction, Real estate, and Building services"], ["consumer", "Consumer goods and Retail"],
+  ["financial", "Financial services"], ["food", "Food, Beverage, and Restaurant brands"],
+  ["industrial", "Industrial and Automotive"], ["insurance", "Insurance and Managed care"],
+  ["consulting", "Management consulting, Accounting, and Professional services"], ["manufacturing", "Manufacturing and Packaging"],
+  ["private-equity", "PE and Investment firms"], ["technology", "Technology, Media, and Tele\u00ADcommunications"],
+].map(([k, name]) => ({ name, icon: `/assets/icon-${k}.svg` }));
 
 export const people = [
   { id: "patrick-sylvester", name: "Patrick Sylvester", role: "CEO and Founder", paras: [
