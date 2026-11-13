@@ -9,9 +9,9 @@ export default function PersonBio({ person: p }: { person: (typeof people)[numbe
   const id = useId();
   const [lead, ...rest] = p.paras;
   return (
-    <div className="grid grid-cols-[minmax(120px,220px)_minmax(0,1fr)] gap-x-[clamp(24px,4vw,56px)] gap-y-6 border-b border-rule py-10">
-      <div className="self-start overflow-hidden bg-fog">
-        <Img src={p.img} alt={p.name} className="block aspect-[4/5] w-full object-cover object-[50%_20%]"
+    <div className="grid grid-cols-1 sm:grid-cols-[minmax(140px,300px)_minmax(0,1fr)] gap-x-[clamp(24px,4vw,56px)] gap-y-6 border-b border-rule py-10">
+      <div className="w-full max-w-[300px] self-start overflow-hidden bg-fog">
+        <Img src={p.img} alt={p.name} className="block aspect-[4/5] w-full object-cover object-top"
           style={{ transform: "none", transition: "transform .8s cubic-bezier(.2,.8,.2,1)" }} />
       </div>
       <div className="flex max-w-[760px] flex-col gap-3.5">
