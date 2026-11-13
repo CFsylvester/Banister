@@ -12,11 +12,11 @@ import type { Tag } from "@/lib/content";
  * reserve its shape — plus `sizes` saying how wide it renders (image.md, `sizes`: without it the browser assumes 100vw).
  *
  * Above-the-fold images pass loading="eager" (and fetchPriority="high" for the LCP image); next/image is lazy
- * otherwise. Don't pass `preload`: it inserts a <link rel="preload"> that would ride along when <Link> prefetches
- * this page from another one. next/image is a client component, so the server components that render it put no
- * <img> into the RSC payload and React adds no image preload hint there either (image.md, `preload`; `'use client'`
- * at the top of next/dist/client/image-component.js). */
-export const Img = ({ src, alt = "", style, ...props }: Omit<ImageProps, "src" | "alt"> & { src: string; alt?: string }) => (
+ * otherwise. `preload`/`priority` are left out of the props: image.md says not to use `preload` together with
+ * `loading` or `fetchPriority`, and `priority` is deprecated in v16. next/image is a client component (`'use client'`
+ * at the top of next/dist/client/image-component.js), so the server components that render it put no <img> into the
+ * RSC payload and React adds no image preload hint there — another page's <Link> prefetch downloads nothing. */
+export const Img = ({ src, alt = "", style, ...props }: Omit<ImageProps, "src" | "alt" | "preload" | "priority"> & { src: string; alt?: string }) => (
   // `height: auto`: this site has no Tailwind Preflight (globals.css), so without it the height attribute would set
   // the box's height instead of the class's aspect ratio.
   <Image alt={alt} {...props} style={props.fill ? style : { height: "auto", ...style }} src={asset(src)} />

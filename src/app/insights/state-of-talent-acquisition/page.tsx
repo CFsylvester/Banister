@@ -25,7 +25,7 @@ export default function ArticlePage() {
         {/* The photo fills only the left of the hero and fades into the black behind the title. Below lg it spans the
             width under a flat dim so the title stays readable. */}
         <div className="absolute inset-y-0 left-0 w-full lg:w-1/2">
-          {/* LCP image: eager + high priority, never `preload` (see Img). */}
+          {/* LCP image: eager + high priority (see Img). */}
           <Img src="/assets/insight-state-of-ta.jpg" fill sizes="(min-width: 1024px) 50vw, 100vw" loading="eager" fetchPriority="high"
             className="object-cover object-[left_22%]" />
           <div className="absolute inset-0 bg-black/60 lg:bg-transparent lg:bg-[linear-gradient(90deg,rgba(0,0,0,0)_50%,#000_100%)]" />

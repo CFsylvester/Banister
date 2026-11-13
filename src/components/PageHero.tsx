@@ -5,10 +5,11 @@ import { NavyCta, Img } from "./ui";
 export default function PageHero({ img, title, lede, children }: { img: string; title: string; lede: string; children?: ReactNode }) {
   return (
     <section className="flex flex-wrap items-stretch">
-      {/* The hero is this page's LCP image: eager + high priority, never `preload` (see Img). Side by side (from 800px,
-          the two flex bases) the photo gets 420px plus 1/2.35 of the rest: 515px of 1024, 692px of 1440, so 53vw
-          covers it; stacked it spans the viewport. */}
-      <Img src={img} width={1200} height={1000} sizes="(min-width: 800px) 53vw, 100vw" loading="eager" fetchPriority="high"
+      {/* The hero is this page's LCP image: eager + high priority (see Img). Side by side (from an 800px section, the
+          two flex bases) the photo gets 420px plus 1/2.35 of the rest: 515px of 1024, 692px of 1440, so 53vw covers
+          it; stacked it spans the viewport. The breakpoint is 820px so a classic scrollbar (section narrower than the
+          viewport) can't leave a stacked photo sized for 53vw. */}
+      <Img src={img} width={1200} height={1000} sizes="(min-width: 820px) 53vw, 100vw" loading="eager" fetchPriority="high"
         className="block aspect-[6/5] max-h-[620px] w-full min-w-0 flex-[1_1_420px] object-cover" />
       <div className="flex flex-[1.35_1_380px] flex-col justify-center gap-[18px] bg-mist pt-[clamp(40px,6vw,88px)] pr-[clamp(20px,5vw,80px)] pb-[clamp(40px,6vw,88px)] pl-[clamp(20px,4.4vw,64px)]">
         <div className="flex max-w-[620px] flex-col gap-[18px]">
