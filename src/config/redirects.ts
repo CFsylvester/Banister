@@ -47,4 +47,9 @@ export const legacyRedirects: LegacyRedirect[] = [
   { source: "/banister-international-expands-service-offerings-through-strategic-alliance-with-duffy-group", destination: "/services/" },
   { source: "/banister-international-launches-strategic-partnership-with-shapiro-legal-search-to-introduce-legal-executive-search-capabilities", destination: "/services/" },
   { source: "/banister-international-completes-transformational-general-manager-search-project", destination: "/services/" },
+  // Announcement of the firm's next phase (family ownership, new website). Not in the old sitemaps and already a 404 on
+  // WordPress by 2026-11-13, but Sanford Rose Associates' copy of the release links here
+  // (https://sanfordrose.com/banister-international-announces-next-phase-of-growth/), so it keeps that inbound link.
+  // About is the nearest page: the firm's story and leadership.
+  { source: "/banister-international-announces-next-phase-of-growth", destination: "/about/" },
 ];
