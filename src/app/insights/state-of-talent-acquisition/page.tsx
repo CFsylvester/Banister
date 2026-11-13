@@ -14,7 +14,6 @@ export const metadata: Metadata = pageMetadata({
   description: "A white paper from Banister International leadership and a talent acquisition leader on what is changing in hiring, what is not, and where it is headed.",
   path: "/insights/state-of-talent-acquisition",
   type: "article",
-  image: { url: "/insights/state-of-talent-acquisition/opengraph-image/", width: 1200, height: 630, alt: "White paper: The state of talent acquisition in professional services" },
 });
 
 // Copy from the live page: https://banisterintus.com/the-state-of-talent-acquisition-in-professional-services/
