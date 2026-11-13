@@ -13,7 +13,9 @@ export const ARTICLE_HREF = "/insights/state-of-talent-acquisition";
 export const stats: [number, string, string][] = [
   [3500, "+", "successful placements"],
   [40, "+", "countries served"],
-  [30, "+", "years in executive search"],
+  // Counted from the firm's founding in August 1999 [Design Choice, owner 2026-11-13: 1999 is the founding year]. It read
+  // 30+, which only works from Patrick's own start in search (1993, his bio below).
+  [25, "+", "years in executive search"],
   [95, "%", "of business from repeat clients"],
 ];
 
