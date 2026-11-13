@@ -21,6 +21,12 @@
   --font-sans: var(--font-open-sans), system-ui, sans-serif;
 }
 
+/* The site header's closed height: 26px top padding + 52px logo + 34px bottom padding (SiteHeader.tsx).
+   The homepage hero subtracts it so header + hero fill exactly one screen — update both together. */
+:root {
+  --header-h: 112px;
+}
+
 /* Site gutter + content width used by every section of the design. */
 @utility px-gutter {
   padding-left: clamp(20px, 4vw, 48px);

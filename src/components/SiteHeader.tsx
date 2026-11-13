@@ -26,9 +26,11 @@ export default function SiteHeader() {
 
   return (
     <header style={{ background: headBg }}>
-      <div className="site px-gutter flex flex-wrap items-center justify-between gap-x-10 gap-y-4 pt-[26px] pb-[34px]">
-        <Link href="/" className="group block" aria-label="Banister International home">
-          <Img src="/assets/banister-logo-white.svg" alt="Banister International" className="block h-[52px] w-auto cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
+      {/* Below 820px the row never wraps, so the header stays --header-h (globals.css) tall: on very narrow screens the
+          logo shrinks inside its 52px box instead of pushing the menu button onto a second line. */}
+      <div className="site px-gutter flex flex-wrap items-center justify-between gap-x-10 gap-y-4 pt-[26px] pb-[34px] max-[819px]:flex-nowrap max-[819px]:gap-x-4">
+        <Link href="/" className="group block min-w-0" aria-label="Banister International home">
+          <Img src="/assets/banister-logo-white.svg" alt="Banister International" className="block h-[52px] w-auto max-w-full object-contain object-left cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
         </Link>
         <nav className="hidden flex-wrap gap-[clamp(18px,2.6vw,36px)] min-[820px]:flex" aria-label="Main">
           {nav.map((n) => (

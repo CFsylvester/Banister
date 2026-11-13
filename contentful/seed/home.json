@@ -2,21 +2,27 @@
   "_comment": "Seed for migrations 0001–0004 (button · hero · page · button.internalPage) = offline fixture (CONTENT_SOURCE=fixture) = initial content for a new space (pnpm cms:seed). Home copy is character-for-character from the pre-CMS homepage. The Contact page exists as the CTA button's internal link target; its hero is a labelled placeholder because page.hero is required and Contact isn't built from Contentful yet. Deterministic IDs make seeding idempotent.",
   "assets": [
     {
+      "id": "hero-home-1",
+      "file": "design/assets/hero-1.jpg",
+      "title": "Hero — reviewing documents",
+      "description": ""
+    },
+    {
+      "id": "hero-home-2",
+      "file": "design/assets/hero-2.jpg",
+      "title": "Hero — office corridor",
+      "description": ""
+    },
+    {
+      "id": "hero-home-3",
+      "file": "design/assets/hero-3.jpg",
+      "title": "Hero — handshake on stairs",
+      "description": ""
+    },
+    {
       "id": "hero-tablet",
       "file": "design/assets/hero-tablet.jpg",
       "title": "Hero — tablet",
-      "description": ""
-    },
-    {
-      "id": "hero-insight-greeting",
-      "file": "design/assets/insight-greeting.jpg",
-      "title": "Hero — greeting",
-      "description": ""
-    },
-    {
-      "id": "hero-insight-tablet",
-      "file": "design/assets/insight-tablet.jpg",
-      "title": "Hero — tablet 2",
       "description": ""
     }
   ],
@@ -48,21 +54,21 @@
             "sys": {
               "type": "Link",
               "linkType": "Asset",
-              "id": "hero-tablet"
+              "id": "hero-home-1"
             }
           },
           {
             "sys": {
               "type": "Link",
               "linkType": "Asset",
-              "id": "hero-insight-greeting"
+              "id": "hero-home-2"
             }
           },
           {
             "sys": {
               "type": "Link",
               "linkType": "Asset",
-              "id": "hero-insight-tablet"
+              "id": "hero-home-3"
             }
           }
         ],
