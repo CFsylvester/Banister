@@ -60,9 +60,9 @@
 @keyframes bnFlash { 0% { background: #2bc1c6 } 100% { background: #003f5e } }
 
 /* Industries icons (src/components/RevealIcon.tsx): a soft rise when the grid scrolls into view, plus an optional
-   per-icon hover motion. Both sit behind no-preference, so reduced-motion visitors get the static icon. */
+   per-icon hover motion. The [data-hover] motions are shared with the services drivers (.driver-card below). All of it
+   sits behind no-preference, so reduced-motion visitors get the static icons. */
 @layer components {
-  .reveal-icon { display: block; }
   .reveal-icon > img { display: block; width: 100%; height: 100%; }
   /* Clip only the motions that leave the frame; the others stay whole when they reach the icon's edge. */
   .reveal-icon:is([data-hover="fly"], [data-hover="drive"]) { overflow: hidden; }
@@ -71,19 +71,26 @@
   /* The rise runs on the wrapper and hover runs on the img, so ending a hover can't restart the rise. */
   .reveal-icon[data-armed]:not([data-shown]) { opacity: 0; }
   .reveal-icon[data-shown] { animation: bnRise .9s cubic-bezier(.2, .9, .3, 1.12) var(--delay) both; }
-  /* Hover motions move the whole icon (the files are flat <img>s), so each is picked to read well on its subject. */
+  /* Hover motions move the whole icon (each is a flat <img>), so each is picked to read well on its subject. data-hover
+     sits on the industries wrapper div (the img inherits --hover-motion) and on the services img itself. */
   /* hover: hover keeps a tap on a touch screen (which leaves :hover stuck on) from playing it. */
-  @media (hover: hover) { :hover > .reveal-icon > img { animation: var(--hover-motion); } }
-  .reveal-icon[data-hover="fly"] { --hover-motion: bnFlyThrough 1s cubic-bezier(.6, 0, .3, 1); }
-  .reveal-icon[data-hover="drive"] { --hover-motion: bnDriveThrough 1s cubic-bezier(.6, 0, .3, 1); }
-  .reveal-icon[data-hover="spin"] { --hover-motion: bnSpinUp 1.6s cubic-bezier(.15, .7, .2, 1); }
-  .reveal-icon[data-hover="roll"] { --hover-motion: bnRoll .9s cubic-bezier(.3, .7, .3, 1); }
-  .reveal-icon[data-hover="hop"] { --hover-motion: bnHop .7s cubic-bezier(.3, .7, .3, 1); }
-  .reveal-icon[data-hover="pulse"] { --hover-motion: bnPulse .9s ease-in-out; }
-  .reveal-icon[data-hover="lift"] { --hover-motion: bnLift .8s cubic-bezier(.3, 1.4, .5, 1); }
-  .reveal-icon[data-hover="nod"] { --hover-motion: bnNod .9s cubic-bezier(.3, .7, .3, 1); }
-  .reveal-icon[data-hover="flip"] { --hover-motion: bnFlip .9s cubic-bezier(.4, 0, .2, 1); }
-  .reveal-icon[data-hover="wiggle"] { --hover-motion: bnWiggle .8s ease-in-out; }
+  @media (hover: hover) {
+    :hover > .reveal-icon > img, .driver-card:hover .driver-icon > img { animation: var(--hover-motion); }
+  }
+  [data-hover="fly"] { --hover-motion: bnFlyThrough 1s cubic-bezier(.6, 0, .3, 1); }
+  [data-hover="drive"] { --hover-motion: bnDriveThrough 1s cubic-bezier(.6, 0, .3, 1); }
+  [data-hover="spin"] { --hover-motion: bnSpinUp 1.6s cubic-bezier(.15, .7, .2, 1); }
+  [data-hover="roll"] { --hover-motion: bnRoll .9s cubic-bezier(.3, .7, .3, 1); }
+  [data-hover="hop"] { --hover-motion: bnHop .7s cubic-bezier(.3, .7, .3, 1); }
+  [data-hover="pulse"] { --hover-motion: bnPulse .9s ease-in-out; }
+  [data-hover="lift"] { --hover-motion: bnLift .8s cubic-bezier(.3, 1.4, .5, 1); }
+  [data-hover="nod"] { --hover-motion: bnNod .9s cubic-bezier(.3, .7, .3, 1); }
+  [data-hover="flip"] { --hover-motion: bnFlip .9s cubic-bezier(.4, 0, .2, 1); }
+  [data-hover="wiggle"] { --hover-motion: bnWiggle .8s ease-in-out; }
+  [data-hover="sway"] { --hover-motion: bnSway 1s ease-in-out; }
+  :is([data-hover="sway"] > img, img[data-hover="sway"]) { transform-origin: 50% 0; }
+  [data-hover="dash"] { --hover-motion: bnDash .8s cubic-bezier(.3, .7, .3, 1); }
+  [data-hover="glow"] { --hover-motion: bnGlow 1.2s ease-in-out; }
   /* Rotates around the fan ring's centre (cx 92, cy 87.81 in icon-building-services.svg's 180×180 viewBox). */
   .reveal-icon[data-hover="spin"] > img { transform-origin: 51.1% 48.8%; }
   .reveal-icon[data-hover="nod"] > img { transform-origin: 25% 90%; }
@@ -119,3 +126,33 @@
 @keyframes bnWiggle {
   20% { transform: rotate(-10deg); } 45% { transform: rotate(8deg); } 70% { transform: rotate(-4deg); }
 }
+@keyframes bnSway { 25% { transform: rotate(7deg); } 60% { transform: rotate(-5deg); } 85% { transform: rotate(2deg); } }
+@keyframes bnDash { 35% { transform: translateX(10%) skewX(-8deg); } 70% { transform: translateX(-3%); } }
+@keyframes bnGlow { 40%, 60% { filter: drop-shadow(0 0 6px #ffc91e) drop-shadow(0 0 14px #ffc91e); } }
+
+/* Services "Flawless search methodology" drivers (src/app/services/page.tsx, src/components/Reveal.tsx). Each driver
+   enters after the one before it (--delay); within a driver the hex rises, the icon fades in, the gold chevron slides
+   in as the underline draws, then the number pops. Hovering the card nudges the chevron forward. */
+/* Stagger 1 → 4 across a 4-up row; once GRID_4 wraps to 2-up (under 760px wide) each row of two staggers on its own. */
+.driver { --delay: var(--delay-4up); }
+@container drivers (width < 760px) { .driver { --delay: var(--delay-2up); } }
+@media (prefers-reduced-motion: no-preference) {
+  .driver[data-armed]:not([data-shown]) :is(.driver-hex, .driver-icon, .driver-chevron, .driver-num) { opacity: 0; }
+  .driver[data-armed]:not([data-shown]) .driver-line { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .driver :is(.driver-hex, .driver-chevron) { transform-box: fill-box; transform-origin: center; }
+  .driver[data-shown] .driver-hex { animation: bnHexIn .8s cubic-bezier(.2, .9, .3, 1.12) var(--delay) both; }
+  .driver[data-shown] .driver-icon { animation: bnRise .7s cubic-bezier(.2, .9, .3, 1.12) calc(var(--delay) + .2s) both; }
+  .driver[data-shown] .driver-chevron { animation: bnChevronIn .6s cubic-bezier(.2, .9, .3, 1.2) calc(var(--delay) + .45s) both; }
+  .driver[data-shown] .driver-line {
+    stroke-dasharray: 1;
+    animation: bnDraw .7s cubic-bezier(.45, 0, .25, 1) calc(var(--delay) + .4s) both;
+  }
+  .driver[data-shown] .driver-num { animation: bnPop .55s cubic-bezier(.2, .9, .3, 1.3) calc(var(--delay) + .65s) both; }
+  .driver-chevron { transition: translate .4s cubic-bezier(.3, 1.4, .5, 1); }
+  @media (hover: hover) { .driver-card:hover .driver-chevron { translate: 4% 0; } }
+}
+/* In % of the shape's own box (transform-box: fill-box), since px on an SVG shape are viewBox units. No blur: CSS
+   filter on an element inside an <svg> is not something to rely on here [unverified]. */
+@keyframes bnHexIn { from { opacity: 0; transform: translateY(8%) scale(.92); } }
+@keyframes bnChevronIn { from { opacity: 0; transform: translateX(-60%); } }
+@keyframes bnDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
