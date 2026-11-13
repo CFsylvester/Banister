@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Services — Banister International"
 export default function ServicesPage() {
   return (
     <>
-      <PageHero img="/assets/services-review.jpg" title="Services"
+      <PageHero img="/assets/services-hero.jpg" title="Services"
         lede="Four ways to engage Banister — from a single C-suite appointment to a full hiring program. Each is led by one partner, and each tells your organization’s story to the people you want to reach." />
 
       <section className="site px-gutter py-[clamp(56px,7vw,88px)]">
@@ -40,9 +40,19 @@ export default function ServicesPage() {
             A proprietary search process that shortens the time to complete a search while significantly raising the quality and diversity of the candidates delivered. It brings <strong className="text-navy">four key drivers</strong> together to deliver talent that increases our clients’ enterprise value.
           </p>
           <div className="grid gap-x-7 gap-y-10" style={{ gridTemplateColumns: GRID_4(28) }}>
-            {drivers.map((d) => (
+            {drivers.map((d, i) => (
               <div key={d.title} className="flex flex-col items-center gap-3.5 text-center">
-                <Img src={d.img} className="block h-auto w-full max-w-[220px]" />
+                {/* Percentages are hex-base.svg's 750-unit canvas: hex centre (375,357), left vertex (59,357).
+                    The left margin (a % of this capped wrapper, not the grid cell) makes room for the number circle that hangs off that vertex. */}
+                <div className="w-full max-w-[240px]">
+                  <div className="relative ml-[8.19%] @container">
+                    <Img src="/assets/hex-base.svg" className="block h-auto w-full" />
+                    <Img src={d.icon} className="absolute top-[17%] left-[20.67%] w-[58.67%]" />
+                    <span aria-hidden="true" className="absolute top-[32.53%] left-[-8.92%] flex aspect-square w-[30.13%] items-center justify-center rounded-full border-[0.9cqw] border-white bg-teal text-[16.5cqw] leading-none font-extrabold text-navy">
+                      {i + 1}
+                    </span>
+                  </div>
+                </div>
                 <span className="text-[21px] font-bold text-navy">{d.title}</span>
                 <span className="max-w-[240px] text-[15px] leading-[1.6]">{d.body}</span>
               </div>

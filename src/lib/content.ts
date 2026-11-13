@@ -51,10 +51,10 @@ export const services = [
 ];
 
 export const drivers = [
-  { img: "/assets/hex-quality.png", title: "Quality", body: "Every presented candidate has the stretch to do the role and the ability to be promoted to the next." },
-  { img: "/assets/hex-execution.png", title: "Execution", body: "Technology-enabled tools overlaid with a hands-on, partner-managed search." },
-  { img: "/assets/hex-speed.png", title: "Speed", body: "A search process that delivers initial candidates within 10 days of search origination." },
-  { img: "/assets/hex-insights.png", title: "Insights", body: "Every search is led by a partner with at least 20 years of search experience." },
+  { icon: "/assets/driver-quality.svg", title: "Quality", body: "Every presented candidate has the stretch to do the role and the ability to be promoted to the next." },
+  { icon: "/assets/driver-execution.svg", title: "Execution", body: "Technology-enabled tools overlaid with a hands-on, partner-managed search." },
+  { icon: "/assets/driver-speed.svg", title: "Speed", body: "A search process that delivers initial candidates within 10 days of search origination." },
+  { icon: "/assets/driver-insights.svg", title: "Insights", body: "Every search is led by a partner with at least 20 years of search experience." },
 ];
 
 export const industries = [
