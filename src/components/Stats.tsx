@@ -29,7 +29,10 @@ export default function Stats({ heading, stats }: { heading: string; stats: [num
       <h2 className="m-0 mb-7 text-[clamp(26px,2.4vw,32px)] font-bold text-navy">{heading}</h2>
       <div ref={ref} className="grid gap-5" style={{ gridTemplateColumns: GRID_4(20) }}>
         {stats.map(([n, suffix, label], i) => {
-          const p = t ? Math.max(0, Math.min(1, (t.now - t.start - i * STAGGER) / DURATION)) : 0;
+          // Before the count-up starts (t === null, so on the server and until the grid scrolls into view) render the final
+          // value: the card is still at opacity 0, so nothing flashes, and crawlers that don't run JavaScript read
+          // "3,500+" instead of "0+". The count-up then restarts from 0 as the card fades in.
+          const p = t ? Math.max(0, Math.min(1, (t.now - t.start - i * STAGGER) / DURATION)) : 1;
           const e = 1 - Math.pow(1 - p, 3);
           return (
             <div key={label} className="relative flex flex-col gap-3.5 bg-mist px-7 pt-9 pb-8"
