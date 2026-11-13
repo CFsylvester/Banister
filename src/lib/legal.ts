@@ -15,7 +15,9 @@ export const LEGAL = {
   employerRetention: "4 years from our last contact",
   /** [Design Choice, owner 2026-11-13] confirmed as Banister's practice. */
   clientSharing: "We will ask for your agreement before sending your details to a client.",
-  /** [Design Choice, owner 2026-11-13] confirmed; the site has no ad or analytics code. */
+  /** [Design Choice, owner 2026-11-13] confirmed; the site has no ad or analytics code. The owner also confirmed
+   * revenue is under the CCPA's $26,625,000 threshold, which settles report item S9 (whether fee-paid disclosure to
+   * clients is a California "sale") for the revenue prong; the CCPA's other prongs were not assessed. */
   noSale: "We do not sell your personal information or share it for cross-context behavioral advertising.",
 } as const;
 
