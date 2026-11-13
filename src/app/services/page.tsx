@@ -23,8 +23,7 @@ export default function ServicesPage() {
                   <p key={para} className="m-0 text-[14.5px] leading-[1.7]" style={{ color: s.dark ? "#fff" : "#414547" }}>{para}</p>
                 ))}
                 {s.dark && (
-                  // [assumption] Duffy Group URL not given in the design; href="#" kept as authored.
-                  <a href="#" className="mt-1 flex items-center gap-2 self-start text-[12.5px] font-bold tracking-[.06em] text-white no-underline hover:text-white">
+                  <a href="https://duffygroup.com/our-process/" target="_blank" rel="noopener noreferrer" className="mt-1 flex items-center gap-2 self-start text-[12.5px] font-bold tracking-[.06em] text-white no-underline hover:text-white">
                     <span className="underline decoration-gold decoration-2 underline-offset-[6px]">ABOUT DUFFY GROUP</span><span>→</span>
                   </a>
                 )}
