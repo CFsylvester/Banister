@@ -2,17 +2,18 @@ import Link from "next/link";
 import { siteMap } from "@/lib/content";
 import { Img } from "./ui";
 
-// One continuous gradient. The cyan eases in (slow start) over the empty bottom band, so there is no seam where it begins.
-const bg = `linear-gradient(180deg,#003f5e 0%,#00415f 25%,#0d6781 calc(100% - var(--band)),#0f6c85 calc(100% - var(--band) * .75),#157e92 calc(100% - var(--band) * .5),#1e99a8 calc(100% - var(--band) * .25),#2bc1c6 100%)`;
+// One continuous gradient. The cyan starts right under the last row of text and eases in over the empty bottom band,
+// so there is no seam where it begins.
+const bg = `linear-gradient(180deg,#003f5e 0%,#00415f 25%,#0d6781 calc(100% - var(--band)),#13798f calc(100% - var(--band) * .75),#1b90a0 calc(100% - var(--band) * .5),#23a8b3 calc(100% - var(--band) * .25),#2bc1c6 100%)`;
 
 const icon = "block h-[42px] w-[42px] cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85";
 
 export default function SiteFooter() {
   return (
-    <footer className="text-white [--band:clamp(80px,9vw,128px)]" style={{ background: bg }}>
+    <footer className="text-white [--band:clamp(56px,6vw,88px)]" style={{ background: bg }}>
       {/* Text sits on the dark part only: white on #0d6781 is 6.4:1, #e3edf2 is 5.5:1 (WCAG 1.4.3 needs 4.5:1).
           The cyan (white on #2bc1c6 is 2.2:1) fades in across the empty band below the text. */}
-      <div className="site px-gutter pt-[clamp(48px,6vw,76px)] pb-7">
+      <div className="site px-gutter pt-[clamp(48px,6vw,76px)] pb-5">
         {/* Logo left, contact icons right. */}
         <div className="flex flex-wrap items-center justify-between gap-6 border-b border-white/20 pb-[clamp(32px,4vw,46px)]">
           <Link href="/" className="group block" aria-label="Banister International home">
