@@ -6,6 +6,7 @@
     "dev": "pnpm cms:prepare && next dev",
     "build": "pnpm cms:prepare && next build",
     "lint": "eslint",
+    "typecheck": "pnpm cms:model && pnpm cms:types && next typegen && tsc --noEmit",
     "match:pages": "node scripts/match-design.mjs --base http://localhost:3217 --threshold 0.1",
     "match:interactions": "node scripts/match-interactions.mjs --base http://localhost:3217 --threshold 0.1",
     "assets:placeholders": "node scripts/make-placeholder-assets.mjs",
