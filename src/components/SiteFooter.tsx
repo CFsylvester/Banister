@@ -9,9 +9,9 @@ export default function SiteFooter() {
     <footer className="text-white" style={{ background: "linear-gradient(180deg,#003f5e 0%,#00415f 22%,#0d6781 60%,#2bc1c6 100%)" }}>
       <div className="site px-gutter flex flex-col gap-[clamp(28px,3.6vw,44px)] pt-[clamp(36px,4.4vw,56px)] pb-7">
         <div className="flex items-center justify-between gap-6">
-          <Link href="/" className="contents" aria-label="Banister International home">
-            <Img src="/assets/banister-logo-white.png" alt="Banister International"
-              className="block h-[clamp(44px,5.6vw,68px)] w-auto max-w-[65%] cursor-pointer object-contain" />
+          <Link href="/" className="group contents" aria-label="Banister International home">
+            <Img src="/assets/banister-logo-white.svg" alt="Banister International"
+              className="block h-[clamp(44px,5.6vw,68px)] w-auto max-w-[65%] cursor-pointer object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
           </Link>
           <div className="flex flex-none gap-2.5">
             {/* [assumption] LinkedIn URL not given in the design — the icon is not linked yet. */}

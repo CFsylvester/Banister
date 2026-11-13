@@ -27,8 +27,8 @@ export default function SiteHeader() {
   return (
     <header style={{ background: headBg }}>
       <div className="site px-gutter flex flex-wrap items-center justify-between gap-x-10 gap-y-4 pt-[26px] pb-[34px]">
-        <Link href="/" className="block" aria-label="Banister International home">
-          <Img src="/assets/banister-logo-white.png" alt="Banister International" className="block h-[52px] w-auto cursor-pointer" />
+        <Link href="/" className="group block" aria-label="Banister International home">
+          <Img src="/assets/banister-logo-white.svg" alt="Banister International" className="block h-[52px] w-auto cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
         </Link>
         <nav className="hidden flex-wrap gap-[clamp(18px,2.6vw,36px)] min-[820px]:flex" aria-label="Main">
           {nav.map((n) => (
