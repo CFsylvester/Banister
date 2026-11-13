@@ -9,7 +9,8 @@ export const metadata: Metadata = { title: "Terms and Conditions — Banister In
 // Same URL as the live WordPress site (#36). Short, plain-language terms for a site that sells nothing, drafted from
 // research_notes/Privacy page and cookie consent/terms_and_conditions.md ("Clause checklist"). Deliberately left out,
 // because that research says they need counsel or facts not yet confirmed: governing law and forum, arbitration, user
-// indemnity, "no fees to candidates", licence or regulatory statements, an AI-training reservation, and SMS terms.
+// indemnity, licence or regulatory statements, an AI-training reservation, and SMS terms.
+// "No fees to candidates" [Design Choice, owner 2026-11-13]: confirmed always true; the research says state only if so.
 // A footer link probably binds no casual US visitor (same file, section 2), so this reads as notices, not a contract.
 
 export default function TermsPage() {
@@ -39,6 +40,7 @@ export default function TermsPage() {
       <Ul>
         <li>Sending us an inquiry or a résumé doesn’t create an employment, agency or client relationship, and doesn’t guarantee that we’ll contact you or put you forward for a role.</li>
         <li>We accept candidate submissions from people in the United States only.</li>
+        <li>We don’t charge candidates any fee.</li>
         <li>Please send only information that is accurate and your own. Only include other people’s details, such as referees, if they know you’re sharing them.</li>
         <li>The terms of any search we carry out for an employer are set in a separate written agreement with that employer, not on this site.</li>
       </Ul>
