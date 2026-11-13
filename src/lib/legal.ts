@@ -1,7 +1,10 @@
 // Facts only Banister can supply for the privacy policy and the form notices. Each bracketed value is a blank that
 // renders highlighted (src/components/Blank.tsx) so it can't pass for real text; fill all of them before launch (#36).
 export const LEGAL = {
-  entity: "[LEGAL ENTITY NAME]",
+  /** Owner-supplied 2026-11-13: the LLC on Banister's EIN, so the company that runs the site and holds the data. The
+   * owner also notes "Banister International LLC" is the trademark; the pages call the firm "Banister International"
+   * after naming this entity. */
+  entity: "Banister INT US LLC",
   /** Owner-supplied 2026-11-13. */
   postalAddress: "4422 N Ravenswood Ave, Chicago, IL 60640, United States",
   /** [Design Choice, owner 2026-11-13] the footer's contact address (src/components/SiteFooter.tsx). */

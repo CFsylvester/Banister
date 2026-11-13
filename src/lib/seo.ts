@@ -70,6 +70,9 @@ export const siteJsonLd = {
       "@type": ["Organization", "ProfessionalService"],
       "@id": ORG_ID,
       name: SITE_NAME,
+      // schema.org legalName: "The official name of the organization" (https://schema.org/legalName). The LLC on the EIN
+      // (src/lib/legal.ts); `name` stays the brand.
+      legalName: LEGAL.entity,
       url: absUrl("/"),
       // No `logo` yet: the only logo files are white (public/assets/banister-logo-white.*), and Google shows the logo
       // on a white background. Add one when a dark logo exists.
