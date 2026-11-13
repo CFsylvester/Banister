@@ -11,17 +11,14 @@ const out = resolve("public/assets");
 mkdirSync(out, { recursive: true });
 
 const photos = [
-  "hero-tablet", "insight-greeting", "insight-tablet", "services-review", "industries-laptop", "about-atrium",
+  "hero-tablet", "insight-greeting", "insight-tablet", "services-review", "about-atrium",
   "article-hero", "operations", "insight-whiteboard", "insight-hardhats", "handshake-city", "duffy-alliance",
   "hero-handshake", "team-meeting", "patrick-sylvester", "tammie-do", "brian-haugh", "james-mcmahon",
 ].map((n) => [`${n}.jpg`, 1600, 1000]);
-const industries = ["aerospace", "building-products", "construction", "consumer", "education", "financial", "food",
-  "hospitality", "insurance", "consulting", "manufacturing", "private-equity", "sport", "technology"];
 const files = [
   ...photos,
   ["banister-logo-white.png", 416, 104],
   ...["quality", "execution", "speed", "insights"].map((n) => [`hex-${n}.png`, 440, 440]),
-  ...industries.map((n) => [`icon-${n}.png`, 104, 104]),
   ...["linkedin", "email", "phone"].map((n) => [`icon-${n}.png`, 88, 88]),
 ];
 
