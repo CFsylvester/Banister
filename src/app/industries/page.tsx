@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 // Testimonials are hidden until approved quotes are ready — restore with the <Quotes> block below.
 // import Quotes from "@/components/Quotes";
-import { Img } from "@/components/ui";
+import { Icon } from "@/components/ui";
 import { industries /* , quotes */ } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Industries — Banister International" };
@@ -17,7 +17,7 @@ export default function IndustriesPage() {
         <div className="grid grid-cols-2 gap-[clamp(12px,3vw,44px)] md:grid-cols-3 lg:auto-rows-fr lg:grid-cols-4">
           {industries.map((i) => (
             <div key={i.name} className="flex min-h-[clamp(190px,20vw,264px)] flex-col items-center justify-center gap-3 border-[3px] border-gold px-3 py-6 text-center transition-colors hover:bg-mist">
-              <Img src={i.icon} className="size-[clamp(88px,11vw,150px)] object-contain" />
+              <Icon src={i.icon} className="size-[clamp(88px,11vw,150px)] object-contain" />
               <span className="text-[clamp(14px,1.35vw,18px)] leading-[1.35] font-semibold text-navy">{i.name}</span>
             </div>
           ))}

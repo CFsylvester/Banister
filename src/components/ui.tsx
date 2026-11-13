@@ -1,17 +1,34 @@
-/* eslint-disable @next/next/no-img-element -- plain <img> keeps pixel parity with the design target while the
-   real assets are placeholders; move hero/LCP images to next/image once final exports land. */
+/* eslint-disable @next/next/no-img-element -- Icon is a plain <img> on purpose: SVGs gain nothing from the image
+   optimizer (next/image would skip them anyway; image.md, `dangerouslyAllowSVG`). */
+import Image, { type ImageProps } from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { asset } from "@/lib/asset";
 import type { Tag } from "@/lib/content";
 
-// Lazy by default: React DOM emits a <link rel="preload"> for every eager <img>, and those hints ride along in the
-// RSC payloads <Link> prefetches, so an eager image on /services was downloaded by every page that links there
-// (the `case "img"` preload in next/dist/compiled/react-dom/cjs/react-dom-server.node.production.js and in
+/** Photos (jpg/png/webp, local or Contentful) through next/image, so each viewer gets an AVIF/WebP sized to the
+ * rendered width (next.config.ts `images`). Give it either `fill` (the parent is positioned and sizes it) or a
+ * width/height whose ratio matches the CSS aspect ratio — the box's size still comes from the class, the numbers only
+ * reserve its shape — plus `sizes` saying how wide it renders (image.md, `sizes`: without it the browser assumes 100vw).
+ *
+ * Above-the-fold images pass loading="eager" (and fetchPriority="high" for the LCP image); next/image is lazy
+ * otherwise. Don't pass `preload`: it inserts a <link rel="preload"> that would ride along when <Link> prefetches
+ * this page from another one. next/image is a client component, so the server components that render it put no
+ * <img> into the RSC payload and React adds no image preload hint there either (image.md, `preload`; `'use client'`
+ * at the top of next/dist/client/image-component.js). */
+export const Img = ({ src, alt = "", style, ...props }: Omit<ImageProps, "src" | "alt"> & { src: string; alt?: string }) => (
+  // `height: auto`: this site has no Tailwind Preflight (globals.css), so without it the height attribute would set
+  // the box's height instead of the class's aspect ratio.
+  <Image alt={alt} {...props} style={props.fill ? style : { height: "auto", ...style }} src={asset(src)} />
+);
+
+// SVG icons and logos stay a plain <img>, lazy by default: React DOM emits a <link rel="preload"> for every eager
+// <img>, and those hints ride along in the RSC payloads <Link> prefetches, so an eager image on /services was
+// downloaded by every page that links there (the `case "img"` preload in
+// next/dist/compiled/react-dom/cjs/react-dom-server.node.production.js and in
 // next/dist/compiled/react-server-dom-turbopack/cjs/react-server-dom-turbopack-server.node.production.js both skip
 // loading="lazy", fetchPriority="low", data: URLs, and images inside <picture> or <noscript>).
-// Above-the-fold images opt back in with loading="eager" (and fetchPriority="high" for the LCP image).
-export const Img = ({ src, loading = "lazy", ...props }: ComponentProps<"img">) => (
+export const Icon = ({ src, loading = "lazy", ...props }: ComponentProps<"img">) => (
   <img alt="" loading={loading} {...props} src={typeof src === "string" ? asset(src) : src} />
 );
 

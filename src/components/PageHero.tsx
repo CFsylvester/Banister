@@ -5,13 +5,11 @@ import { NavyCta, Img } from "./ui";
 export default function PageHero({ img, title, lede, children }: { img: string; title: string; lede: string; children?: ReactNode }) {
   return (
     <section className="flex flex-wrap items-stretch">
-      {/* The hero is this page's LCP image: eager + high priority. The <picture> wrapper stops React from emitting a
-          preload hint for it, which would otherwise ride along in this page's RSC payload and make every page whose
-          <Link> prefetches here download this image too (react-dom's server renderer skips img preloads inside
-          <picture>). The <img> sits at the top of the HTML, so the browser's preload scanner still finds it early. */}
-      <picture className="contents">
-        <Img src={img} loading="eager" fetchPriority="high" className="block aspect-[6/5] max-h-[620px] w-full min-w-0 flex-[1_1_420px] object-cover" />
-      </picture>
+      {/* The hero is this page's LCP image: eager + high priority, never `preload` (see Img). Side by side (from 800px,
+          the two flex bases) the photo gets 420px plus 1/2.35 of the rest: 515px of 1024, 692px of 1440, so 53vw
+          covers it; stacked it spans the viewport. */}
+      <Img src={img} width={1200} height={1000} sizes="(min-width: 800px) 53vw, 100vw" loading="eager" fetchPriority="high"
+        className="block aspect-[6/5] max-h-[620px] w-full min-w-0 flex-[1_1_420px] object-cover" />
       <div className="flex flex-[1.35_1_380px] flex-col justify-center gap-[18px] bg-mist pt-[clamp(40px,6vw,88px)] pr-[clamp(20px,5vw,80px)] pb-[clamp(40px,6vw,88px)] pl-[clamp(20px,4.4vw,64px)]">
         <div className="flex max-w-[620px] flex-col gap-[18px]">
           <span className="h-1 w-14 bg-teal" />
