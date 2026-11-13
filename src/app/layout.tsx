@@ -26,7 +26,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={openSans.variable}>
-      <body>
+      {/* Browser extensions (e.g. ColorZilla's cz-shortcut-listen) add attributes to <body> before
+          React hydrates. suppressHydrationWarning only covers this element's own attributes, one level
+          deep — mismatches in children still report. https://react.dev/reference/react-dom/client/hydrateRoot */}
+      <body suppressHydrationWarning>
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1">{children}</main>
