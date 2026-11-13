@@ -24,7 +24,8 @@ const scenarios = {
   "subscribe-invalid": { page: "home", path: "/", vps: D, steps: [{ fill: ['[placeholder="EMAIL ADDRESS"]', "not-an-email"] }, { click: '[aria-label="Subscribe"]' }, { wait: 500 }] },
   "subscribe-sent": { page: "home", path: "/", vps: `${D},${M}`, steps: [{ fill: ['[placeholder="EMAIL ADDRESS"]', "ada@example.com"] }, { click: '[aria-label="Subscribe"]' }, { wait: 1500 }] },
   "quote-2": { page: "home", path: "/", vps: D, steps: [{ click: ['div[style*="gap: 12px"] > span >> nth=1', '[aria-label="Show testimonial 2"]'] }, { wait: 2600 }] },
-  "learn-more-hover": { page: "insights", path: "/insights", vps: D, steps: [{ hover: "text=LEARN MORE" }, { wait: 200 }] },
+  // Hidden with the /insights listing (src/app/insights/page.tsx 404s) — restore with the page.
+  // "learn-more-hover": { page: "insights", path: "/insights", vps: D, steps: [{ hover: "text=LEARN MORE" }, { wait: 200 }] },
 };
 const rows = []; let ok = true;
 for (const [name, s] of Object.entries(scenarios)) {

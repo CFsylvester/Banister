@@ -22,11 +22,11 @@ export default function ArticlePage() {
   return (
     <>
       <section className="relative overflow-hidden bg-black">
-        {/* The photo fills only the left of the hero and fades into the black behind the title. Below md it spans the
+        {/* The photo fills only the left of the hero and fades into the black behind the title. Below lg it spans the
             width under a flat dim so the title stays readable. */}
-        <div className="absolute inset-y-0 left-0 w-full md:w-1/2">
+        <div className="absolute inset-y-0 left-0 w-full lg:w-1/2">
           <Img src="/assets/insight-state-of-ta.jpg" className="h-full w-full object-cover object-[left_22%]" />
-          <div className="absolute inset-0 bg-black/60 md:bg-transparent md:bg-[linear-gradient(90deg,rgba(0,0,0,0)_50%,#000_100%)]" />
+          <div className="absolute inset-0 bg-black/60 lg:bg-transparent lg:bg-[linear-gradient(90deg,rgba(0,0,0,0)_50%,#000_100%)]" />
         </div>
         <div className="site px-gutter relative flex justify-end py-[clamp(64px,8vw,112px)]">
           <div className="flex max-w-[560px] flex-col gap-4">
@@ -69,7 +69,7 @@ export default function ArticlePage() {
               <span className="text-[14px] text-white/75">PDF · 10 pages</span>
               <a href={asset(STATE_OF_TA_REPORT)} download={REPORT_FILENAME}
                 className="mt-2 flex items-center gap-[18px] self-start bg-gold px-[18px] py-3 text-[12.5px] font-bold tracking-[.06em] text-navy no-underline hover:bg-white hover:text-navy">
-                DOWNLOAD THE FULL REPORT <span>↓</span>
+                DOWNLOAD THE FULL REPORT <span aria-hidden="true">↓</span>
               </a>
             </div>
           </div>
