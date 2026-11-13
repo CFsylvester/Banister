@@ -47,7 +47,7 @@ export default function SiteFooter() {
           <span className="text-[11.5px] font-semibold tracking-[.14em]">AMERICAS · EUROPE · MIDDLE EAST · ASIA PACIFIC</span>
           <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-[13px] text-[#e3edf2]">
             <span>© 2026 Banister International</span>
-            <span className="cursor-pointer hover:underline">Privacy Policy</span>
+            <Link href="/privacy/" className="text-inherit no-underline hover:underline">Privacy Policy</Link>
             <span className="cursor-pointer hover:underline">Terms and Conditions</span>
           </div>
         </div>
