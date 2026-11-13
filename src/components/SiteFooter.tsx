@@ -2,7 +2,7 @@ import Link from "next/link";
 import { siteMap } from "@/lib/content";
 import { Img } from "./ui";
 
-const icon = "block h-11 w-11 cursor-pointer hover:opacity-85";
+const icon = "block h-11 w-11 cursor-pointer transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85";
 
 export default function SiteFooter() {
   return (
@@ -14,10 +14,15 @@ export default function SiteFooter() {
               className="block h-[clamp(44px,5.6vw,68px)] w-auto max-w-[65%] cursor-pointer object-contain transition-opacity duration-200 group-hover:opacity-85 group-focus-visible:opacity-85" />
           </Link>
           <div className="flex flex-none gap-2.5">
-            {/* [assumption] LinkedIn URL not given in the design — the icon is not linked yet. */}
-            <Img src="/assets/icon-linkedin.png" alt="LinkedIn" className={icon} />
-            <Link href="/contact" className="block"><Img src="/assets/icon-email.png" alt="Email" className={icon} /></Link>
-            <Link href="/contact" className="block"><Img src="/assets/icon-phone.png" alt="Phone" className={icon} /></Link>
+            <a href="https://www.linkedin.com/company/banisterinternational/home/" target="_blank" rel="noopener noreferrer" className="group block">
+              <Img src="/assets/icon-linkedin.svg" alt="Banister International on LinkedIn (opens in a new tab)" className={icon} />
+            </a>
+            <a href="mailto:info@banisterintus.com" className="group block">
+              <Img src="/assets/icon-email.svg" alt="Email info@banisterintus.com" className={icon} />
+            </a>
+            <a href="tel:+12246555563" className="group block">
+              <Img src="/assets/icon-phone.svg" alt="Call (224) 655-5563" className={icon} />
+            </a>
           </div>
         </div>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-x-8 gap-y-7">
