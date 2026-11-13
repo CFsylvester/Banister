@@ -1,5 +1,8 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { LEGAL } from "@/lib/legal";
+import Blank from "./Blank";
 import { NavyCta } from "./ui";
 
 type Audience = "candidate" | "employer";
@@ -7,13 +10,20 @@ type Audience = "candidate" | "employer";
 const field = "box-border h-12 border border-field bg-white p-3 text-[16px] outline-teal";
 const label = "flex flex-col gap-2 text-[14px] font-semibold text-navy";
 
-export default function ContactForm({ initialAudience }: { initialAudience: Audience }) {
+const link = "font-semibold text-navy underline";
+
+/** `candidateOpen` is false outside the US (src/lib/geo.ts): the candidate tab then shows a notice and no form, so no
+ * candidate data or file field reaches a non-US visitor. */
+export default function ContactForm({ initialAudience, candidateOpen }: { initialAudience: Audience; candidateOpen: boolean }) {
   const [aud, setAud] = useState<Audience>(initialAudience);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [who, setWho] = useState({ name: "", email: "" });
   const [file, setFile] = useState<string | null>(null);
+  // Phone is only needed when it's the chosen contact method (data minimisation; report item D5).
+  const [method, setMethod] = useState<"Email" | "Phone">("Email");
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const employerTab = useRef<HTMLButtonElement>(null);
   useEffect(() => () => clearTimeout(timer.current), []);
   const isCan = aud === "candidate";
 
@@ -34,16 +44,26 @@ export default function ContactForm({ initialAudience }: { initialAudience: Audi
     <section className="px-gutter mx-auto max-w-[920px] pt-[clamp(48px,6vw,72px)] pb-[clamp(64px,7vw,96px)]">
       <h1 className="m-0 mb-3 text-[clamp(32px,3.4vw,44px)] font-bold text-navy">Contact</h1>
       <p className="m-0 mb-9 min-h-[calc(1.65em*2)] max-w-[600px] text-[17px] leading-[1.65]">
-        {isCan ? "Share your background and the kind of role you’re looking for. Every conversation is confidential." : "Tell us about the role or the change ahead, and a partner will respond personally."}
+        {isCan && !candidateOpen ? "We work with candidates in the United States and with employers everywhere." : isCan ? "Share your background and the kind of role you’re looking for. We share your details with a client only after you agree." : "Tell us about the role or the change ahead, and a partner will respond personally."}
       </p>
       <div className="flex gap-1" role="tablist" aria-label="I am">
         {(["candidate", "employer"] as const).map((a) => (
-          <button key={a} type="button" role="tab" aria-selected={aud === a} onClick={() => setAud(a)}
+          <button key={a} ref={a === "employer" ? employerTab : undefined} type="button" role="tab" aria-selected={aud === a} onClick={() => setAud(a)}
             className="m-0 cursor-pointer border-0 border-t-3 px-[22px] py-[14px] text-[13px] font-bold tracking-[.06em] text-navy" style={tab(aud === a)}>
             {a === "candidate" ? "FOR CANDIDATES" : "FOR EMPLOYERS"}
           </button>
         ))}
       </div>
+      {isCan && !candidateOpen ? (
+        <div className="bg-fog p-[clamp(24px,4vw,44px)]">
+          <h2 className="m-0 mb-3 text-[clamp(22px,2.2vw,26px)] font-bold text-navy">Candidate submissions are open to the United States only</h2>
+          <p className="m-0 max-w-[600px] text-[17px] leading-[1.65]">
+            We currently accept candidate inquiries and résumés from people in the United States only. If you’re hiring, the{" "}
+            <button type="button" onClick={() => { setAud("employer"); employerTab.current?.focus(); }} className={`${link} cursor-pointer border-0 bg-transparent p-0 text-[17px]`}>employer form</button>{" "}
+            is open wherever you are. See our <Link href="/privacy/" className={link}>Privacy Policy</Link>.
+          </p>
+        </div>
+      ) : (
       <div className="grid bg-fog p-[clamp(24px,4vw,44px)]">
         <div className="flex w-full max-w-[520px] flex-col items-center gap-[18px] self-center justify-self-center py-6 text-center [grid-area:1/1]"
           role="status" aria-hidden={!sent}
@@ -68,29 +88,44 @@ export default function ContactForm({ initialAudience }: { initialAudience: Audi
           <label className={label}>First name<input name="first" required autoComplete="given-name" className={field} /></label>
           <label className={label}>Last name<input name="last" required autoComplete="family-name" className={field} /></label>
           <label className={label}>Email address<input name="email" type="email" required autoComplete="email" className={field} /></label>
-          <label className={label}>Phone<input name="phone" type="tel" required autoComplete="tel" className={field} /></label>
+          <label className={label}><span>Phone{method === "Email" && <span className="text-[13px] font-normal text-slate"> (optional)</span>}</span><input name="phone" type="tel" required={method === "Phone"} autoComplete="tel" className={field} /></label>
           {isCan ? (
             <label className={`${label} cursor-pointer`}>
-              <span>Upload résumé <span className="text-[13px] font-normal text-slate">(PDF or Word, max 50 MB)</span></span>
+              <span>Upload résumé <span className="text-[13px] font-normal text-slate">(PDF or Word, max 4 MB)</span></span>
               <span className="box-border flex h-12 items-stretch border border-field bg-white">
                 <span className="flex flex-none items-center bg-navy px-[18px] text-[12.5px] font-bold tracking-[.06em] text-white hover:bg-navy-hover">CHOOSE FILE</span>
                 <span className="flex min-w-0 flex-1 items-center overflow-hidden px-3.5 text-[14px] font-normal text-ellipsis whitespace-nowrap" style={{ color: file ? "#003f5e" : "#6a7276" }}>{file || "No file chosen"}</span>
               </span>
-              <input type="file" name="resume" accept=".pdf,.doc,.docx" onChange={(e) => setFile(e.target.files?.[0]?.name || null)}
+              <input type="file" name="resume" accept=".pdf,.doc,.docx" aria-describedby="resume-note" onChange={(e) => setFile(e.target.files?.[0]?.name || null)}
                 className="pointer-events-none absolute h-px w-px opacity-0" />
+              <span id="resume-note" className="text-[13px] leading-[1.5] font-normal text-ink">Please leave out details we don’t need, such as date of birth, photo, health, religion, ethnicity, Social Security or other ID numbers.</span>
             </label>
           ) : (
             <label className={label}><span>Company</span><input name="company" autoComplete="organization" className={field} /></label>
           )}
-          <label className={label}>Preferred method of contact<select name="method" className={field}><option>Email</option><option>Phone</option></select></label>
+          <label className={label}>Preferred method of contact<select name="method" value={method} onChange={(e) => setMethod(e.target.value === "Phone" ? "Phone" : "Email")} className={field}><option>Email</option><option>Phone</option></select></label>
           <label className={`${label} col-span-full`}>
             {isCan ? "Your comments or questions" : "What are you hiring for?"}
             <textarea name="message" required rows={5} className="resize-y border border-field bg-white p-3 text-[16px] outline-teal" />
           </label>
-          <label className="col-span-full flex items-start gap-3 text-[13.5px] leading-[1.6]">
-            <input type="checkbox" name="consent" required className="mt-[3px] h-[18px] w-[18px] flex-none accent-navy" />
-            <span>With your submission, you grant us permission to store your personal information and use it in consideration of your inquiry. You agree to receive communications from us by phone and email.</span>
-          </label>
+          {isCan ? (
+            <>
+              {/* Notice, not consent: replying and considering the candidate need no tick (reports/Banister privacy and
+                  terms findings.md, "The consent sentence"). The box confirms a fact the US-only design relies on. */}
+              <div className="col-span-full flex flex-col gap-2 text-[13.5px] leading-[1.6]" id="candidate-notice">
+                <p className="m-0"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send, including your résumé, to reply to you and to consider you for suitable roles. We keep it in our recruitment database, provided by Ezekia, and software reads your résumé to build your profile. We’ll contact you about your inquiry using your preferred method.</p>
+                <p className="m-0">About once a year we’ll email you to ask whether you’d like us to delete your details. If you don’t reply we keep them, and we delete them after <Blank>{LEGAL.cutoffYears}</Blank> years with no contact. You can ask us to correct or delete them at any time at <Blank>{LEGAL.privacyEmail}</Blank>; some records we may have to keep by law. <Link href="/privacy/#candidates" className={link}>Privacy Policy</Link></p>
+              </div>
+              <label className="col-span-full flex items-start gap-3 text-[13.5px] leading-[1.6]">
+                <input type="checkbox" name="usCandidate" required aria-describedby="candidate-notice" className="mt-[3px] h-[18px] w-[18px] flex-none accent-navy" />
+                <span>I confirm I live in the United States and this is a US candidate submission. Banister International accepts candidate submissions from the US only and handles them under US privacy and record-keeping law.</span>
+              </label>
+            </>
+          ) : (
+            // Notice, no checkbox: replying to an inquiry needs no consent, and the old box forced agreement to phone and
+            // email contact (report items D2 and D4).
+            <p className="col-span-full m-0 text-[13.5px] leading-[1.6]"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send to reply to your inquiry and discuss your hiring needs. We keep it in our client database, provided by Ezekia, for {LEGAL.employerRetention}. You can ask us to correct or delete it at {LEGAL.privacyEmail}; some records we may have to keep by law. Please don’t include personal details about candidates or staff unless we need them. <Link href="/privacy/#clients" className={link}>Privacy Policy</Link></p>
+          )}
           <button type="submit" disabled={sending}
             className="relative col-span-full flex min-w-[150px] cursor-pointer items-center justify-center gap-3.5 justify-self-start overflow-hidden border-0 bg-navy px-[22px] py-[14px] text-[13px] font-bold tracking-[.06em] text-white hover:bg-navy-hover">
             {sending ? (
@@ -104,6 +139,7 @@ export default function ContactForm({ initialAudience }: { initialAudience: Audi
           </button>
         </form>
       </div>
+      )}
     </section>
   );
 }

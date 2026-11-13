@@ -3,7 +3,7 @@ import { useSearchParams } from "next/navigation";
 import ContactForm from "./ContactForm";
 
 /** Reads ?aud=employer|candidate (the footer deep links). Keyed so switching audience via a link resets the form. */
-export default function ContactFromQuery() {
+export default function ContactFromQuery({ candidateOpen }: { candidateOpen: boolean }) {
   const aud = useSearchParams().get("aud");
-  return <ContactForm key={String(aud)} initialAudience={aud === "employer" ? "employer" : "candidate"} />;
+  return <ContactForm key={String(aud)} initialAudience={aud === "employer" ? "employer" : "candidate"} candidateOpen={candidateOpen} />;
 }
