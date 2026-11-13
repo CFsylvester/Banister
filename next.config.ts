@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./src/config/redirects.ts";
 
 // Hosted on Vercel (Node runtime), not a static export: Contentful publishes refresh pages on demand
 // (specs/002-vercel-publishing). Docs: node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/
@@ -43,6 +44,11 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+  // Old WordPress URLs → their pages here (src/config/redirects.ts). `permanent` sends a 308, which "instructs
+  // clients/search engines to cache the redirect forever"; false sends a temporary 307 (redirects.md).
+  async redirects() {
+    return legacyRedirects.map((r) => ({ ...r, permanent: r.permanent ?? true }));
   },
   // CONTENT_SOURCE=fixture reads these at runtime (e.g. a Vercel preview without CMS keys), so ship them with the
   // server — only for fixture builds; Contentful builds don't need them (output.md, "outputFileTracingIncludes").
