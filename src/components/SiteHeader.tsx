@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav } from "@/lib/content";
-import { Icon } from "./ui";
+import { Arrow, Dot, Icon } from "./ui";
 
 // The design switches desktop nav ↔ burger at innerWidth 820 (isMobile = vw < 820).
 const MOBILE_MQ = "(max-width: 819.98px)";
@@ -53,12 +53,12 @@ export default function SiteHeader() {
           {nav.map((n) => (
             <Link key={n.href} href={n.href}
               className="flex min-h-14 cursor-pointer items-center justify-between border-t border-white/18 text-[18px] font-semibold text-white no-underline hover:text-white">
-              {n.label}<span className="text-[16px]" style={{ color: isActive(n.href) ? "#ffc91e" : "transparent" }}>●</span>
+              {n.label}<span className="text-[16px]" style={{ color: isActive(n.href) ? "#ffc91e" : "transparent" }}><Dot /></span>
             </Link>
           ))}
           <Link href="/contact"
             className="mt-4 mb-6 flex cursor-pointer items-center justify-center gap-[18px] bg-gold px-6 py-4 text-[13px] font-extrabold tracking-[.06em] text-navy no-underline hover:text-navy">
-            SPEAK WITH A PARTNER <span>→</span>
+            SPEAK WITH A PARTNER <span><Arrow /></span>
           </Link>
         </nav>
       </div>

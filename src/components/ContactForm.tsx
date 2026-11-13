@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { LEGAL } from "@/lib/legal";
 import Blank from "./Blank";
-import { NavyCta } from "./ui";
+import { Arrow, NavyCta } from "./ui";
 
 type Audience = "candidate" | "employer";
 
@@ -134,7 +134,7 @@ export default function ContactForm({ initialAudience, candidateOpen }: { initia
                 <span key="s" className="h-3.5 w-3.5 rounded-full border-2 border-white/35 border-t-white" style={{ animation: "bnSpin .6s linear infinite, bnIn .2s both" }} />
               </>
             ) : (
-              <><span key="t">SUBMIT</span><span key="a">→</span></>
+              <><span key="t">SUBMIT</span><span key="a"><Arrow /></span></>
             )}
           </button>
         </form>

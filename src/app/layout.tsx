@@ -7,8 +7,9 @@ import "./globals.css";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
-  // "symbols" carries the → ↓ arrows used in every CTA; without it they fall back to a system glyph.
-  subsets: ["latin", "symbols"],
+  // Latin only: → and ● render in system-ui (Arrow and Dot in components/ui.tsx), so nothing needs "symbols" — Open Sans
+  // drew neither glyph anyway. `subsets` only decides the preloads; every subset's @font-face rule still ships.
+  subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
   // Italic is a separate, non-preloaded instance below.
   style: "normal",

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { documentToReactComponents, type Options } from "@contentful/rich-text-react-renderer";
 import { BLOCKS, INLINES, MARKS, type Document } from "@contentful/rich-text-types";
+import { Arrow } from "@/components/ui";
 import { mapButton } from "./map/hero.ts";
 import type { ButtonFields, CmsEntry, RichTextDocument, RichTextNode } from "./types.ts";
 
@@ -12,7 +13,7 @@ const GOLD =
 export function CmsButton({ entry, inline = false }: { entry: CmsEntry<ButtonFields>; inline?: boolean }) {
   const b = mapButton(entry);
   const cls = `${inline ? "inline-flex align-middle" : "flex"} ${GOLD}`;
-  const inner = <>{b.label} <span>→</span></>;
+  const inner = <>{b.label} <span><Arrow /></span></>;
   return b.external
     ? <a href={b.href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
     : <Link href={b.href} className={cls}>{inner}</Link>;

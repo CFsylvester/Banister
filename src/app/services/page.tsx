@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import { Icon } from "@/components/ui";
+import { Arrow, Icon } from "@/components/ui";
 import { drivers, GRID_4, services } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Services — Banister International" };
@@ -24,7 +24,7 @@ export default function ServicesPage() {
                 ))}
                 {s.dark && (
                   <a href="https://duffygroup.com/our-process/" target="_blank" rel="noopener noreferrer" className="mt-1 flex items-center gap-2 self-start text-[12.5px] font-bold tracking-[.06em] text-white no-underline hover:text-white">
-                    <span className="underline decoration-gold decoration-2 underline-offset-[6px]">ABOUT DUFFY GROUP</span><span>→</span>
+                    <span className="underline decoration-gold decoration-2 underline-offset-[6px]">ABOUT DUFFY GROUP</span><span><Arrow /></span>
                   </a>
                 )}
               </div>
