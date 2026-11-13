@@ -10,7 +10,7 @@ import { absUrl, orgRef, SITE_URL } from "@/lib/seo";
 // import { related } from "@/lib/content";
 
 export const metadata: Metadata = pageMetadata({
-  title: "The State of Talent Acquisition in Professional Services | Banister",
+  title: "State of Talent Acquisition | Banister International",
   description: "A white paper from Banister International leadership and a talent acquisition leader on what is changing in hiring, what is not, and where it is headed.",
   path: "/insights/state-of-talent-acquisition",
   type: "article",
