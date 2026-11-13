@@ -11,7 +11,8 @@ const threshold = arg("threshold", "1.0");
 const viewports = arg("viewports", "wide:1440x900,desktop:1280x800,edge:820x1000,tablet:819x1000,mobile:375x812");
 const pages = {
   home: "/", services: "/services", industries: "/industries", about: "/about",
-  insights: "/insights", article: "/insights/state-of-talent-acquisition", contact: "/contact",
+  // insights: "/insights" — the listing is hidden (src/app/insights/page.tsx 404s); restore with the page.
+  article: "/insights/state-of-talent-acquisition", contact: "/contact",
 };
 const only = arg("only")?.split(",");
 const rows = []; let ok = true;
