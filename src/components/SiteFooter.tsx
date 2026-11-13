@@ -44,7 +44,9 @@ export default function SiteFooter() {
           ))}
         </div>
         <div className="flex flex-col gap-3 pt-7 md:flex-row md:items-center md:justify-between md:gap-8">
-          <span className="text-[11.5px] font-semibold tracking-[.14em]">AMERICAS · EUROPE · MIDDLE EAST · ASIA PACIFIC</span>
+          {/* [Design Choice, owner 2026-11-13] was "AMERICAS · EUROPE · MIDDLE EAST · ASIA PACIFIC"; under the US-only position
+              that line was the clearest sign of targeting other regions (reports/Banister privacy and terms findings.md). */}
+          <span className="text-[11.5px] font-semibold tracking-[.14em]">CHICAGO · UNITED STATES</span>
           <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-[13px] text-[#e3edf2]">
             <span>© 2026 Banister International</span>
             <Link href="/privacy/" className="text-inherit no-underline hover:underline">Privacy Policy</Link>
