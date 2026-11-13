@@ -8,7 +8,7 @@ import { industries /* , quotes */ } from "@/lib/content";
 
 export const metadata: Metadata = pageMetadata({
   title: "Executive Search by Industry | Banister International",
-  description: "Executive search across twelve industries, from aerospace and defense, financial services and private equity to manufacturing, consumer goods and technology.",
+  description: "Executive search across twelve industries, from aerospace and defense, financial services and private equity to manufacturing and technology.",
   path: "/industries",
 });
 
