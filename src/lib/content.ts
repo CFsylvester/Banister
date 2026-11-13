@@ -99,7 +99,8 @@ export const people = [
 export const siteMap = [
   { title: "Services", href: "/services", links: ["Executive search", "Next generation leadership", "Search & advisory", "Informed search"].map((t) => ({ t, href: "/services" })) },
   { title: "Firm", href: "/about", links: [{ t: "About", href: "/about" }, { t: "Leadership", href: "/about" }, { t: "Industries", href: "/industries" }] },
-  { title: "Insights", href: "/insights", links: [{ t: "Latest insights", href: "/insights" }, { t: "Newsroom", href: "/insights" }, { t: "White paper", href: ARTICLE_HREF }] },
+  // Insights is out of the footer for now. Restore when it comes back:
+  // { title: "Insights", href: "/insights", links: [{ t: "Latest insights", href: "/insights" }, { t: "Newsroom", href: "/insights" }, { t: "White paper", href: ARTICLE_HREF }] },
   { title: "Contact", href: "/contact", links: [{ t: "For employers", href: "/contact?aud=employer" }, { t: "For candidates", href: "/contact?aud=candidate" }] },
 ];
 
