@@ -29,8 +29,9 @@ Set `CONTENT_SOURCE=fixture` (or Contentful keys) in `.envrc` (direnv) first; se
   ```bash
   pnpm cms:webhook --url https://<site>/api/revalidate/ --env master --approve
   ```
-- **Domain:** stays at its current DNS provider. Add the A (root) or CNAME (subdomain) record Vercel shows under
-  Project → Settings → Domains.
+- **Domain:** DNS stays at Cloudflare. The apex and `www` are CNAMEs to the target Vercel shows under Project →
+  Settings → Domains, set to **DNS only**; `www` 308-redirects to the apex. Cutover record:
+  `specs/003-wp-redirects/audit.md`.
 - **Sign-up abuse protection** (`src/lib/subscribe-handler.ts`, no env vars): a honeypot, then in-memory limits of 5
   sign-ups per IP per 10 minutes, and 1 per second and 20 per minute across all visitors. These stop bursts but aren't
   a global quota: each Vercel instance counts on its own, and total volume isn't capped (one IP can still add 720 people
