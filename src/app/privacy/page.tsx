@@ -15,8 +15,8 @@ export const metadata: Metadata = pageMetadata({
 // so this is written to US law and makes no EU, UK or other non-US statements. Drafted from reports/Banister privacy and
 // terms findings.md ("Who receives personal data", "The consent sentence") and the owner's retention decision. Every
 // sentence is a claim of fact: the FTC holds companies to their privacy promises, so cut anything Banister doesn't do.
-// Pre-launch: the contact forms still simulate sending (#38), so the Ezekia and Vercel lines for them describe the
-// launch state and become true only when that backend ships, which #38 already makes a launch blocker.
+// Where each form's data goes (epic #88, src/lib/contact/): candidates → Ezekia; employers → Ezekia plus an email to the
+// team through Resend (src/lib/email). Keep these sections in step with that code.
 // Section anchors (#candidates, #clients, #newsletter) are linked from the forms.
 
 const email = <Email />;
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
       <P>Through the candidate form we collect your name, email address, phone number, preferred contact method, your message, and your résumé if you attach one.</P>
       <Ul>
         <li><strong>Why:</strong> to reply to you and to consider you for suitable roles.</li>
-        <li><strong>Where it goes:</strong> into our recruitment database, provided by Ezekia. Ezekia’s software reads your résumé to build your profile.</li>
+        <li><strong>Where it goes:</strong> into our recruitment database, provided by Ezekia. If you are new to us, Ezekia’s software reads your résumé to build your profile; if we already have a profile for you, your résumé is added to it as a file.</li>
         <li><strong>Clients:</strong> <Blank>{LEGAL.clientSharing}</Blank></li>
         <li><strong>What to leave out:</strong> please don’t include details we don’t need, such as date of birth, photo, health, religion, ethnicity, sexual orientation, political views, Social Security number or other ID numbers.</li>
       </Ul>
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
       <P>
         Through the employer form we collect your name, email address, phone number, company, preferred contact method and
         message. We use them to reply to your inquiry and discuss your hiring needs, and keep them in our client database,
-        provided by Ezekia. Please don’t include personal details about candidates or staff unless we need them.
+        provided by Ezekia. A copy is emailed to our team so a partner can reply. Please don’t include personal details about candidates or staff unless we need them.
       </P>
 
       <H2 id="newsletter">If you sign up for our newsletter</H2>
@@ -63,8 +63,10 @@ export default function PrivacyPage() {
       <H2>Information collected automatically</H2>
       <P>
         Like any website, our host, Vercel, receives your IP address, browser details and the pages you request, and keeps
-        them in its logs. We also use your IP address to limit repeated sign-up attempts; it is held in the server’s memory
-        for a short time and not written to any database or log. Images on some pages load from Contentful, our content service, which also receives your IP address.
+        them in its logs. We also use your IP address to limit repeated sign-up and contact-form attempts; it is held in the server’s memory
+        for a short time and not written to any database or log. Images on some pages load from Contentful, our content service, which also receives your IP address. When you send the contact form, a
+        check from Vercel runs in your browser and its result is sent with the form, so we can tell people from automated
+        traffic.
       </P>
       <P>
         This site does not use advertising or analytics cookies. It does not collect information about your activity over
@@ -74,7 +76,8 @@ export default function PrivacyPage() {
       <H2>Who we share it with</H2>
       <Ul>
         <li><strong>Ezekia</strong> stores our candidate, client and newsletter records.</li>
-        <li><strong>Vercel</strong> hosts this website and processes form submissions on the way to Ezekia.</li>
+        <li><strong>Vercel</strong> hosts this website and processes form submissions on the way to Ezekia and to Resend.</li>
+        <li><strong>Resend</strong> delivers employer inquiries from the website to our team’s inbox.</li>
         <li><strong>Contentful</strong> serves the site’s content and images.</li>
         <li><strong>Our email provider</strong> carries our correspondence with you.</li>
         <li><strong>Authorities</strong>, when the law requires it, or to protect our rights.</li>

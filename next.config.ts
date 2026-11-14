@@ -60,6 +60,13 @@ const nextConfig: NextConfig = {
   async redirects() {
     return legacyRedirects.map((r) => ({ ...r, permanent: r.permanent ?? true }));
   },
+  // The contact form's Server Action carries a résumé of up to 4 MB (src/lib/contact/resume.ts). Actions are "capped at
+  // 1MB by default", and the limit counts multipart overhead, so leave 10–20 KB of room (serverActions.md,
+  // "bodySizeLimit"). Vercel Functions reject bodies over 4.5 MB (https://vercel.com/docs/functions/limitations). The
+  // proxy's own buffer limit defaults to 10MB (proxyClientMaxBodySize.md), so it needs no change.
+  experimental: {
+    serverActions: { bodySizeLimit: "4.2mb" },
+  },
   // CONTENT_SOURCE=fixture reads these at runtime (e.g. a Vercel preview without CMS keys), so ship them with the
   // server — only for fixture builds; Contentful builds don't need them (output.md, "outputFileTracingIncludes").
   ...(process.env.CONTENT_SOURCE === "fixture"

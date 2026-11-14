@@ -1,0 +1,7 @@
+{"labels":[
+{"name":"area:web","color":"1d76db","description":"Pages, components and styling","meaning":"Work on the site's pages, components or Tailwind styling."},
+{"name":"area:forms","color":"0e8a16","description":"Contact and sign-up forms and their backends","meaning":"Form UI, Server Actions and where submissions go (Ezekia, email)."},
+{"name":"area:cms","color":"5319e7","description":"Contentful model, content and publishing","meaning":"Content model, migrations, seed content and publish-to-live."},
+{"name":"area:infra","color":"fbca04","description":"Vercel, DNS, env vars and deploys","meaning":"Hosting, domains, DNS records, environment variables and deploys."},
+{"name":"area:legal","color":"b60205","description":"Privacy and terms content","meaning":"Privacy policy, terms and other legal statements on the site."}
+]}

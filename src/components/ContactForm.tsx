@@ -1,6 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
+import { submitContact } from "@/app/actions/contact";
+import { AUDIENCE_FIELD, CONTACT_HONEYPOT, GENERIC_ERROR } from "@/lib/contact/fields";
+import { MAX_RESUME_BYTES, RESUME_HELP } from "@/lib/contact/resume";
 import { LEGAL } from "@/lib/legal";
 import Blank from "./Blank";
 import { Arrow, Check, NavyCta } from "./ui";
@@ -22,20 +25,33 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
   const [file, setFile] = useState<string | null>(null);
   // Phone is only needed when it's the chosen contact method (data minimisation; report item D5).
   const [method, setMethod] = useState<"Email" | "Phone">("Email");
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // Shown above SUBMIT after a failed send, on the tab it came from only (a candidate-only error mustn't follow the
+  // visitor to the employer tab). Rendered only when set, so the form's resting layout is unchanged.
+  const [failure, setFailure] = useState<{ aud: Audience; error: string } | null>(null);
+  const err = failure?.aud === aud ? failure.error : null;
+  // Ref, not state: blocks a second submit in the same tick, before React re-renders with `sending`.
+  const inFlight = useRef(false);
   const employerTab = useRef<HTMLButtonElement>(null);
-  useEffect(() => () => clearTimeout(timer.current), []);
   const isCan = aud === "candidate";
 
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  // The thank-you appears only when the server says every write succeeded (epic #88, FR-1). On failure the form keeps
+  // everything typed, including the chosen file, because it is never reset or re-rendered without its inputs (FR-2).
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (sending) return;
+    if (inFlight.current) return;
     const fd = new FormData(e.currentTarget);
+    // Checked here too so a too-big file gets the friendly message instead of the server's body-size refusal.
+    const cv = fd.get("resume");
+    if (cv instanceof File && cv.size > MAX_RESUME_BYTES) { setFailure({ aud, error: RESUME_HELP }); return; }
+    inFlight.current = true;
+    setFailure(null);
     setSending(true);
+    const res = await submitContact(fd).catch(() => ({ ok: false as const, error: GENERIC_ERROR }));
+    inFlight.current = false;
+    setSending(false);
+    if (!res.ok) { setFailure({ aud, error: res.error }); return; }
     setWho({ name: String(fd.get("first") || "").trim(), email: String(fd.get("email") || "").trim() });
-    // [assumption] No submission backend yet — the design simulates a 1.2s send. Wire a server action here.
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => { setSending(false); setSent(true); }, 1200);
+    setSent(true);
   };
 
   const tab = (on: boolean) => ({ background: on ? "#edeff2" : "#fff", borderTopColor: on ? "#003f5e" : "transparent" });
@@ -85,6 +101,10 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
         <form onSubmit={submit} inert={sent}
           className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-7 gap-y-[22px] [grid-area:1/1]"
           style={{ visibility: sent ? "hidden" : "visible", opacity: sent ? 0 : 1, transform: sent ? "translateY(-8px)" : "none", transition: `opacity .35s ease, transform .4s ease, visibility 0s linear ${sent ? ".35s" : "0s"}` }}>
+          {/* Not grid items: a hidden input and a display:none honeypot take no space. The honeypot catches bots that
+              fill every field; it is hidden from people and assistive tech. */}
+          <input type="hidden" name={AUDIENCE_FIELD} value={aud} />
+          <input type="text" name={CONTACT_HONEYPOT} tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
           <label className={label}>First name<input name="first" required autoComplete="given-name" className={field} /></label>
           <label className={label}>Last name<input name="last" required autoComplete="family-name" className={field} /></label>
           <label className={label}>Email address<input name="email" type="email" required autoComplete="email" className={field} /></label>
@@ -113,7 +133,7 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
               {/* Notice, not consent: replying and considering the candidate need no tick (reports/Banister privacy and
                   terms findings.md, "The consent sentence"). The box confirms a fact the US-only design relies on. */}
               <div className="col-span-full flex flex-col gap-2 text-[13.5px] leading-[1.6]" id="candidate-notice">
-                <p className="m-0"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send, including your résumé, to reply to you and to consider you for suitable roles. We keep it in our recruitment database, provided by Ezekia, and software reads your résumé to build your profile. We’ll contact you about your inquiry using your preferred method.</p>
+                <p className="m-0"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send, including your résumé, to reply to you and to consider you for suitable roles. We keep it in our recruitment database, provided by Ezekia, and, if you’re new to us, software reads your résumé to build your profile. We’ll contact you about your inquiry using your preferred method.</p>
                 <p className="m-0">About once a year we’ll email you to ask whether you’d like us to delete your details. If you don’t reply we keep them, and we delete them after <Blank>{LEGAL.cutoffYears}</Blank> years with no contact. You can ask us to correct or delete them at any time at <Blank>{LEGAL.privacyEmail}</Blank>; some records we may have to keep by law. <Link href="/privacy/#candidates" className={link}>Privacy Policy</Link></p>
               </div>
               <label className="col-span-full flex items-start gap-3 text-[13.5px] leading-[1.6]">
@@ -124,7 +144,10 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
           ) : (
             // Notice, no checkbox: replying to an inquiry needs no consent, and the old box forced agreement to phone and
             // email contact (report items D2 and D4).
-            <p className="col-span-full m-0 text-[13.5px] leading-[1.6]"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send to reply to your inquiry and discuss your hiring needs. We keep it in our client database, provided by Ezekia, for {LEGAL.employerRetention}. You can ask us to correct or delete it at {LEGAL.privacyEmail}; some records we may have to keep by law. Please don’t include personal details about candidates or staff unless we need them. <Link href="/privacy/#clients" className={link}>Privacy Policy</Link></p>
+            <p className="col-span-full m-0 text-[13.5px] leading-[1.6]"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send to reply to your inquiry and discuss your hiring needs. We keep it in our client database, provided by Ezekia, for {LEGAL.employerRetention}, and email a copy to our team. You can ask us to correct or delete it at {LEGAL.privacyEmail}; some records we may have to keep by law. Please don’t include personal details about candidates or staff unless we need them. <Link href="/privacy/#clients" className={link}>Privacy Policy</Link></p>
+          )}
+          {err && (
+            <p role="alert" className="col-span-full m-0 text-[14px] leading-[1.5] font-semibold" style={{ color: "#8a1c15" }}>{err}</p>
           )}
           <button type="submit" disabled={sending}
             className="relative col-span-full flex min-w-[150px] cursor-pointer items-center justify-center gap-3.5 justify-self-start overflow-hidden border-0 bg-navy px-[22px] py-[14px] text-[13px] font-bold tracking-[.06em] text-white hover:bg-navy-hover">
