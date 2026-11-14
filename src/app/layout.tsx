@@ -4,6 +4,10 @@ import SiteHeader from "@/components/SiteHeader";
 import SubscribeBand from "@/components/SubscribeBand";
 import SiteFooter from "@/components/SiteFooter";
 import JsonLd from "@/components/JsonLd";
+import HeroWarmup from "@/components/HeroWarmup";
+import { HOME_SLIDE_SIZES, PAGE_HEROES, type HeroImage } from "@/config/heroes";
+import { mapHero } from "@/lib/cms/map/hero.ts";
+import { getPage } from "@/lib/cms/source";
 import { SITE_NAME, SITE_URL, siteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
@@ -49,7 +53,17 @@ export const metadata: Metadata = {
   openGraph: { siteName: SITE_NAME, locale: "en_US", type: "website" },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Heroes to warm after load (HeroWarmup). Home contributes only its first slide: HeroSlides loads the later ones one
+  // at a time on purpose. getPage is cached ('use cache'), so this shares the homepage's read. .catch, not .then's
+  // second argument: it must also swallow a ContentError thrown by mapHero, or bad home content would fail the root
+  // layout and every route with it. Here a failure only leaves the slide unwarmed; the homepage still reports it.
+  const homeSlide = await getPage("home").then((p) => mapHero(p).media.images[0]).catch(() => undefined);
+  const heroes: HeroImage[] = [
+    ...(homeSlide ? [{ src: homeSlide, fill: true as const, sizes: HOME_SLIDE_SIZES }] : []),
+    ...Object.values(PAGE_HEROES),
+  ];
+
   return (
     <html lang="en" className={`${openSans.variable} ${openSansItalic.variable}`}>
       {/* Nothing reads --font-open-sans-italic; the class only keeps openSansItalic in use. The italic @font-face CSS
@@ -65,6 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SubscribeBand />
           <SiteFooter />
         </div>
+        <HeroWarmup heroes={heroes} />
       </body>
     </html>
   );

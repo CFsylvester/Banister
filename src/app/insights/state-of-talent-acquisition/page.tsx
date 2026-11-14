@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { Img, NavyCta } from "@/components/ui";
+import { PAGE_HEROES } from "@/config/heroes";
 import { STATE_OF_TA_REPORT } from "@/config/insights";
 import JsonLd from "@/components/JsonLd";
 import { asset } from "@/lib/asset";
@@ -50,7 +51,7 @@ export default function ArticlePage() {
             width under a flat dim so the title stays readable. */}
         <div className="absolute inset-y-0 left-0 w-full lg:w-1/2">
           {/* LCP image: eager + high priority (see Img). */}
-          <Img src="/assets/insight-state-of-ta.jpg" fill sizes="(min-width: 1024px) 50vw, 100vw" loading="eager" fetchPriority="high"
+          <Img {...PAGE_HEROES.article} loading="eager" fetchPriority="high"
             className="object-cover object-[left_22%]" />
           <div className="absolute inset-0 bg-black/60 lg:bg-transparent lg:bg-[linear-gradient(90deg,rgba(0,0,0,0)_50%,#000_100%)]" />
         </div>

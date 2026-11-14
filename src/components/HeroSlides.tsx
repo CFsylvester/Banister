@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { HOME_SLIDE_SIZES } from "@/config/heroes";
 import { Img } from "./ui";
 
 const reduceMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -36,8 +37,8 @@ export default function HeroSlides({ slides: heroes }: { slides: string[] }) {
 
   return heroes.slice(0, mounted).map((src, i) => (
     // Slide 0 is the LCP image. Later slides stay hidden for 6s, so they fetch at low priority instead of
-    // competing with it. The frame is the .site box less its gutters: 1144px at full width, ~92vw below.
-    <Img key={`${i}-${src}`} src={src} fill sizes="(min-width: 1240px) 1144px, 92vw"
+    // competing with it. `sizes` lives in src/config/heroes.ts, which HeroWarmup reads too.
+    <Img key={`${i}-${src}`} src={src} fill sizes={HOME_SLIDE_SIZES}
       loading="eager" fetchPriority={i === 0 ? "high" : "low"}
       onLoad={i === 0 ? () => { if (slideshow()) setMounted((m) => Math.max(m, 2)); } : undefined}
       className="object-cover object-[50%_30%]"

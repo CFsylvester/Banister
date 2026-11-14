@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import PageHero from "@/components/PageHero";
+import { PAGE_HEROES } from "@/config/heroes";
 import { Arrow, Icon } from "@/components/ui";
 import { drivers, services } from "@/lib/content";
 import { GRID_4 } from "@/lib/grid";
@@ -14,7 +15,7 @@ export const metadata: Metadata = pageMetadata({
 export default function ServicesPage() {
   return (
     <>
-      <PageHero img="/assets/services-hero.jpg" title="Services"
+      <PageHero img={PAGE_HEROES.services} title="Services"
         lede="Four ways to engage Banister — from a single C-suite appointment to a full hiring program. Each is led by one partner, and each tells your organization’s story to the people you want to reach." />
 
       <section className="site px-gutter py-[clamp(56px,7vw,88px)]">
