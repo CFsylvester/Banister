@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { pageMetadata } from "@/lib/seo";
 import PageHero from "@/components/PageHero";
 import { PAGE_HEROES } from "@/config/heroes";
+import Reveal from "@/components/Reveal";
+import type { HoverMotion } from "@/components/RevealIcon";
 import { Arrow, Icon } from "@/components/ui";
 import { drivers, services } from "@/lib/content";
 import { GRID_4 } from "@/lib/grid";
+
+// Per-driver hover motions (globals.css [data-hover] rules, triggered by .driver-card:hover): the award sways, the gear turns, the stopwatch dashes, the bulb lights.
+const DRIVER_HOVER: Partial<Record<string, HoverMotion>> = {
+  Quality: "sway", Execution: "spin", Speed: "dash", Insights: "glow",
+};
 
 export const metadata: Metadata = pageMetadata({
   title: "Executive Search Services | Banister International",
@@ -46,20 +54,32 @@ export default function ServicesPage() {
           <p className="m-0 mb-14 max-w-[760px] text-[17px] leading-[1.7] text-pretty">
             A proprietary search process that shortens the time to complete a search while significantly raising the quality and diversity of the candidates delivered. It brings <strong className="text-navy">four key drivers</strong> together to deliver talent that increases our clients’ enterprise value.
           </p>
-          <div className="grid gap-x-7 gap-y-10" style={{ gridTemplateColumns: GRID_4(28) }}>
+          {/* A named container so the entrance stagger can follow GRID_4's 4-up → 2-up switch (globals.css .driver). */}
+          <div className="@container/drivers grid gap-x-7 gap-y-10" style={{ gridTemplateColumns: GRID_4(28) }}>
             {drivers.map((d, i) => (
-              <div key={d.title} className="flex flex-col items-center gap-3.5 text-center">
-                {/* Percentages are hex-base.svg's 750-unit canvas: hex centre (375,357), left vertex (59,357).
+              <div key={d.title} className="driver-card flex flex-col items-center gap-3.5 text-center">
+                {/* Percentages are the hex's 750-unit canvas (the inline <svg> below): hex centre (375,357), left vertex (59,357).
                     The left margin (a % of this capped wrapper, not the grid cell) makes room for the number circle that hangs off that vertex. */}
                 <div className="w-full max-w-[240px]">
-                  <div className="relative ml-[8.19%] @container">
-                    {/* width/height = the SVG's 750×750 viewBox, so the lazy image holds its square before it loads. */}
-                    <Icon src="/assets/hex-base.svg" width={750} height={750} className="block h-auto w-full" />
-                    <Icon src={d.icon} className="absolute top-[17%] left-[20.67%] w-[58.67%]" />
-                    <span aria-hidden="true" className="absolute top-[32.53%] left-[-8.92%] flex aspect-square w-[30.13%] items-center justify-center rounded-full border-[0.9cqw] border-white bg-teal text-[16.5cqw] leading-none font-extrabold text-navy">
+                  {/* Enters in order 1 → 4: hex rises, icon fades in, gold chevron slides in as the underline draws, number
+                      pops (globals.css .driver). */}
+                  <Reveal className="driver relative ml-[8.19%] @container"
+                    style={{ "--delay-4up": `${i * 280}ms`, "--delay-2up": `${(i % 2) * 280}ms` } as CSSProperties}>
+                    {/* Inline rather than an <img> so each part can animate on its own. pathLength={1} lets the underline
+                        draw with one dash value regardless of its real length. */}
+                    <svg viewBox="0 0 750 750" aria-hidden="true" className="block h-auto w-full overflow-visible">
+                      <polygon className="driver-hex" fill="#003F5E" points="216.5,83.5 533.5,83.5 691.5,357 533.5,631 216.5,631 59,357" />
+                      <polygon className="driver-chevron" fill="#FFC91E" points="628,172.5 735,357.5 628,542.5 628,480 699,357.5 628,235" />
+                      <path className="driver-line" pathLength={1} fill="none" stroke="#FFC91E" strokeWidth="8" strokeMiterlimit="10" d="M17 381 L188.5 676.5 L534 676.5" />
+                    </svg>
+                    {/* The entrance runs on the span and the hover motion on the img, so ending a hover can't replay it. */}
+                    <span className="driver-icon absolute top-[17%] left-[20.67%] w-[58.67%]">
+                      <Icon src={d.icon} data-hover={DRIVER_HOVER[d.title]} className="block w-full" />
+                    </span>
+                    <span aria-hidden="true" className="driver-num absolute top-[32.53%] left-[-8.92%] flex aspect-square w-[30.13%] items-center justify-center rounded-full border-[0.9cqw] border-white bg-teal text-[16.5cqw] leading-none font-extrabold text-navy">
                       {i + 1}
                     </span>
-                  </div>
+                  </Reveal>
                 </div>
                 <span className="text-[21px] font-bold text-navy">{d.title}</span>
                 <span className="max-w-[240px] text-[15px] leading-[1.6]">{d.body}</span>
