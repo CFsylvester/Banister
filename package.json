@@ -29,10 +29,12 @@
   "dependencies": {
     "@contentful/rich-text-react-renderer": "16.2.2",
     "@contentful/rich-text-types": "17.2.7",
+    "botid": "1.5.13",
     "contentful": "11.12.10",
     "next": "16.3.7",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "resend": "6.38.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
