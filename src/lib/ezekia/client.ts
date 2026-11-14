@@ -15,6 +15,11 @@ import {
 
 export const EZEKIA_BASE_URL = "https://ezekia.com/api/v4";
 
+/** Ezekia's spec marks a phone's `label` optional (`api.person.phoneStoreRequest`), but live, `POST /people/{id}/phones`
+ * without one → 500, and with `label: "mobile"` or `"other"` → 201 (calls on a test record, 2026-11-13, epic #88 live
+ * checks). The website doesn't ask what kind of number it is, so "other", one of the spec's `api.phone.label` values. */
+export const PHONE_LABEL = "other";
+
 export type EzekiaEmail = { id: number; address: string; isDefault?: boolean };
 export type EzekiaPhone = { id: number; number: string; isDefault?: boolean };
 /** The subset of `api.v4.person.default` we read. */
@@ -195,7 +200,7 @@ export function createEzekiaClient(opts: ClientOptions) {
         // emails[]/phones[] are untyped `object[]` in the spec; these keys mirror the emails/phones sub-endpoints'
         // store bodies (`address`, `number`, `isDefault`). [unverified] that create accepts them — check on a test record.
         ...(p.email ? { emails: [{ address: p.email, isDefault: true }] } : {}),
-        ...(p.phone ? { phones: [{ number: p.phone, isDefault: true }] } : {}),
+        ...(p.phone ? { phones: [{ number: p.phone, isDefault: true, label: PHONE_LABEL }] } : {}),
       };
       return (await call<{ data: EzekiaPerson }>({ method: "POST", route: "/people", json })).data;
     },
@@ -216,7 +221,7 @@ export function createEzekiaClient(opts: ClientOptions) {
 
     /** `POST /people/{id}/phones` (`api.person.phoneStoreRequest`). */
     async addPhone(personId: number, number: string, isDefault = false): Promise<EzekiaPhone> {
-      return (await call<{ data: EzekiaPhone }>({ method: "POST", route: "/people/{id}/phones", params: { id: personId }, json: { number, isDefault } })).data;
+      return (await call<{ data: EzekiaPhone }>({ method: "POST", route: "/people/{id}/phones", params: { id: personId }, json: { number, isDefault, label: PHONE_LABEL } })).data;
     },
 
     /** `POST /people/{id}/documents` multipart `files[]` — attaches a file WITHOUT re-parsing the profile. Returns `api.document`. */

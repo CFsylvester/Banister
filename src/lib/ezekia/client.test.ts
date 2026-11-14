@@ -265,3 +265,11 @@ test("a body that stalls after the headers → EzekiaUpstreamError, not resent (
     assert.equal(hits, 1);
   } finally { server.closeAllConnections(); server.close(); }
 });
+
+test("phones are always sent with a label: Ezekia 500s on a phone without one", async () => {
+  const h = harness([json(201, { data: { id: 9 } }), json(200, { data: { id: 3 } })]);
+  await h.client.addPhone(3, "312-555-0101");
+  await h.client.createPerson({ firstName: "A", lastName: "B", phone: "312-555-0101", companyName: "Unknown" });
+  assert.deepEqual(JSON.parse(String(h.seen[0].init.body)), { number: "312-555-0101", isDefault: false, label: "other" });
+  assert.deepEqual(JSON.parse(String(h.seen[1].init.body)).phones, [{ number: "312-555-0101", isDefault: true, label: "other" }]);
+});
