@@ -1,6 +1,6 @@
 # Old WordPress site → new site: URL audit and redirects
 
-The live site (banisterintus.com) runs WordPress on WP Engine behind Cloudflare. When the domain points at Vercel,
+The old site (banisterintus.com) ran WordPress on WP Engine, with DNS at Cloudflare. Now that the domain points at Vercel (since 2026-11-13),
 every URL people and search engines already know has to land somewhere useful. This file records which URLs exist and
 where each goes. The map itself is `src/config/redirects.ts`; `next.config.ts` serves it as permanent (308) redirects, except stand-in targets we expect to change, which are temporary (307) so browsers and search engines don't cache them forever.
 
@@ -12,9 +12,26 @@ WordPress URLs (`/feed/`, `/category/uncategorized/`, `/author/admin/`, `/?p=1`,
 `/xmlrpc.php`, …), then follow every same-host link on each HTML page. Theme and plugin assets were not followed.
 All 20 HTML pages found were visited; the crawl was stopped with WordPress API (`/wp-json/…`) and image URLs still queued.
 
-Live DNS at the time: nameservers `joaquin`/`paloma.ns.cloudflare.com`; apex A `141.193.213.20`/`.21` and
-`www` CNAME `kkrwswlah74s.wpeproxy.com` (WP Engine), proxied by Cloudflare (`server: cloudflare`,
-`x-powered-by: WP Engine`); MX `banisterintus-com.mail.protection.outlook.com`.
+Live DNS at the time: nameservers `joaquin`/`paloma.ns.cloudflare.com`; apex and `www` both CNAME
+`kkrwswlah74s.wpeproxy.com` (WP Engine), **DNS only** in Cloudflare (the apex CNAME is flattened, so `dig` shows A
+`141.193.213.20`/`.21`); MX `banisterintus-com.mail.protection.outlook.com`. The `server: cloudflare` header came from
+WP Engine's own Cloudflare edge (Cloudflare for SaaS, hence the two `_cf-custom-hostname` TXT records), not from
+Banister's zone: a proxied record would answer with Cloudflare anycast IPs, not WP Engine's
+(https://developers.cloudflare.com/dns/proxy-status/). An earlier version of this note called the records proxied.
+
+## Cutover (2026-11-13)
+
+Both CNAMEs now point at `c873f576d3d37ebf.vercel-dns-016.com` (the target Vercel → Settings → Domains showed), still
+DNS only, as Vercel recommends for Cloudflare (https://vercel.com/docs/domains/troubleshooting). `www` 308-redirects to
+the apex in Vercel. Checked the same day: `server: Vercel`; Let's Encrypt certificates for both names; `http://` and
+`www` 308 to `https://banisterintus.com/`; every old URL in the map below reaches its target; `banister.cc` and
+`banisterinternational.com` (redirects to the apex in their own Cloudflare zones) land on the new site; MX and SPF
+unchanged. Rollback: point both CNAMEs back at `kkrwswlah74s.wpeproxy.com` (TTL 300 s).
+
+After WP Engine is cancelled, delete the two `_cf-custom-hostname` TXT records; they only existed for WP Engine's
+custom hostname (https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/domain-support/hostname-validation/pre-validation/).
+Keep the `google-site-verification` TXT record: it verifies the Search Console Domain property (sitemap submitted
+2026-11-13).
 
 ## Map
 

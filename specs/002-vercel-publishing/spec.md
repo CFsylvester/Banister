@@ -52,7 +52,7 @@ Sources (first-party, verified 2026-10-01):
 2. Import the repo into Vercel. Set the Production env vars: the space ID, the delivery token, the environment (set to `master`), and the revalidate secret. Add `LIVE_ENVIRONMENTS` only if step 3 reports an alias.
 3. `pnpm cms:webhook --url https://<site>/api/revalidate/ --env master --approve`. Then publish a test change and time it.
 4. Run the same end-to-end checks against a Vercel deployment. That proves revalidation reaches every instance and the CDN; locally there is only one process.
-5. Add the DNS record at Banister's DNS provider.
+5. ~~Add the DNS record at Banister's DNS provider.~~ Done 2026-11-13 (see `specs/003-wp-redirects/audit.md`, Cutover).
 
 ## Unverified (to check on the live setup)
 - `*.unpublish` as a topic name.
