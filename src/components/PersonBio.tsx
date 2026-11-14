@@ -16,6 +16,10 @@ export default function PersonBio({ person: p }: { person: (typeof people)[numbe
       </div>
       <div className="flex max-w-[760px] flex-col gap-3.5">
         <div className="text-[21px] leading-[1.3]"><strong className="text-navy">{p.name}</strong><span className="text-teal-deep">, {p.role}</span></div>
+        <a href={p.linkedin} target="_blank" rel="noopener noreferrer"
+          className="self-start text-[14px] font-semibold text-navy underline decoration-1 underline-offset-4 hover:text-navy-hover">
+          LinkedIn profile<span className="sr-only"> for {p.name} (opens in a new tab)</span>
+        </a>
         <p className="m-0 text-[15.5px] leading-[1.75]">{lead}</p>
         <div id={id} className="grid" aria-hidden={!open} inert={!open}
           style={{ gridTemplateRows: open ? "1fr" : "0fr", transition: "grid-template-rows .5s cubic-bezier(.2,.8,.2,1)" }}>

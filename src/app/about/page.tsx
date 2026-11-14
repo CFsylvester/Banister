@@ -12,7 +12,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/about",
 });
 
-// One Person per partner shown on the page (name, title and photo are all visible in the Leadership list).
+// One Person per partner shown on the page (name, title, photo and LinkedIn link are all visible in the Leadership list).
 const leadershipJsonLd = {
   "@context": "https://schema.org",
   "@graph": people.map((p) => ({
@@ -22,6 +22,7 @@ const leadershipJsonLd = {
     jobTitle: p.role,
     image: `${SITE_URL}${p.img}`,
     worksFor: orgRef,
+    sameAs: [p.linkedin],
   })),
 };
 

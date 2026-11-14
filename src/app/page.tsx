@@ -45,7 +45,7 @@ export default async function Home() {
           Founded in 1999, Banister International is an executive search and human capital advisory firm delivering high-impact talent solutions to transformational organizations.
         </p>
         <p className="m-0 text-[16px] leading-[1.75] text-pretty">
-          We specialize in executive search, next-generation leadership, search and advisory projects, and interim leadership. Every engagement uses a branded search approach that tells the client’s story, led by one dedicated Client Engagement Partner from start to finish.
+          We specialize in executive search, next-generation leadership, and search and advisory projects. Every engagement uses a branded search approach that tells the client’s story, led by one dedicated Client Engagement Partner from start to finish.
         </p>
       </section>
 
