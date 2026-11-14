@@ -18,7 +18,7 @@ export default function ServicesPage() {
         lede="Four ways to engage Banister — from a single C-suite appointment to a full hiring program. Each is led by one partner, and each tells your organization’s story to the people you want to reach." />
 
       <section className="site px-gutter py-[clamp(56px,7vw,88px)]">
-        <div className="grid gap-5" style={{ gridTemplateColumns: GRID_4(20) }}>
+        <div className="grid gap-5" style={{ gridTemplateColumns: GRID_4(20, 600) }}>
           {services.map((s) => (
             <div key={s.title} className="row-span-2 grid grid-rows-subgrid gap-y-0 border border-[#d3d9de]" style={{ background: s.dark ? "#003f5e" : "#fff" }}>
               <div className="flex items-center px-[22px] pt-[22px] pb-5" style={{ background: s.dark ? "#fff" : "#003f5e", color: s.dark ? "#003f5e" : "#fff" }}>
