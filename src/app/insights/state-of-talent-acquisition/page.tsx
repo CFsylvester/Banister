@@ -5,6 +5,7 @@ import { STATE_OF_TA_REPORT } from "@/config/insights";
 import JsonLd from "@/components/JsonLd";
 import { asset } from "@/lib/asset";
 import { absUrl, orgRef, SITE_URL } from "@/lib/seo";
+import { people } from "@/lib/content";
 // Related reading and "also of interest" are hidden until there is content for them — restore with the commented
 // <aside> below. The sidebar shows the report download card in the meantime.
 // import { related } from "@/lib/content";
@@ -19,9 +20,12 @@ export const metadata: Metadata = pageMetadata({
 // Copy from the live page: https://banisterintus.com/the-state-of-talent-acquisition-in-professional-services/
 const REPORT_FILENAME = "The-State-of-TA-in-Professional-Services_Banister-International.pdf";
 const body = "m-0 text-[17px] leading-[1.8]";
-// The live page's article:published_time (checked 2026-11-13). The live author was the WordPress account "wpengine",
-// so the firm is credited instead — the page's lead says the insights come from Banister International leadership.
+// The live page's article:published_time (checked 2026-11-13).
 const PUBLISHED = "2026-10-01";
+// Authors and contributor confirmed by Banister on 2026-11-13. The partners point at their Person nodes on /about.
+const AUTHOR_IDS = ["patrick-sylvester", "james-mcmahon", "brian-haugh"];
+const authors = AUTHOR_IDS.map((id) => people.find((p) => p.id === id)!);
+const CONTRIBUTOR = { name: "Larry Brand", linkedin: "https://www.linkedin.com/in/larry-brand/" };
 
 const articleJsonLd = {
   "@context": "https://schema.org",
@@ -30,7 +34,8 @@ const articleJsonLd = {
   description: "Insights from Banister International leadership and a seasoned talent acquisition leader on what is changing, what remains consistent, and where the industry is headed.",
   image: `${SITE_URL}/assets/insight-state-of-ta.jpg`,
   datePublished: PUBLISHED,
-  author: { ...orgRef, "@type": "Organization", name: "Banister International", url: absUrl("/") },
+  author: authors.map((p) => ({ "@type": "Person", "@id": `${absUrl("/about")}#${p.id}`, name: p.name, sameAs: [p.linkedin] })),
+  contributor: { "@type": "Person", name: CONTRIBUTOR.name, sameAs: [CONTRIBUTOR.linkedin] },
   publisher: orgRef,
   mainEntityOfPage: absUrl("/insights/state-of-talent-acquisition"),
 };
@@ -62,6 +67,12 @@ export default function ArticlePage() {
             <h1 className="m-0 text-[clamp(34px,4vw,54px)] leading-[1.1] font-bold tracking-[-.01em] text-pretty text-white">
               The state of talent acquisition in professional services
             </h1>
+            <p className="m-0 text-[15px] leading-[1.6] text-white/85">
+              By {authors.map((p) => p.name).join(", ").replace(/, ([^,]*)$/, " and $1")}, with contributor{" "}
+              <a href={CONTRIBUTOR.linkedin} target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-4">
+                {CONTRIBUTOR.name}<span className="sr-only"> (LinkedIn, opens in a new tab)</span>
+              </a>
+            </p>
           </div>
         </div>
       </section>

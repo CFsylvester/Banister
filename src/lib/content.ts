@@ -61,20 +61,21 @@ export const industries = [
   ["technology", "Media and\nTele\u00ADcommunications"],
 ].map(([k, name]) => ({ name, icon: `/assets/icon-${k}.svg` }));
 
+// LinkedIn profile URLs were supplied by Banister on 2026-11-13.
 export const people = [
-  { id: "patrick-sylvester", name: "Patrick Sylvester", role: "CEO and Founder", paras: [
+  { id: "patrick-sylvester", linkedin: "https://www.linkedin.com/in/patrick-sylvester/", name: "Patrick Sylvester", role: "CEO and Founder", paras: [
     "Patrick founded Banister International in August 1999 and built it into an internationally respected search and consulting firm with operations across the United States, Europe and Asia. He serves as a strategic talent advisor to organizations navigating significant growth and transformation.",
     "He entered executive search in 1993 with Management Recruiters International, where he was the top-producing manager-owner for more than 15 consecutive years. He has since led more than 100 transformational projects and thousands of executive searches across multiple industries.",
     "Before his search career, Patrick served as a United States Naval Officer. He holds a BS in Economics, with concentrations in Finance and Entrepreneurial Management, from the Wharton School."] },
-  { id: "tammie-do", name: "Tammie Do", role: "Senior Managing Partner", paras: [
+  { id: "tammie-do", linkedin: "https://www.linkedin.com/in/tammie-do/", name: "Tammie Do", role: "Senior Managing Partner", paras: [
     "Tammie brings more than 25 years of executive search experience and has been a driving force at Banister for over 15 years. She is recognized for strategic insight, long-standing executive relationships and consistently high-impact outcomes.",
     "At Management Recruiters International she became the firm’s #1-ranked female recruiter globally. She later founded Talent Resource Solutions, building it into a high-performing search platform known for speed, quality and execution.",
     "A recognized thought leader and sought-after speaker, Tammie is known for navigating complex hiring challenges and delivering strong retention outcomes."] },
-  { id: "brian-haugh", name: "Brian Haugh", role: "Senior Managing Director", paras: [
+  { id: "brian-haugh", linkedin: "https://www.linkedin.com/in/shapirolegalsearch/", name: "Brian Haugh", role: "Senior Managing Director", paras: [
     "Brian leads retained search engagements for legal leadership roles — Assistant General Counsel, General Counsel and Chief of Staff — as well as accounting and finance leadership.",
     "In 2006 he founded Veridian National Search, which specializes in Big Four candidates and remains active today. He is also a Senior Partner at Shapiro Legal Search, with clients ranging from Big Law, Am Law 200, boutique and regional firms to Fortune 1000 in-house teams.",
     "Brian spent his first ten years on Marine Corps bases from Anaheim to Quantico, and earned his accounting degree at the University of Illinois Urbana-Champaign."] },
-  { id: "james-mcmahon", name: "James McMahon", role: "Senior Managing Director", paras: [
+  { id: "james-mcmahon", linkedin: "https://www.linkedin.com/in/shapirolegalsearchsra/", name: "James McMahon", role: "Senior Managing Director", paras: [
     "James leads retained search engagements for legal leadership roles and places attorneys at every level — from lateral partner moves that require discretion to associate searches that demand speed and precision.",
     "He is a Partner at Shapiro Legal Search, a member of the Sanford Rose Associates network, and has been a trusted voice in recruitment for almost 20 years, working with firms from global Big Law to specialized boutiques.",
     "A University of Illinois alumnus, James was born and raised in Chicago."] },
