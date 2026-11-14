@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import PageHero from "@/components/PageHero";
+import { PAGE_HEROES } from "@/config/heroes";
 // Testimonials are hidden until approved quotes are ready — restore with the <Quotes> block below.
 // import Quotes from "@/components/Quotes";
 import RevealIcon, { type HoverMotion } from "@/components/RevealIcon";
@@ -25,7 +26,7 @@ export const metadata: Metadata = pageMetadata({
 export default function IndustriesPage() {
   return (
     <>
-      <PageHero img="/assets/industries-hero.jpg" title="Industries"
+      <PageHero img={PAGE_HEROES.industries} title="Industries"
         lede="Banister has delivered exceptional talent across eleven industries. Our partners have spent their careers inside these sectors — they know the people, and the people know them." />
       <section className="site px-gutter py-[clamp(56px,7vw,88px)]">
         <h2 className="m-0 mb-4 text-[clamp(26px,2.4vw,32px)] font-bold text-navy">Industries served</h2>

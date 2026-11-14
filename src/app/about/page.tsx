@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import PageHero from "@/components/PageHero";
+import { PAGE_HEROES } from "@/config/heroes";
 import PersonBio from "@/components/PersonBio";
 import JsonLd from "@/components/JsonLd";
 import { people } from "@/lib/content";
@@ -30,7 +31,7 @@ export default function AboutPage() {
   return (
     <>
       <JsonLd data={leadershipJsonLd} />
-      <PageHero img="/assets/about-atrium.jpg" title="About"
+      <PageHero img={PAGE_HEROES.about} title="About"
         lede="Founded in 1999, Banister International is an executive search and human capital advisory firm providing exceptional talent solutions to transformational, high-performing organizations.">
         <p className="m-0 text-[16px] leading-[1.75] text-pretty">
           The firm is built on four values: quality, execution, speed and insight. Our hands-on managing director–partner model, technology-enabled tools and trusted global network allow selective client partnerships, full process transparency and unmatched efficiency.
