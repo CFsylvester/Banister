@@ -5,7 +5,7 @@ import { LEGAL } from "@/lib/legal";
 import Blank from "./Blank";
 import { Arrow, Check, NavyCta } from "./ui";
 
-type Audience = "candidate" | "employer";
+export type Audience = "candidate" | "employer";
 
 const field = "box-border h-12 border border-field bg-white p-3 text-[16px] outline-teal";
 const label = "flex flex-col gap-2 text-[14px] font-semibold text-navy";
@@ -13,9 +13,9 @@ const label = "flex flex-col gap-2 text-[14px] font-semibold text-navy";
 const link = "font-semibold text-navy underline";
 
 /** `candidateOpen` is false outside the US (src/lib/geo.ts): the candidate tab then shows a notice and no form, so no
- * candidate data or file field reaches a non-US visitor. */
-export default function ContactForm({ initialAudience, candidateOpen }: { initialAudience: Audience; candidateOpen: boolean }) {
-  const [aud, setAud] = useState<Audience>(initialAudience);
+ * candidate data or file field reaches a non-US visitor. The tab shown is `aud`, owned by ContactFromQuery so a ?aud= link
+ * can be compared with what is on screen; the tabs report clicks through `onAudChange`. */
+export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }: { aud: Audience; onAudChange: (aud: Audience) => void; candidateOpen: boolean }) {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [who, setWho] = useState({ name: "", email: "" });

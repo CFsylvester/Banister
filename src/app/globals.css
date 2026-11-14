@@ -58,3 +58,64 @@
 @keyframes bnFade { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
 @keyframes bnIn { from { opacity: 0 } to { opacity: 1 } }
 @keyframes bnFlash { 0% { background: #2bc1c6 } 100% { background: #003f5e } }
+
+/* Industries icons (src/components/RevealIcon.tsx): a soft rise when the grid scrolls into view, plus an optional
+   per-icon hover motion. Both sit behind no-preference, so reduced-motion visitors get the static icon. */
+@layer components {
+  .reveal-icon { display: block; }
+  .reveal-icon > img { display: block; width: 100%; height: 100%; }
+  /* Clip only the motions that leave the frame; the others stay whole when they reach the icon's edge. */
+  .reveal-icon:is([data-hover="fly"], [data-hover="drive"]) { overflow: hidden; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The rise runs on the wrapper and hover runs on the img, so ending a hover can't restart the rise. */
+  .reveal-icon[data-armed]:not([data-shown]) { opacity: 0; }
+  .reveal-icon[data-shown] { animation: bnRise .9s cubic-bezier(.2, .9, .3, 1.12) var(--delay) both; }
+  /* Hover motions move the whole icon (the files are flat <img>s), so each is picked to read well on its subject. */
+  /* hover: hover keeps a tap on a touch screen (which leaves :hover stuck on) from playing it. */
+  @media (hover: hover) { :hover > .reveal-icon > img { animation: var(--hover-motion); } }
+  .reveal-icon[data-hover="fly"] { --hover-motion: bnFlyThrough 1s cubic-bezier(.6, 0, .3, 1); }
+  .reveal-icon[data-hover="drive"] { --hover-motion: bnDriveThrough 1s cubic-bezier(.6, 0, .3, 1); }
+  .reveal-icon[data-hover="spin"] { --hover-motion: bnSpinUp 1.6s cubic-bezier(.15, .7, .2, 1); }
+  .reveal-icon[data-hover="roll"] { --hover-motion: bnRoll .9s cubic-bezier(.3, .7, .3, 1); }
+  .reveal-icon[data-hover="hop"] { --hover-motion: bnHop .7s cubic-bezier(.3, .7, .3, 1); }
+  .reveal-icon[data-hover="pulse"] { --hover-motion: bnPulse .9s ease-in-out; }
+  .reveal-icon[data-hover="lift"] { --hover-motion: bnLift .8s cubic-bezier(.3, 1.4, .5, 1); }
+  .reveal-icon[data-hover="nod"] { --hover-motion: bnNod .9s cubic-bezier(.3, .7, .3, 1); }
+  .reveal-icon[data-hover="flip"] { --hover-motion: bnFlip .9s cubic-bezier(.4, 0, .2, 1); }
+  .reveal-icon[data-hover="wiggle"] { --hover-motion: bnWiggle .8s ease-in-out; }
+  /* Rotates around the fan ring's centre (cx 92, cy 87.81 in icon-building-services.svg's 180×180 viewBox). */
+  .reveal-icon[data-hover="spin"] > img { transform-origin: 51.1% 48.8%; }
+  .reveal-icon[data-hover="nod"] > img { transform-origin: 25% 90%; }
+  .reveal-icon[data-hover="hop"] > img { transform-origin: 50% 100%; }
+}
+@keyframes bnRise {
+  from { opacity: 0; transform: translateY(18px) scale(.9); filter: blur(8px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes bnFlyThrough {
+  45% { transform: translate(110%, -110%); }
+  46% { transform: translate(-110%, 110%); }
+}
+@keyframes bnSpinUp { to { transform: rotate(720deg); } }
+/* The car in icon-industrial.svg faces left, so it drives out left and comes back in from the right. */
+@keyframes bnDriveThrough {
+  45% { transform: translateX(-110%); }
+  46% { transform: translateX(110%); }
+}
+@keyframes bnRoll {
+  35% { transform: translateX(12%) rotate(2deg); }
+  70% { transform: translateX(-4%) rotate(-1deg); }
+}
+@keyframes bnHop {
+  15% { transform: scale(1.06, .92); }
+  45% { transform: translateY(-14%) scale(.96, 1.05); }
+  75% { transform: scale(1.04, .96); }
+}
+@keyframes bnPulse { 25%, 75% { transform: scale(1.08); } 50% { transform: scale(.98); } }
+@keyframes bnLift { 50% { transform: translateY(-9%) rotate(-3deg); } }
+@keyframes bnNod { 40% { transform: rotate(-9deg); } 75% { transform: rotate(3deg); } }
+@keyframes bnFlip { from { transform: perspective(400px) rotateY(0); } to { transform: perspective(400px) rotateY(360deg); } }
+@keyframes bnWiggle {
+  20% { transform: rotate(-10deg); } 45% { transform: rotate(8deg); } 70% { transform: rotate(-4deg); }
+}

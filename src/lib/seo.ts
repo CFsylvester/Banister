@@ -12,7 +12,7 @@ export const LINKEDIN_URL = "https://www.linkedin.com/company/banisterinternatio
 export const absUrl = (path: string) => `${SITE_URL}${path === "/" ? "/" : `/${path.replace(/^\/|\/$/g, "")}/`}`;
 
 // The root app/opengraph-image.tsx route, at the trailing-slash URL the site serves.
-export const DEFAULT_OG = { url: "/opengraph-image/", width: 1200, height: 630, alt: "Banister International — executive search since 1999" };
+export const DEFAULT_OG = { url: "/opengraph-image/", width: 1200, height: 630, alt: "Banister International" };
 
 /**
  * Full per-page metadata. Next merges `openGraph` shallowly — a page that sets any `openGraph` field replaces the
@@ -70,6 +70,9 @@ export const siteJsonLd = {
       "@type": ["Organization", "ProfessionalService"],
       "@id": ORG_ID,
       name: SITE_NAME,
+      // schema.org legalName: "The official name of the organization" (https://schema.org/legalName). The LLC on the EIN
+      // (src/lib/legal.ts); `name` stays the brand.
+      legalName: LEGAL.entity,
       url: absUrl("/"),
       // No `logo` yet: the only logo files are white (public/assets/banister-logo-white.*), and Google shows the logo
       // on a white background. Add one when a dark logo exists.
