@@ -29,7 +29,9 @@ export default function Stats({ heading, stats }: { heading: string; stats: [num
       <h2 className="m-0 mb-7 text-[clamp(26px,2.4vw,32px)] font-bold text-navy">{heading}</h2>
       <div ref={ref} className="grid gap-5" style={{ gridTemplateColumns: GRID_4(20) }}>
         {stats.map(([n, suffix, label], i) => {
-          const p = t ? Math.max(0, Math.min(1, (t.now - t.start - i * STAGGER) / DURATION)) : 0;
+          // Before the count starts, render the final figure, not 0, so the server HTML that crawlers read has the real
+          // number. The card is still at opacity 0 then, and run() drops it to 0 on the frame the fade-in begins.
+          const p = t ? Math.max(0, Math.min(1, (t.now - t.start - i * STAGGER) / DURATION)) : 1;
           const e = 1 - Math.pow(1 - p, 3);
           return (
             <div key={label} className="relative flex flex-col gap-3.5 bg-mist px-7 pt-9 pb-8"
