@@ -15,8 +15,8 @@ export const metadata: Metadata = pageMetadata({
 // so this is written to US law and makes no EU, UK or other non-US statements. Drafted from reports/Banister privacy and
 // terms findings.md ("Who receives personal data", "The consent sentence") and the owner's retention decision. Every
 // sentence is a claim of fact: the FTC holds companies to their privacy promises, so cut anything Banister doesn't do.
-// Pre-launch: the contact forms still simulate sending (#38), so the Ezekia and Vercel lines for them describe the
-// launch state and become true only when that backend ships, which #38 already makes a launch blocker.
+// Where each form's data goes (epic #88, src/lib/contact/): candidates → Ezekia; employers → Ezekia plus an email to the
+// team through Resend (src/lib/email). Keep these sections in step with that code.
 // Section anchors (#candidates, #clients, #newsletter) are linked from the forms.
 
 const email = <Email />;
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
       <P>
         Through the employer form we collect your name, email address, phone number, company, preferred contact method and
         message. We use them to reply to your inquiry and discuss your hiring needs, and keep them in our client database,
-        provided by Ezekia. Please don’t include personal details about candidates or staff unless we need them.
+        provided by Ezekia. A copy is emailed to our team so a partner can reply. Please don’t include personal details about candidates or staff unless we need them.
       </P>
 
       <H2 id="newsletter">If you sign up for our newsletter</H2>
@@ -74,7 +74,8 @@ export default function PrivacyPage() {
       <H2>Who we share it with</H2>
       <Ul>
         <li><strong>Ezekia</strong> stores our candidate, client and newsletter records.</li>
-        <li><strong>Vercel</strong> hosts this website and processes form submissions on the way to Ezekia.</li>
+        <li><strong>Vercel</strong> hosts this website and processes form submissions on the way to Ezekia and to Resend.</li>
+        <li><strong>Resend</strong> delivers employer inquiries from the website to our team’s inbox.</li>
         <li><strong>Contentful</strong> serves the site’s content and images.</li>
         <li><strong>Our email provider</strong> carries our correspondence with you.</li>
         <li><strong>Authorities</strong>, when the law requires it, or to protect our rights.</li>
