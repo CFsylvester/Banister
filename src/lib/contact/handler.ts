@@ -33,6 +33,12 @@ export type ContactDeps = {
   emailEmployer: (config: EmailConfig, fields: ContactFields) => Promise<boolean>;
 };
 
+/** CONTACT_DRY_RUN=1 is for local runs only (the pixel gates' contact-sending / contact-sent states). It fails closed: it
+ * needs the flag AND a request addressed to localhost, so a stray env var on any deployment can't fake a send. */
+export function dryRunAllowed(flag: string | undefined, host: string | null): boolean {
+  return flag === "1" && /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(host ?? "");
+}
+
 // Logs carry the step and outcome only: never a name, email, phone, message or file (FR-11).
 const log = (msg: string) => console.info(`contact: ${msg}`);
 

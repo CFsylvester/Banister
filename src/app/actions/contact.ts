@@ -2,7 +2,7 @@
 import { checkBotId } from "botid/server";
 import { headers } from "next/headers";
 import { emailConfig, emailEmployer } from "@/lib/contact/employer";
-import { handleContact, type ContactResult } from "@/lib/contact/handler";
+import { dryRunAllowed, handleContact, type ContactResult } from "@/lib/contact/handler";
 import { recordSubmission } from "@/lib/contact/record";
 import { sendEmail } from "@/lib/email";
 import { ezekia } from "@/lib/ezekia";
@@ -14,15 +14,14 @@ import { createSignupGuard } from "@/lib/subscribe-handler";
 // spend calls from Ezekia's 5 req/s budget.
 const guard = createSignupGuard();
 
-/** CONTACT_DRY_RUN=1 is for local runs only (the pixel gates' contact-sending / contact-sent states): everything is
- * validated, then nothing is written and the reply comes after the design's 1.2 s send. Never set it on Vercel; it is
- * ignored when VERCEL_ENV is "production" (Vercel system env vars:
- * https://vercel.com/docs/environment-variables/system-environment-variables [unverified that Preview builds set it]). */
-const dryRun = process.env.CONTACT_DRY_RUN === "1" && process.env.VERCEL_ENV !== "production";
+/** In a dry run (dryRunAllowed: local only) everything is validated, then nothing is written and the reply comes after
+ * the design's 1.2 s send. */
 const pause = () => new Promise<void>((r) => setTimeout(r, 1200));
 
 /** The /contact form (ContactForm) calls this. Every check is repeated here: the browser's can be skipped. */
 export async function submitContact(form: FormData): Promise<ContactResult> {
+  const dryRun = dryRunAllowed(process.env.CONTACT_DRY_RUN, (await headers()).get("host"));
+  if (dryRun) console.warn("contact: CONTACT_DRY_RUN is on, nothing will be recorded or emailed");
   return handleContact(form, {
     ipKey: async () => clientIpKey(await headers()),
     guard,

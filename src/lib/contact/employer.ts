@@ -25,8 +25,10 @@ export function employerSubject(f: ContactFields): string {
   return oneLine(`Website enquiry — ${f.company || "no company given"} — ${f.first} ${f.last}`).slice(0, 200);
 }
 
-/** Plain text only: no HTML, so nothing a visitor types can become markup in the team's inbox. */
-export function employerText(f: ContactFields, at: Date): string {
+/** Plain text only: no HTML, so nothing a visitor types can become markup in the team's inbox. No timestamp (the email
+ * has its own date): a retry must send exactly the same payload under the same idempotency key, or Resend may refuse it
+ * (its SDK lists an `invalid_idempotent_request` error, node_modules/resend/dist/index.d.mts). */
+export function employerText(f: ContactFields): string {
   return [
     "A new enquiry from the employer form on banisterintus.com.",
     "Reply to this email to answer them directly. It is also recorded in Ezekia with a note.",
@@ -36,20 +38,19 @@ export function employerText(f: ContactFields, at: Date): string {
     `Email: ${f.email}`,
     `Phone: ${f.phone || "not given"}`,
     `Preferred contact: ${f.method}`,
-    `Sent: ${at.toISOString()}`,
     "",
     "Message:",
     f.message,
   ].join("\n");
 }
 
-export async function emailEmployer(send: SendEmail, config: EmailConfig, f: ContactFields, at = new Date()): Promise<boolean> {
+export async function emailEmployer(send: SendEmail, config: EmailConfig, f: ContactFields): Promise<boolean> {
   const { ok } = await send({
     from: config.from,
     to: config.to,
     replyTo: f.email,
     subject: employerSubject(f),
-    text: employerText(f, at),
+    text: employerText(f),
     idempotencyKey: idempotencyKey(f),
   });
   return ok;

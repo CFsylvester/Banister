@@ -5,7 +5,10 @@ import { checkResume, MAX_RESUME_BYTES, RESUME_HELP, safeFilename, sniffResume }
 const bytes = (...parts: (number[] | string)[]) =>
   new Uint8Array(parts.flatMap((p) => (typeof p === "string" ? Array.from(p, (c) => c.charCodeAt(0)) : p)));
 const PDF = bytes("%PDF-1.7\n", "rest");
-const DOC = bytes([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1], "rest");
+const OLE2 = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1];
+const utf16 = (s: string) => Array.from(s, (c) => `${c}\u0000`).join("");
+const DOC = bytes(OLE2, "....", utf16("WordDocument"), "rest");
+const XLS = bytes(OLE2, "....", utf16("Workbook"), "rest");
 const DOCX = bytes([0x50, 0x4b, 0x03, 0x04], "....[Content_Types].xml....word/document.xml");
 const XLSX = bytes([0x50, 0x4b, 0x03, 0x04], "....[Content_Types].xml....xl/workbook.xml");
 const EXE = bytes("MZ", [0x90, 0x00], "This program cannot be run in DOS mode");
@@ -17,6 +20,7 @@ test("sniffResume reads the type from the bytes", () => {
   assert.equal(sniffResume(DOC), "doc");
   assert.equal(sniffResume(DOCX), "docx");
   assert.equal(sniffResume(XLSX), null); // a zip, but not a Word document
+  assert.equal(sniffResume(XLS), null); // OLE2, but not a Word document
   assert.equal(sniffResume(EXE), null);
   assert.equal(sniffResume(new Uint8Array()), null);
 });

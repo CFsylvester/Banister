@@ -6,9 +6,12 @@
 // - New person, without a résumé: created from the form's fields.
 // - Existing person (exact email match): never re-parsed or renamed. Sending a CV to an update "will replace existing
 //   data with that from the CV" (help-centre "API Integration", cited in client.ts), so a résumé is attached as a
-//   document instead, and a phone number not already on the record is added.
-// - Always: one note holding the message and how to reply.
+//   document instead. Nothing proves the sender owns that email, so their record's contact details are left alone:
+//   the phone number goes in the note only (CWE-345, data authenticity).
+// - Always: one note holding the message and how to reply. Ezekia answers a note with `{ updated, notUpdated }`; a
+//   person listed in `notUpdated` means the message was not saved, which is a failure, not a success.
 import type { EzekiaClient, EzekiaPerson } from "../ezekia/client.ts";
+import { EzekiaError } from "../ezekia/errors.ts";
 import type { ContactFields } from "./fields.ts";
 import type { Resume } from "./resume.ts";
 
@@ -38,6 +41,11 @@ export function noteText(f: ContactFields, o: { at: Date; resume: "parsed" | "do
   return lines.join("\n");
 }
 
+async function addNote(client: EzekiaClient, personId: number, text: string): Promise<void> {
+  const { notUpdated } = await client.addNote([personId], text);
+  if (notUpdated?.length) throw new EzekiaError("POST /people/notes", 200, "note not saved");
+}
+
 export async function recordSubmission(client: EzekiaClient, f: ContactFields, resume: Resume | null, at = new Date()): Promise<RecordOutcome> {
   // A résumé is only ever a candidate's; parseContact never lets the employer tab carry one, but don't rely on it here.
   const cv = f.audience === "candidate" ? resume : null;
@@ -47,8 +55,7 @@ export async function recordSubmission(client: EzekiaClient, f: ContactFields, r
 
   if (existing) {
     if (cv) await client.addDocument(existing.id, cv.file, cv.filename);
-    if (f.phone && !hasPhone(existing, f.phone)) await client.addPhone(existing.id, f.phone);
-    await client.addNote([existing.id], noteText(f, { at, resume: cv ? "document" : "none", multipleMatches }));
+    await addNote(client, existing.id, noteText(f, { at, resume: cv ? "document" : "none", multipleMatches }));
     return { personId: existing.id, created: false, multipleMatches };
   }
 
@@ -56,12 +63,14 @@ export async function recordSubmission(client: EzekiaClient, f: ContactFields, r
   const person = cv
     ? await client.createPersonFromCv(cv.file, cv.filename)
     : await client.createPerson({ firstName: f.first, lastName: f.last, email: f.email, phone: f.phone || undefined, companyName });
-  if (cv) await client.updatePersonNames(person.id, { firstName: f.first, lastName: f.last });
-  // createPerson's emails[]/phones[] keys are [unverified] (client.ts), and a parsed CV may hold a different address,
-  // so add whatever the returned record lacks. If the create response omits the lists even though they were saved, this
-  // could add a second copy [unverified]; the Preview check in quickstart.md §3 settles it (task T018).
+  // The email first, straight after the create: if a later step fails and the visitor retries, the find above then
+  // reaches this person instead of creating a second one from the same CV. createPerson's emails[]/phones[] keys are
+  // [unverified] (client.ts), and a parsed CV may hold a different address, so add whatever the returned record lacks.
+  // If the create response omits the lists even though they were saved, this could add a second copy [unverified]; the
+  // Preview check in quickstart.md §3 settles it (task T018).
   if (!hasEmail(person, f.email)) await client.addEmail(person.id, f.email, true);
+  if (cv) await client.updatePersonNames(person.id, { firstName: f.first, lastName: f.last });
   if (f.phone && !hasPhone(person, f.phone)) await client.addPhone(person.id, f.phone, true);
-  await client.addNote([person.id], noteText(f, { at, resume: cv ? "parsed" : "none", multipleMatches: false }));
+  await addNote(client, person.id, noteText(f, { at, resume: cv ? "parsed" : "none", multipleMatches: false }));
   return { personId: person.id, created: true, multipleMatches: false };
 }

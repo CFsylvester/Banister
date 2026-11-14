@@ -72,7 +72,9 @@ export function parseContact(form: FormData): ParseResult {
 
   const rawEmail = text(form, "email");
   const email = rawEmail.length <= MAX_EMAIL ? validEmail(rawEmail) : null;
-  if (!email) return fail("email");
+  // The address becomes the employer email's reply-to, where a comma or semicolon would make a list and quotes or angle
+  // brackets a display name. validEmail (shared with the sign-up band) allows them, so refuse them here.
+  if (!email || /[,;<>"]/.test(email)) return fail("email");
 
   const method: ContactMethod = text(form, "method") === "Phone" ? "Phone" : "Email";
   const phone = oneLine(text(form, "phone"));

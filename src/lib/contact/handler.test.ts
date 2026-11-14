@@ -2,7 +2,7 @@ import { test, type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { EzekiaUpstreamError } from "../ezekia/errors.ts";
 import { FIELD_HELP } from "./fields.ts";
-import { CONTACT_ERROR, CONTACT_HONEYPOT, handleContact, type ContactDeps } from "./handler.ts";
+import { CONTACT_ERROR, CONTACT_HONEYPOT, dryRunAllowed, handleContact, type ContactDeps } from "./handler.ts";
 import { RESUME_HELP } from "./resume.ts";
 
 const form = (fields: Record<string, string | File>) => {
@@ -103,4 +103,18 @@ test("logs never contain the visitor's details", async (t) => {
   for (const line of [...h.logs, ...ok.logs]) {
     for (const pii of ["jane@firm.com", "sam@co.com", "Jane", "Sam", "555", "secret plans", "Acme"]) assert.ok(!line.includes(pii), `${line} leaks ${pii}`);
   }
+});
+
+test("the dry run needs both the flag and a localhost request; a deployed host never qualifies", () => {
+  for (const host of ["localhost:3217", "127.0.0.1:3000", "[::1]:3218", "localhost"]) assert.equal(dryRunAllowed("1", host), true, host);
+  for (const host of ["banisterintus.com", "banister-nine.vercel.app", "localhost.evil.com", "evil.com:3000?localhost", "", null]) assert.equal(dryRunAllowed("1", host), false, String(host));
+  for (const flag of [undefined, "0", "true", ""]) assert.equal(dryRunAllowed(flag, "localhost:3217"), false, String(flag));
+});
+
+test("a thrown bot check or location check is not success", async (t) => {
+  const bot = harness(t, { isBot: async () => { throw new Error("botid down"); } });
+  await assert.rejects(handleContact(form(candidate), bot.deps));
+  const geo = harness(t, { inUs: async () => { throw new Error("headers"); } });
+  await assert.rejects(handleContact(form(candidate), geo.deps));
+  assert.deepEqual([...bot.recorded, ...geo.recorded], []);
 });

@@ -18,6 +18,7 @@ const EXT: Record<string, ResumeKind> = { pdf: "pdf", doc: "doc", docx: "docx" }
 const PDF = [0x25, 0x50, 0x44, 0x46, 0x2d]; // "%PDF-"
 const OLE2 = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]; // Compound File Binary, used by .doc
 const ZIP = [0x50, 0x4b, 0x03, 0x04]; // local file header, used by .docx
+const WORD_STREAM = Array.from("WordDocument", (c) => `${c}\u0000`).join(""); // UTF-16LE
 
 const startsWith = (b: Uint8Array, sig: number[]) => b.length >= sig.length && sig.every((v, i) => b[i] === v);
 
@@ -34,7 +35,12 @@ function contains(b: Uint8Array, needle: string): boolean {
 /** The kind the bytes say, or null. A DOCX is a zip holding `[Content_Types].xml` and parts under `word/`. */
 export function sniffResume(b: Uint8Array): ResumeKind | null {
   if (startsWith(b, PDF)) return "pdf";
-  if (startsWith(b, OLE2)) return "doc";
+  // OLE2 is also the container for .xls, .ppt and .msg. In a Word file "The WordDocument stream MUST be present"
+  // ([MS-DOC] 2.1.1: https://learn.microsoft.com/en-us/openspecs/office_file_formats/ms-doc/d7fae142-670d-4cd5-869a-708366984a71),
+  // and directory entry names are "encoded in UTF-16" ([MS-CFB] 2.6.1:
+  // https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cfb/60fe8611-66c3-496b-b70d-a504c94c9ace). Little-endian
+  // is stated only for the header's integer fields ([MS-CFB] 2.2) [unverified for names], and is what Word writes in practice.
+  if (startsWith(b, OLE2)) return contains(b, WORD_STREAM) ? "doc" : null;
   if (startsWith(b, ZIP) && contains(b, "[Content_Types].xml") && contains(b, "word/")) return "docx";
   return null;
 }

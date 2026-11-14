@@ -25,8 +25,10 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
   const [file, setFile] = useState<string | null>(null);
   // Phone is only needed when it's the chosen contact method (data minimisation; report item D5).
   const [method, setMethod] = useState<"Email" | "Phone">("Email");
-  // Shown above SUBMIT after a failed send. Rendered only when set, so the form's resting layout is unchanged.
-  const [err, setErr] = useState<string | null>(null);
+  // Shown above SUBMIT after a failed send, on the tab it came from only (a candidate-only error mustn't follow the
+  // visitor to the employer tab). Rendered only when set, so the form's resting layout is unchanged.
+  const [failure, setFailure] = useState<{ aud: Audience; error: string } | null>(null);
+  const err = failure?.aud === aud ? failure.error : null;
   // Ref, not state: blocks a second submit in the same tick, before React re-renders with `sending`.
   const inFlight = useRef(false);
   const employerTab = useRef<HTMLButtonElement>(null);
@@ -40,14 +42,14 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
     const fd = new FormData(e.currentTarget);
     // Checked here too so a too-big file gets the friendly message instead of the server's body-size refusal.
     const cv = fd.get("resume");
-    if (cv instanceof File && cv.size > MAX_RESUME_BYTES) { setErr(RESUME_HELP); return; }
+    if (cv instanceof File && cv.size > MAX_RESUME_BYTES) { setFailure({ aud, error: RESUME_HELP }); return; }
     inFlight.current = true;
-    setErr(null);
+    setFailure(null);
     setSending(true);
     const res = await submitContact(fd).catch(() => ({ ok: false as const, error: GENERIC_ERROR }));
     inFlight.current = false;
     setSending(false);
-    if (!res.ok) { setErr(res.error); return; }
+    if (!res.ok) { setFailure({ aud, error: res.error }); return; }
     setWho({ name: String(fd.get("first") || "").trim(), email: String(fd.get("email") || "").trim() });
     setSent(true);
   };
@@ -131,7 +133,7 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
               {/* Notice, not consent: replying and considering the candidate need no tick (reports/Banister privacy and
                   terms findings.md, "The consent sentence"). The box confirms a fact the US-only design relies on. */}
               <div className="col-span-full flex flex-col gap-2 text-[13.5px] leading-[1.6]" id="candidate-notice">
-                <p className="m-0"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send, including your résumé, to reply to you and to consider you for suitable roles. We keep it in our recruitment database, provided by Ezekia, and software reads your résumé to build your profile. We’ll contact you about your inquiry using your preferred method.</p>
+                <p className="m-0"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send, including your résumé, to reply to you and to consider you for suitable roles. We keep it in our recruitment database, provided by Ezekia, and, if you’re new to us, software reads your résumé to build your profile. We’ll contact you about your inquiry using your preferred method.</p>
                 <p className="m-0">About once a year we’ll email you to ask whether you’d like us to delete your details. If you don’t reply we keep them, and we delete them after <Blank>{LEGAL.cutoffYears}</Blank> years with no contact. You can ask us to correct or delete them at any time at <Blank>{LEGAL.privacyEmail}</Blank>; some records we may have to keep by law. <Link href="/privacy/#candidates" className={link}>Privacy Policy</Link></p>
               </div>
               <label className="col-span-full flex items-start gap-3 text-[13.5px] leading-[1.6]">
@@ -142,7 +144,7 @@ export default function ContactForm({ aud, onAudChange: setAud, candidateOpen }:
           ) : (
             // Notice, no checkbox: replying to an inquiry needs no consent, and the old box forced agreement to phone and
             // email contact (report items D2 and D4).
-            <p className="col-span-full m-0 text-[13.5px] leading-[1.6]"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send to reply to your inquiry and discuss your hiring needs. We keep it in our client database, provided by Ezekia, for {LEGAL.employerRetention}. You can ask us to correct or delete it at {LEGAL.privacyEmail}; some records we may have to keep by law. Please don’t include personal details about candidates or staff unless we need them. <Link href="/privacy/#clients" className={link}>Privacy Policy</Link></p>
+            <p className="col-span-full m-0 text-[13.5px] leading-[1.6]"><strong className="text-navy">How we use your details.</strong> <Blank>{LEGAL.entity}</Blank> (“Banister International”) will use what you send to reply to your inquiry and discuss your hiring needs. We keep it in our client database, provided by Ezekia, for {LEGAL.employerRetention}, and email a copy to our team. You can ask us to correct or delete it at {LEGAL.privacyEmail}; some records we may have to keep by law. Please don’t include personal details about candidates or staff unless we need them. <Link href="/privacy/#clients" className={link}>Privacy Policy</Link></p>
           )}
           {err && (
             <p role="alert" className="col-span-full m-0 text-[14px] leading-[1.5] font-semibold" style={{ color: "#8a1c15" }}>{err}</p>

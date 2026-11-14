@@ -32,6 +32,7 @@ test("each required field is enforced", () => {
     assert.deepEqual(parseContact(form({ ...candidate, [field]: "  " })), { ok: false, field, error: FIELD_HELP[field] });
   }
   assert.equal(parseContact(form({ ...candidate, email: "nope" })).ok, false);
+  for (const email of ["a,b@x.com", "a;b@x.com", "\"a\"@x.com", "a<b@x.com"]) assert.equal(parseContact(form({ ...candidate, email })).ok, false, email);
 });
 
 test("phone is required only when it is the chosen method, and must look like a phone number", () => {
