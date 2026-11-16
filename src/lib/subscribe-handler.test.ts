@@ -2,7 +2,7 @@ import { test, type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { EzekiaError } from "./ezekia/errors.ts";
 import { HONEYPOT_FIELD, EMAIL_HELP } from "./signup.ts";
-import { createSignupGuard, handleSubscribe, RATE_LIMITED, type SubscribeDeps } from "./subscribe-handler.ts";
+import { BOT_REFUSED, createSignupGuard, handleSubscribe, RATE_LIMITED, type SubscribeDeps } from "./subscribe-handler.ts";
 
 const form = (fields: Record<string, string>) => {
   const f = new FormData();
@@ -18,6 +18,7 @@ function harness(t: TestContext, overrides: Partial<SubscribeDeps> = {}) {
   const deps: SubscribeDeps = {
     ipKey: async () => "203.0.113.7",
     guard: (ip) => { guarded.push(ip); return null; },
+    isBot: async () => false,
     addToList: async (email) => { added.push(email); },
     ...overrides,
   };
@@ -29,6 +30,27 @@ test("a valid sign-up passes the guard with the client's key and reaches Ezekia"
   assert.deepEqual(await handleSubscribe(signup, deps), { ok: true });
   assert.deepEqual(added, ["jane@firm.com"]);
   assert.deepEqual(guarded, ["203.0.113.7"]);
+});
+
+test("a request BotID flags gets an error, uses up no limits and spends no Ezekia calls", async (t) => {
+  const { deps, added, guarded } = harness(t, { isBot: async () => true });
+  assert.deepEqual(await handleSubscribe(signup, deps), { ok: false, error: BOT_REFUSED });
+  assert.deepEqual(added, []);
+  assert.deepEqual(guarded, []);
+});
+
+test("a BotID failure refuses the sign-up rather than letting it through", async (t) => {
+  const { deps, added, guarded } = harness(t, { isBot: async () => { throw new Error("BotID unavailable"); } });
+  await assert.rejects(handleSubscribe(signup, deps));
+  assert.deepEqual(added, []);
+  assert.deepEqual(guarded, []);
+});
+
+test("a honeypot hit gets its fake success without asking BotID", async (t) => {
+  let asked = false;
+  const { deps } = harness(t, { isBot: async () => { asked = true; return true; } });
+  assert.deepEqual(await handleSubscribe(form({ email: "jane@firm.com", [HONEYPOT_FIELD]: "x" }), deps), { ok: true });
+  assert.equal(asked, false);
 });
 
 test("a refused request gets the friendly error for its reason and spends no Ezekia calls", async (t) => {

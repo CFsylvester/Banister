@@ -32,7 +32,9 @@ Set `CONTENT_SOURCE=fixture` (or Contentful keys) in `.envrc` (direnv) first; se
 - **Domain:** DNS stays at Cloudflare. The apex and `www` are CNAMEs to the target Vercel shows under Project →
   Settings → Domains, set to **DNS only**; `www` 308-redirects to the apex. Cutover record:
   `specs/003-wp-redirects/audit.md`.
-- **Sign-up abuse protection** (`src/lib/subscribe-handler.ts`, no env vars): a honeypot, then in-memory limits of 5
+- **Sign-up abuse protection** (`src/lib/subscribe-handler.ts`, no env vars): a honeypot, then
+  [Vercel BotID](https://vercel.com/docs/botid) (every page path is protected in `src/instrumentation-client.ts`, since
+  the band is on every page; `subscribe: bot check refused` in the logs), then in-memory limits of 5
   sign-ups per IP per 10 minutes, and 1 per second and 20 per minute across all visitors. These stop bursts but aren't
   a global quota: each Vercel instance counts on its own, and total volume isn't capped (one IP can still add 720 people
   a day). A few addresses can use up the shared caps, delaying real sign-ups by up to a minute. Look for
