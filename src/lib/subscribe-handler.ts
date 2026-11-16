@@ -11,6 +11,8 @@ export const RATE_LIMITED = {
   instance: "We’re getting a lot of sign-ups right now. Please try again in a minute.",
 };
 
+export const BOT_REFUSED = "Sorry, we couldn’t sign you up from this browser. Please try again, or email us.";
+
 // Limits [Design Choice]. Sign-ups are one per person per newsletter, so 5 from one address is generous (an office
 // behind one IP still fits). Each sign-up costs 2-3 Ezekia calls against the 5 req/s shared with CV uploads (Ezekia
 // support, see src/lib/ezekia/client.ts): 1 a second keeps one instance's peak under that, and 20 a minute keeps its
@@ -38,13 +40,17 @@ export type SubscribeDeps = {
   /** Reads the rate-limit key lazily, so requests that never reach the guard don't touch the request headers. */
   ipKey: () => Promise<string>;
   guard: (ipKey: string) => keyof typeof RATE_LIMITED | null;
+  isBot: () => Promise<boolean>;
   addToList: (email: string) => Promise<unknown>;
 };
 
-export async function handleSubscribe(form: FormData, { ipKey, guard, addToList }: SubscribeDeps): Promise<SubscribeResult> {
+export async function handleSubscribe(form: FormData, { ipKey, guard, isBot, addToList }: SubscribeDeps): Promise<SubscribeResult> {
   // Honeypot: bots that fill the hidden field get a fake success and no CRM record. Logged (no email) so false
   // positives from real people would show up.
   if (String(form.get(HONEYPOT_FIELD) ?? "")) { console.info("subscribe: honeypot hit"); return { ok: true }; }
+  // A BotID verdict is not certain, so a flagged request gets an error rather than a fake success, as on the contact
+  // form: a real person wrongly flagged must not believe they signed up. Before the guard, so bots use up no limits.
+  if (await isBot()) { console.info("subscribe: bot check refused"); return { ok: false, error: BOT_REFUSED }; }
 
   const email = validEmail(String(form.get("email") ?? ""));
   if (!email) return { ok: false, error: EMAIL_HELP };

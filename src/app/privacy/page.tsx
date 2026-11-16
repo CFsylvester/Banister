@@ -64,8 +64,8 @@ export default function PrivacyPage() {
       <P>
         Like any website, our host, Vercel, receives your IP address, browser details and the pages you request, and keeps
         them in its logs. We also use your IP address to limit repeated sign-up and contact-form attempts; it is held in the server’s memory
-        for a short time and not written to any database or log. Images on some pages load from Contentful, our content service, which also receives your IP address. When you send the contact form, a
-        check from Vercel runs in your browser and its result is sent with the form, so we can tell people from automated
+        for a short time and not written to any database or log. Images on some pages load from Contentful, our content service, which also receives your IP address. When you send the contact form or sign
+        up for updates, a check from Vercel runs in your browser and its result is sent with the form, so we can tell people from automated
         traffic.
       </P>
       <P>
