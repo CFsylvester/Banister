@@ -1,11 +1,11 @@
 // What the contact Server Action does (epic #88), with its request, Ezekia and email access passed in. Separate from
 // src/app/actions/contact.ts because that file imports server-only and can't load under `node --test`.
 //
-// Order: honeypot → bot check → fields → (candidate) US location → résumé → rate limit → (employer) email config →
-// Ezekia record → (employer) email. Every refusal happens before anything is written, and the visitor sees success
+// Order: honeypot → bot check → fields → (candidate) US location → résumé → rate limit → email config → Ezekia record
+// (candidates also join the "Resumes received" list) → email to the team. Every refusal happens before anything is written, and the visitor sees success
 // only when every write succeeded (FR-1).
 import { EzekiaError } from "../ezekia/errors.ts";
-import type { EmailConfig } from "./employer.ts";
+import type { EmailConfig } from "./team-email.ts";
 import { CONTACT_HONEYPOT, GENERIC_ERROR, parseContact, type ContactFields, type FieldName } from "./fields.ts";
 import { checkResume, type Resume } from "./resume.ts";
 
@@ -30,7 +30,7 @@ export type ContactDeps = {
   inUs: () => Promise<boolean>;
   record: (fields: ContactFields, resume: Resume | null) => Promise<unknown>;
   emailConfig: () => EmailConfig | null;
-  emailEmployer: (config: EmailConfig, fields: ContactFields) => Promise<boolean>;
+  emailTeam: (config: EmailConfig, fields: ContactFields, hasResume: boolean) => Promise<boolean>;
 };
 
 /** CONTACT_DRY_RUN=1 is for local runs only (the pixel gates' contact-sending / contact-sent states). It fails closed: it
@@ -67,8 +67,8 @@ export async function handleContact(form: FormData, d: ContactDeps): Promise<Con
   if (refused) { console.warn(`contact: rate limited (${refused})`); return { ok: false, error: CONTACT_ERROR[refused] }; }
 
   // Checked before the Ezekia write, so a misconfigured deployment doesn't record enquiries nobody is told about.
-  const config = f.audience === "employer" ? d.emailConfig() : null;
-  if (f.audience === "employer" && !config) { console.error("contact: email not configured (CONTACT_TO_EMAIL / CONTACT_FROM_EMAIL)"); return { ok: false, error: CONTACT_ERROR.generic }; }
+  const config = d.emailConfig();
+  if (!config) { console.error("contact: email not configured (CONTACT_TO_EMAIL / CONTACT_FROM_EMAIL)"); return { ok: false, error: CONTACT_ERROR.generic }; }
 
   const started = Date.now();
   try {
@@ -79,8 +79,8 @@ export async function handleContact(form: FormData, d: ContactDeps): Promise<Con
     return { ok: false, error: CONTACT_ERROR.generic };
   }
 
-  if (config && !(await d.emailEmployer(config, f))) {
-    log(`employer recorded, email failed (${Date.now() - started}ms)`);
+  if (!(await d.emailTeam(config, f, !!resume))) {
+    log(`${f.audience} recorded, email failed (${Date.now() - started}ms)`);
     return { ok: false, error: CONTACT_ERROR.generic };
   }
   log(`${f.audience} sent${resume ? " with résumé" : ""} (${Date.now() - started}ms)`);

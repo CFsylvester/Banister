@@ -27,19 +27,23 @@ function harness(t: TestContext, overrides: Partial<ContactDeps> = {}) {
     inUs: async () => true,
     record: async (f, r) => { recorded.push([f, r]); },
     emailConfig: () => ({ to: "team@banisterintus.com", from: "website@banisterintus.com" }),
-    emailEmployer: async (_c, f) => { emailed.push(f); return true; },
+    emailTeam: async (_c, f, hasResume) => { emailed.push([f, hasResume]); return true; },
     ...overrides,
   };
   return { deps, recorded, emailed, guarded, logs };
 }
 
-test("a candidate with a résumé is recorded with the checked file, and nothing is emailed", async (t) => {
+test("a candidate with a résumé is recorded with the checked file, then emailed to the team", async (t) => {
   const h = harness(t);
   assert.deepEqual(await handleContact(form({ ...candidate, resume: pdf }), h.deps), { ok: true });
   assert.equal(h.recorded.length, 1);
   assert.equal((h.recorded[0][1] as { kind: string }).kind, "pdf");
-  assert.deepEqual(h.emailed, []);
+  assert.equal(h.emailed.length, 1);
+  assert.equal((h.emailed[0] as unknown[])[1], true);
   assert.deepEqual(h.guarded, ["203.0.113.7"]);
+  // Without a résumé, the email says so.
+  await handleContact(form(candidate), h.deps);
+  assert.equal((h.emailed[1] as unknown[])[1], false);
 });
 
 test("an employer is recorded and then emailed; a forged résumé is ignored", async (t) => {
@@ -47,6 +51,7 @@ test("an employer is recorded and then emailed; a forged résumé is ignored", a
   assert.deepEqual(await handleContact(form({ ...employer, resume: pdf }), h.deps), { ok: true });
   assert.equal(h.recorded[0][1], null);
   assert.equal(h.emailed.length, 1);
+  assert.equal((h.emailed[0] as unknown[])[1], false);
 });
 
 test("the honeypot gets a fake success with no record; a bot verdict gets an error, never a fake success", async (t) => {
@@ -80,9 +85,10 @@ test("rate-limited requests get the message for their reason and reach nothing",
   }
 });
 
-test("an employer enquiry with no email config is refused before anything is recorded", async (t) => {
+test("with no email config, either form is refused before anything is recorded", async (t) => {
   const h = harness(t, { emailConfig: () => null });
   assert.deepEqual(await handleContact(form(employer), h.deps), { ok: false, error: CONTACT_ERROR.generic });
+  assert.deepEqual(await handleContact(form(candidate), h.deps), { ok: false, error: CONTACT_ERROR.generic });
   assert.deepEqual(h.recorded, []);
 });
 
@@ -90,9 +96,10 @@ test("an Ezekia failure or an email failure shows the error, never success", asy
   const down = harness(t, { record: async () => { throw new EzekiaUpstreamError("GET /people", 503); } });
   assert.deepEqual(await handleContact(form(candidate), down.deps), { ok: false, error: CONTACT_ERROR.generic });
   assert.deepEqual(down.emailed, []);
-  const noMail = harness(t, { emailEmployer: async () => false });
+  const noMail = harness(t, { emailTeam: async () => false });
   assert.deepEqual(await handleContact(form(employer), noMail.deps), { ok: false, error: CONTACT_ERROR.generic });
-  assert.equal(noMail.recorded.length, 1);
+  assert.deepEqual(await handleContact(form(candidate), noMail.deps), { ok: false, error: CONTACT_ERROR.generic });
+  assert.equal(noMail.recorded.length, 2);
 });
 
 test("logs never contain the visitor's details", async (t) => {
