@@ -1,9 +1,9 @@
 "use server";
 import { checkBotId } from "botid/server";
 import { headers } from "next/headers";
-import { emailConfig, emailEmployer } from "@/lib/contact/employer";
 import { dryRunAllowed, handleContact, type ContactResult } from "@/lib/contact/handler";
 import { recordSubmission } from "@/lib/contact/record";
+import { emailConfig, emailTeam } from "@/lib/contact/team-email";
 import { sendEmail } from "@/lib/email";
 import { ezekia } from "@/lib/ezekia";
 import { candidateFormOpen } from "@/lib/geo";
@@ -31,6 +31,6 @@ export async function submitContact(form: FormData): Promise<ContactResult> {
     inUs: async () => candidateFormOpen(await headers()),
     record: dryRun ? pause : (fields, resume) => recordSubmission(ezekia(), fields, resume),
     emailConfig: () => (dryRun ? { to: "dry-run", from: "dry-run" } : emailConfig()),
-    emailEmployer: dryRun ? async () => true : (config, fields) => emailEmployer(sendEmail, config, fields),
+    emailTeam: dryRun ? async () => true : (config, fields, hasResume) => emailTeam(sendEmail, config, fields, hasResume),
   });
 }

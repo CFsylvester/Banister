@@ -8,6 +8,10 @@
 //   data with that from the CV" (help-centre "API Integration", cited in client.ts), so a résumé is attached as a
 //   document instead. Nothing proves the sender owns that email, so their record's contact details are left alone:
 //   the phone number goes in the note only (CWE-345, data authenticity).
+// - Candidates: added to the "Resumes received" list before any document or note is created, since a retry after a
+//   later failure repeats every step: the list add is a PUT, which the client treats as safe to repeat (client.ts), while
+//   a document or note would be added twice. Ezekia's answer to adding someone already on the list is [unverified]: if
+//   it is an error, a returning candidate could never get past this step.
 // - Always: one note holding the message and how to reply. Ezekia answers a note with `{ updated, notUpdated }`; a
 //   person listed in `notUpdated` means the message was not saved, which is a failure, not a success.
 import type { EzekiaClient, EzekiaPerson } from "../ezekia/client.ts";
@@ -18,6 +22,10 @@ import type { Resume } from "./resume.ts";
 /** Ezekia rejects a new person with no company: `POST /v4/people` → 422 "Company is required" (live call, 2026-10-29,
  * src/lib/ezekia/subscribe.ts). Candidates aren't asked for one, and employers may leave it blank. */
 export const PLACEHOLDER_COMPANY = "Unknown";
+
+/** Ezekia list "Resumes received" (https://ezekia.com/#/lists/773048/info; `GET /v4/lists/773048` → 200, 2026-11-16).
+ * Every candidate-form submission joins it. [Design Choice, owner 2026-11-16] */
+export const CANDIDATE_LIST_ID = 773048;
 
 export type RecordOutcome = { personId: number; created: boolean; multipleMatches: boolean };
 
@@ -54,6 +62,7 @@ export async function recordSubmission(client: EzekiaClient, f: ContactFields, r
   const multipleMatches = matches.length > 1;
 
   if (existing) {
+    if (f.audience === "candidate") await client.addPersonToList(CANDIDATE_LIST_ID, existing.id);
     if (cv) await client.addDocument(existing.id, cv.file, cv.filename);
     await addNote(client, existing.id, noteText(f, { at, resume: cv ? "document" : "none", multipleMatches }));
     return { personId: existing.id, created: false, multipleMatches };
@@ -71,6 +80,7 @@ export async function recordSubmission(client: EzekiaClient, f: ContactFields, r
   if (!hasEmail(person, f.email)) await client.addEmail(person.id, f.email, true);
   if (cv) await client.updatePersonNames(person.id, { firstName: f.first, lastName: f.last });
   if (f.phone && !hasPhone(person, f.phone)) await client.addPhone(person.id, f.phone, true);
+  if (f.audience === "candidate") await client.addPersonToList(CANDIDATE_LIST_ID, person.id);
   await addNote(client, person.id, noteText(f, { at, resume: cv ? "parsed" : "none", multipleMatches: false }));
   return { personId: person.id, created: true, multipleMatches: false };
 }

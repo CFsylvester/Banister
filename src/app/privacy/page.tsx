@@ -15,8 +15,8 @@ export const metadata: Metadata = pageMetadata({
 // so this is written to US law and makes no EU, UK or other non-US statements. Drafted from reports/Banister privacy and
 // terms findings.md ("Who receives personal data", "The consent sentence") and the owner's retention decision. Every
 // sentence is a claim of fact: the FTC holds companies to their privacy promises, so cut anything Banister doesn't do.
-// Where each form's data goes (epic #88, src/lib/contact/): candidates → Ezekia; employers → Ezekia plus an email to the
-// team through Resend (src/lib/email). Keep these sections in step with that code.
+// Where each form's data goes (epic #88, src/lib/contact/): both forms → Ezekia plus an email to the team through Resend
+// (src/lib/email); candidates also join an Ezekia list (record.ts). Keep these sections in step with that code.
 // Section anchors (#candidates, #clients, #newsletter) are linked from the forms.
 
 const email = <Email />;
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
       <P>Through the candidate form we collect your name, email address, phone number, preferred contact method, your message, and your résumé if you attach one.</P>
       <Ul>
         <li><strong>Why:</strong> to reply to you and to consider you for suitable roles.</li>
-        <li><strong>Where it goes:</strong> into our recruitment database, provided by Ezekia. If you are new to us, Ezekia’s software reads your résumé to build your profile; if we already have a profile for you, your résumé is added to it as a file.</li>
+        <li><strong>Where it goes:</strong> into our recruitment database, provided by Ezekia. If you are new to us, Ezekia’s software reads your résumé to build your profile; if we already have a profile for you, your résumé is added to it as a file. We add you to a list of candidates who have sent us their details, and a copy of what you wrote (not your résumé) is emailed to our team so a partner can reply.</li>
         <li><strong>Clients:</strong> <Blank>{LEGAL.clientSharing}</Blank></li>
         <li><strong>What to leave out:</strong> please don’t include details we don’t need, such as date of birth, photo, health, religion, ethnicity, sexual orientation, political views, Social Security number or other ID numbers.</li>
       </Ul>
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
       <Ul>
         <li><strong>Ezekia</strong> stores our candidate, client and newsletter records.</li>
         <li><strong>Vercel</strong> hosts this website and processes form submissions on the way to Ezekia and to Resend.</li>
-        <li><strong>Resend</strong> delivers employer inquiries from the website to our team’s inbox.</li>
+        <li><strong>Resend</strong> delivers candidate and employer submissions from the website to our team’s inbox.</li>
         <li><strong>Contentful</strong> serves the site’s content and images.</li>
         <li><strong>Our email provider</strong> carries our correspondence with you.</li>
         <li><strong>Authorities</strong>, when the law requires it, or to protect our rights.</li>
